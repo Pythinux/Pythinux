@@ -1,0 +1,7 @@
+div()
+'man' is a manual system that allows you to read documentation for programs. It is fully integrated with SZIPS3 and supports plaintext files.
+div()
+'man' supports plaintext files and does not use any file extension. 
+div()
+To load a manual, type 'man <manual name>'. To see a list of manuals you can load, type 'man /'.
+div()

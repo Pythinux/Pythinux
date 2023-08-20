@@ -1,0 +1,6 @@
+div()
+su is a simple command that launches the terminal with root-level priveleges.
+Simply launch run su, authenticate yourself, and you have an elevated terminal for yourself.
+
+In order to run su, you need sudo priveleges.
+div()

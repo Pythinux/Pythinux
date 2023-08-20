@@ -1,0 +1,8 @@
+PyQt5
+toml
+pyqtdarktheme
+markdown
+paramiko
+forex_python
+requests
+bs4

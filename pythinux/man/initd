@@ -1,0 +1,19 @@
+div()
+Init System
+div()
+initd is the init system used by Pythinux.
+div()
+init.d
+div()
+When you log in, initd searches for the "init.d" file in your home directory (/home/<your username>/). If it finds it, it will be executed as a script.
+div()
+Logging
+div()
+When initd is ran, the terminal is silenced and all terminal output is sent to '/log/init.d' until the program ends. 
+This means you do not see what happens during boot-up, unless you check '/log/init.d'. 
+div()
+Commands
+div()
+* initd --init
+    This command runs the init script and is called by the system at boot time.
+div()    

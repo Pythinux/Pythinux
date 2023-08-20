@@ -1,0 +1,14 @@
+# Using The Binary Tally
+The Binary Tally allows you to simulate a memory cell, allowing you to represent binary values in a visual way.
+## Setting "Memory" Size
+ The "Number of bits" parameter is used to change the length of the memory cell, in bits. By default, it is set to 8. To change it, change the value to something else, such as 4. The change is only reflected when you increment, decrement, or reset the value.
+
+## Incrementing and Decrementing
+ You can increment or decrement the value using the according buttons. It will increase the binary value represented. If you check "Protect Against Integer Over/Underflow", the value will not increase above the maximum or decrease below the minimum. Disabling this would allow the value to "wrap around", behaving exactly like a low-level programming language.
+ 
+## Resetting
+The Reset button sets the value to 0. It also updates the display, meaning that the correct amount of bits are shown.
+
+## Key
+* Memory Cell: The binary value that is being tallied.
+* Bit: a 1 or 0. The "number of bits" refers to the number of 1's and 0's the memory cell can represent.

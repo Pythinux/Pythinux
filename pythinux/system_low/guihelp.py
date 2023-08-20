@@ -1,0 +1,1 @@
+application = desktopShell.HelpTopicsApp()

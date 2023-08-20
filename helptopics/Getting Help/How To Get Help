@@ -1,0 +1,9 @@
+# How To Get Help
+If you require assistance with something, there are several ways of doing so.
+
+## 1. Help Topics
+Check through the help topics and see if the issue has been documented.
+## 2. Manpages
+There are several built-in manpages. Open a terminal emulator and run the `man` command. You can read manpages in a similar way to help topics.
+## 3. GitHub
+You can access the GitHub (https://github.com/WinFan3672/Pythinux/) and make an issue or pull request. A community member (or several) will respond to you.

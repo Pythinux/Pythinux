@@ -1,0 +1,25 @@
+Aliases allow for custom commands.
+Aliases are controlled using the 'alias' command.
+div()
+Adding an alias
+div()
+To add an alias, use alias add:
+div()
+alias add '<alias>' '<command>'
+div()
+Remember to use apostrophes('') and NOT quotation marks("").
+div()
+Listing all aliases
+div()
+To list all aliases, run:
+div()
+alias list
+div()
+This will list all aliases in the format '<alias> --> <command>'.
+div()
+Removing an alias
+div()
+To remove an alias, use the command:
+div()
+alias remove '<alias>'
+div()

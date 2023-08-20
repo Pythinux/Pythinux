@@ -1,0 +1,1 @@
+application = settingsApp.SettingsApp(currentUser)

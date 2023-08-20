@@ -1,0 +1,17 @@
+div()
+Pythinix 2.5 Changelog
+div()
+* Removed some functions
+    * byte_stream_to_zip
+    * zip_to_byte_stream
+* Removed a program: service
+* `tutorial` command
+    * Interactive tutorial.
+* `welcome` command
+    * Basic welcome message.
+* pkm 3.2
+    * Added an `info` command.
+    * Fixed a bug where the `binary` attribute of a pkgInf always reported to `true`.
+    * Cleaned up database update dialog.
+    * Upgrades are now smart! Only new packages will be updated. This change was made as a result of some backend changes.
+div()

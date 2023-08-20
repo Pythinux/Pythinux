@@ -1,0 +1,12 @@
+div()
+When you start up, the following things happen:
+* The kernel is initialised
+    * The kernel is the main pythinux.py file
+* The login screen displays
+    * See the manual titled "loginscreen" for more info
+* The user is logged in
+    * The user list is retrieved from config/users.cfg
+    * Their user object is retrieved and the command "initd --init" is run.
+    * This initialises the OS and loads the terminal by default.
+* Your startup programs (normally your terminal emulator) are run.
+div()
