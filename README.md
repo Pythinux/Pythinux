@@ -17,9 +17,11 @@ To install, clone this repository or download the source code of a release (reco
 ### Running
 Run the `pythinux.py` file in Python.
 ### System Requirements
-Python 3.9+ [Tested on 3.10]
+* Python 3.7+ (Recommended: 3.11.1)
 
-Any platform that supports Python 3.9 or higher.
+Python 3.7 is supported on Windows 7 and up, MacOS 10.9 and up, and most modern Linux distributions.
+
+**WARNING: Python 3.7 is unsupported, use a newer version if you can. If you absolutely need to use 3.7, 3.7.9 is the last release with installers included.**
 
 [Download Python](https://python.org/)
 ## Using
