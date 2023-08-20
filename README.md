@@ -31,3 +31,5 @@ The following contributions are welcome:
 * Documentation
 * Feature Suggestion/Submission
 * Packages for the Community repository
+## GitHub
+The [original GitHub](https://github.com/WinFan3672/Pythinux) contains releases older than 3.0.
