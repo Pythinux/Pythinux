@@ -3,7 +3,6 @@ delete_pyc() {
     find . -type f -name "*.pyc" -delete
 }
 
-# Function to delete __pycache__ folders
 delete_pycache() {
     find . -type d -name "__pycache__" -exec rm -rf {} +
 }
