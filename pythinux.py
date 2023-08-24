@@ -125,15 +125,17 @@ def createModule(moduleName):
     return type(os)(moduleName)
 
 
-def silent(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            traceback.print_exc()
-            return None  # You can customize the error handling here
-    return wrapper
+def silent(function):
+    """
+    Runs some code without outputting anything to the terminal
+    Args:
+    function: a callable object.
+    """
+    stdout = sys.stdout
+    sys.stdout = None
+    x = function()
+    sys.stdout = stdout
+    return x
 
 
 def CompileOS():
