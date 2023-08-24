@@ -13,8 +13,6 @@ elif "add" in args and len(args) == 7:
     canSudo = bool(doCalc(args[6]))
     g = Group(name,canApp,canAppHigh,canSys,canSysHigh, canSudo)
     pprint(g)
-    groupList.add(g)
-    saveGroupList(groupList)
 elif args == ["remove"]:
     div()
     print("group remove <name>")

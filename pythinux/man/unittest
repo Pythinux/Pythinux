@@ -1,14 +1,14 @@
 Begin unit tests.
-[0.00117] [1/12] Copy Module
-[0.0012] [2/12] Print Current Directory
-/home/winfan3672/Documents/GitHub/Pythinux/pythinux
-[0.00122] [3/12] Create Module
-[0.00122] [4/12] Run Pydoc
-[0.30642] [5/12] Create User
-[0.30707] [6/12] Load user list
-[0.30905] [7/12] Load group list
-[0.30965] [8/12] Convert Object to Dictionary
-[0.31003] [9/12] pprint
+[0.00258] [1/12] Copy Module
+[0.00261] [2/12] Print Current Directory
+/run/media/winfan3672/Poseidon, God of the Sea/pythinux2/pythinux
+[0.00262] [3/12] Create Module
+[0.00263] [4/12] Run Pydoc
+[0.13537] [5/12] Create User
+[0.13574] [6/12] Load user list
+[0.13743] [7/12] Load group list
+[0.138] [8/12] Convert Object to Dictionary
+[0.13813] [9/12] pprint
 {
     "@itemType": "User",
     "USERTYPE": "<function 'USERTYPE'>",
@@ -26,11 +26,11 @@ Begin unit tests.
         "name": "testgroup"
     },
     "hidden": false,
-    "password": "96c3dcde762e76292c242640c59cf8efa0284b14977a1feeadd1c0326a32b17ccb06d970557babe6387f8886971b87ff",
+    "password": "ffd058bb78ed1d1d66d8e25b9a95787c46dec5ecb5b7b31b5a0bf0b504775c169e4d4fb7f4cf8e084775a49cd20a541a",
     "username": "testuser"
 }
-[0.31509] [10/12] Loadable Programs
-['about', 'alias', 'area', 'autologin', 'basic-terminal', 'break', 'bwm', 'bwmadd', 'calc', 'cat', 'cls', 'cmd', 'desktop', 'echo', 'essential', 'exit', 'flapgui', 'ftpx', 'group', 'help', 'idle', 'initd', 'installd', 'libimporter', 'license', 'linecount', 'listlib', 'listlib_high', 'lock', 'ls', 'man', 'md', 'passwd', 'pip', 'pkm', 'python', 'reinstall', 'removed', 'script', 'su', 'sudo', 'terminal', 'tty', 'tutorial', 'user', 'var', 'version', 'welcome', 'whoami', 'wowshell', 'xcount', 'xhide', 'xlock', 'xremove', 'xunlock', 'xview', 'zcalc']
-[0.31548] [11/12] Lint Test [unittest]
-[1.02275] [12/12] Lint Test [resetInstall]
+[0.1436] [10/12] Loadable Programs
+['about', 'alias', 'area', 'autologin', 'basic-terminal', 'break', 'calc', 'cat', 'cls', 'cmd', 'echo', 'exit', 'group', 'help', 'idle', 'initd', 'installd', 'libimporter', 'license', 'lock', 'ls', 'man', 'md', 'pip', 'pkm', 'python', 'reinstall', 'removed', 'script', 'su', 'sudo', 'terminal', 'tty', 'tutorial', 'user', 'var', 'version', 'welcome', 'whoami']
+[0.14487] [11/12] Lint Test [unittest]
+[0.76499] [12/12] Lint Test [resetInstall]
 All unit tests complete.

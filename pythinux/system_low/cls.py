@@ -1,1 +1,1 @@
-cls(False)
+cls() 

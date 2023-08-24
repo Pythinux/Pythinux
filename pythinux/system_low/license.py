@@ -1,8 +1,8 @@
 cls()
-if os.path.isfile("../helptopics/License"):
-    with open("../helptopics/License") as f:
+if os.path.isfile("../LICENSE"):
+    with open("../LICENSE") as f:
         div()
-        print(f.read().replace("# ",""))
-        div()
+        print(f.read())
+        br()
 else:
-    print("ERROR: No license file found.")    
+    print("ERROR: No license file found.")

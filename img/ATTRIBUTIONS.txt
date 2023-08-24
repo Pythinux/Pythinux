@@ -1,5 +1,0 @@
-All icons are from the Project Clarity icon pack, an open-source icon set licensed under the MIT license:
-
-https://v12.clarity.design/icons
-
-The splash screen for Software Centre was generated using hotspot.ai

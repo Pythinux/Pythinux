@@ -3,7 +3,7 @@ import importlib
 import zipfile
 import traceback
 import shutil
-pkm = load_library("pkm silent",currentUser)
+pkm = silent(lambda:load_program("pkm",currentUser))
 def filterDeps(deps):
     filtered_deps = [x for x in deps if x not in pkm.list_app()]
     return filtered_deps, deps
@@ -97,7 +97,7 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             if upgradeMode:
                 return info
             dd = "|".join(originalDeps)
-            cmd = "pkm register '{}' '{}' '{}' {} '{}' '{}' '{}'".format(name,info[1],dd if originalDeps else [],1 if program else 0,info[0],info[2],info[3])
+            cmd = "pkm register '{}' '{}' '{}' {} '{}' '{}'".format(name,info[1],dd if originalDeps else [],1 if program else 0,info[0],info[2])
             load_program(cmd,currentUser,shell="installd")
             no = 1
             for item in deps:
@@ -190,7 +190,7 @@ if arguments:
         upMode=True
     else:
         upMode=False
-    installd(" ".join(arguments),True,depMode,upMode)
+    installd(" ".join(arguments),yesMode,depMode,upMode)
 else:
     div()
     print("installd <path/to/installer.szip3>")
