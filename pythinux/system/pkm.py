@@ -4,7 +4,7 @@ import urllib.request
 global db, dbs, VERSION
 db = {}
 dbs = {}
-VERSION = [3,2,0]
+VERSION = [3,3,0]
 
 def removeProgram(program):
     if os.path.exists(f"app/{program}.py"):
@@ -69,10 +69,7 @@ def save_db(db):
     with open("config/pkm3.cfg","wb") as f:
         pickle.dump(db,f)
 def list_app():
-    z = []
-    pkgs = loadPackageInfs()
-    for pkg in pkgs:
-        z.append(pkg)
+    return loadPackageInfs().keys()
     return sorted(z)
 def update_db():
     DB = {
@@ -114,7 +111,9 @@ def give_dbs(online=False,silent=False,fileName="config/db.pkm"):
     if not silent:
         print("Successfully updated database.")
     return db
-if args == ["version"] or args == ["-v"]:
+if args == ["silent"]:
+    pass
+elif args == ["version"] or args == ["-v"]:
     div()
     print("PKM {}".format(".".join([str(x) for x in VERSION])))
     div()
@@ -173,6 +172,7 @@ elif "info" in args and len(args) == 2:
     depended = "; ".join(depended) if depended else "Nothing"
     div()
     print("Name: {}".format(pkg["humanName"]))
+    print("Author: {}".format(pkg["author"]))
     print("Version: {}".format(".".join(pkg["version"])))
     print("Release Date: {}".format(pkg["releaseDate"]))
     print("Dependencies: {}".format("; ".join(pkgDeps) if pkgDeps else "None"))
@@ -292,7 +292,7 @@ elif args == ["upgrade"]:
     else:
         print("ERROR: No packages to upgrade.")
         print("Your system is fully up-to-date.")
-elif "register" in args and len(args) == 7:
+elif "register" in args and len(args) == 8:
     if getTerm() == "installd":
         name = args[1]
         version = args[2]
@@ -301,6 +301,7 @@ elif "register" in args and len(args) == 7:
         hasBinary = bool(int(args[4]))
         humanName = args[5]
         releaseDate = args[6]
+        author = args[7]
         if deps == "[]":
             deps = []
         else:
@@ -312,6 +313,7 @@ elif "register" in args and len(args) == 7:
             "binary":hasBinary,
             "humanName":humanName,
             "releaseDate":releaseDate,
+            "author":author,
             }
         registerPkgInf(c)
     else:

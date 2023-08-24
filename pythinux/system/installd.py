@@ -3,7 +3,7 @@ import importlib
 import zipfile
 import traceback
 import shutil
-pkm = silent(lambda:load_program("pkm",currentUser))
+pkm = load_program("pkm silent",currentUser)
 def filterDeps(deps):
     filtered_deps = [x for x in deps if x not in pkm.list_app()]
     return filtered_deps, deps
@@ -97,7 +97,7 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             if upgradeMode:
                 return info
             dd = "|".join(originalDeps)
-            cmd = "pkm register '{}' '{}' '{}' {} '{}' '{}'".format(name,info[1],dd if originalDeps else [],1 if program else 0,info[0],info[2])
+            cmd = "pkm register '{}' '{}' '{}' {} '{}' '{}' '{}'".format(name,info[1],dd if originalDeps else [],1 if program else 0,info[0],info[2],info[3])
             load_program(cmd,currentUser,shell="installd")
             no = 1
             for item in deps:
@@ -123,6 +123,7 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             except Exception as e:
                 raise InstallerError(str(e))
             if libMode:
+                # print("WARNING: library.zip is currently deprecated. Use pip-requirements.txt instead.")
                 with zipfile.ZipFile("tmp/library.zip") as f:
                     f.extractall("tmp/libtmp")
                 if os.path.exists("tmp/libtmp/lib.name"):
