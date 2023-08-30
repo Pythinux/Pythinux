@@ -1,6 +1,5 @@
 # Pythinux
 ### A fully-featured, multi-purpose operating system written entirely in Python
-**NOTICE: The `3.0` branch contains the pre-release code for Pythinux 3.0!**
 ## Features 👾
 * 30+ built-in commands
 * Setup Wizard
