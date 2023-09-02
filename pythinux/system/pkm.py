@@ -73,8 +73,8 @@ def list_app():
     return sorted(z)
 def update_db():
     DB = {
-        "official":"https://github.com/WinFan3672/pkm_official/raw/main/pkm.db.cfg",
-        "community":"https://github.com/WinFan3672/Pythinux/raw/main/Community/community.db.cfg",
+        "core":"https://codeberg.org/WinFan3672/Core/raw/main/pkm.db.cfg",
+        "community":"https://codeberg.org/WinFan3672/Community/raw/main/pkm.db.cfg",,
         }
     try:
         with open("config/pkm3.cfg","rb") as f:
