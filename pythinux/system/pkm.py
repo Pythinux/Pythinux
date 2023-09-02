@@ -4,7 +4,7 @@ import urllib.request
 global db, dbs, VERSION
 db = {}
 dbs = {}
-VERSION = [3,3,0]
+VERSION = [3,4,0]
 
 def removeProgram(program):
     if os.path.exists(f"app/{program}.py"):
@@ -73,8 +73,8 @@ def list_app():
     return sorted(z)
 def update_db():
     DB = {
-        "core":"https://codeberg.org/WinFan3672/Core/raw/main/pkm.db.cfg",
-        "community":"https://codeberg.org/WinFan3672/Community/raw/main/pkm.db.cfg",,
+        "core":"https://codeberg.org/Pythinux/Core/raw/branch/main/pkm.db.cfg",
+        "community":"https://codeberg.org/Pythinux/Community/raw/branch/main/pkm.db.cfg",
         }
     try:
         with open("config/pkm3.cfg","rb") as f:
@@ -251,9 +251,9 @@ elif args == ["allc"]:
     for item in db:
         print(item)
 elif args == ["list"]:
-    z = list_app()
-    z= [z[i:i+10] for i in range(0, len(z), 10)]
+    z = list(list_app())
     if z:
+        z= [z[i:i+10] for i in range(0, len(z), 10)]
         div()
         for i in z:
             print(" ".join(i))

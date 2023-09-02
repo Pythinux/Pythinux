@@ -3,6 +3,8 @@ import importlib
 import zipfile
 import traceback
 import shutil
+import sys
+
 pkm = load_program("pkm silent",currentUser)
 def filterDeps(deps):
     filtered_deps = [x for x in deps if x not in pkm.list_app()]
@@ -50,10 +52,13 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             manualsMode=True
         else:
             manualsMode=False
-        if os.path.isfile("library.zip"):
-            libMode=True
+        if os.path.isfile("pip_requirements.txt"):
+            with open("pip_requirements.txt") as f:
+                pipDeps = f.read().split("\n")
+            pipMode=True
         else:
-            libMode=False
+            pipMode=False
+            pipDeps = []
         if os.path.isfile("program.py"):
             with open("program.py","rb") as f:
                 program = f.read()
@@ -104,6 +109,11 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                 print(f"({no}/{len(deps)}) Installing '{item}' (dependency of '{name}')...")
                 main(currentUser,f"pkm install -d {item}")
                 no += 1
+            if pipDeps:
+                py = sys.executable
+                os.system(f"{py} -m ensurepip")
+                for item in pipDeps:
+                    os.system(f"{py} -m pip install {item}")
             if setupMode and not yesMode:
                 if input("Review setup script? [y/n]").lower() == "y":
                     cls()
@@ -122,29 +132,6 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                     raise InstallerError(f"Package requires newer OS version: {v[0]}.{v[1]}")
             except Exception as e:
                 raise InstallerError(str(e))
-            if libMode:
-                # print("WARNING: library.zip is currently deprecated. Use pip-requirements.txt instead.")
-                with zipfile.ZipFile("tmp/library.zip") as f:
-                    f.extractall("tmp/libtmp")
-                if os.path.exists("tmp/libtmp/lib.name"):
-                    with open("tmp/libtmp/lib.name") as f:
-                        libName=f.read().replace("\n","")
-                    if os.path.exists("tmp/libtmp/lib.ver"):
-                        with open("tmp/libtmp/lib.ver") as f:
-                            libVer=f.read().replace("\n","")
-                        shutil.make_archive("lib/lib", 'zip', "tmp/libtmp/lib")
-                        if not os.path.isdir("lib/{}/{}".format(libName,libVer)):
-                            if not os.path.isdir("lib/{}".format(libName)):
-                                os.mkdir("lib/{}".format(libName))
-                            if not os.path.isdir("lib/{}".format(libVer)):
-                                os.mkdir("lib/{}/{}".format(libName,libVer))
-                            with zipfile.ZipFile("lib/lib.zip") as f:
-                                f.extractall("lib/{}/{}".format(libName,libVer))
-                            os.remove("lib/lib.zip")
-                    else:
-                        print("Error: No 'lib.ver' provided.")
-                else:
-                    print("Error: No 'lib.name' provided.")
             if system:
                 fn = f"app_high/{name}.py"
             else:
