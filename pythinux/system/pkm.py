@@ -395,14 +395,14 @@ elif args == ["batch"]:
     div()
     print("Installs all packages in a database.")
     div()
-# elif "batch" in args and args[0] == "batch":
-#     dataBase = args[1]
-#     dbs = update_db()
-#     db = dbs[dataBase]
-#     packageList = downloadDatabases({}, {dataBase:db}, "tmp/batch.cfg", True)
-#     packageList = [x for x in packageList.keys()]
-#     for package in packageList:
-#         main(currentUser, "pkm install -y {}".format(package))
+elif "batch" in args and args[0] == "batch":
+    dataBase = args[1]
+    dbs = update_db()
+    db = dbs[dataBase]
+    packageList = downloadDatabases({}, {dataBase:db}, "tmp/batch.cfg", True)
+    packageList = [x for x in packageList.keys()]
+    for package in packageList:
+        main(currentUser, "pkm install -y {}".format(package))
 else:
     div()
     print("pkm [args]")
