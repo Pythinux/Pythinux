@@ -1,8 +1,12 @@
 div()
-Pythinix 2.6 Changelog
+Pythinix 2.7 Changelog
 div()
-* Removed libimporter entirely.
-    * Instead, create a pip_requirements.txt file in your package listing all the pip packages you wish to install.
-* Moved repositories to CodeBerg instead of GitHub.
-    * This is the third place for our packages to date.
+* Updated pkm
+    * Improved code for getting package lists
+        * More readable and maintainable
+    * Newer databases no longer override packages with existing names
+        * Now, the higher databases have more priority.
+    * Added "pkm batch" parameter
+        * Allows you to install every package in a database.
+        * Not recommended for use, will remain a hidden parameter.
 div()
