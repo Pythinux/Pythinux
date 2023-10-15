@@ -1,10 +1,12 @@
 import pickle
 import urllib.request
+import traceback
 
 global db, dbs, VERSION
 db = {}
 dbs = {}
-VERSION = [3,4,0]
+VERSION = [3, 5, 0]
+
 
 def removeProgram(program):
     if os.path.exists(f"app/{program}.py"):
@@ -14,19 +16,25 @@ def removeProgram(program):
     else:
         pass
     print(f"Successfully removed {program}.")
+
+
 class PackageInf(Base):
-    def __init__(self,name="",version=[1,0,0],deps=[],hasBinary=True):
-        self.name=name
-        self.version=version
-        self.deps=deps
-        self.binary=hasBinary
+    def __init__(self, name="", version=[1, 0, 0], deps=[], hasBinary=True):
+        self.name = name
+        self.version = version
+        self.deps = deps
+        self.binary = hasBinary
+
+
 def filterDeps(deps):
     d = copy(deps)
     p = loadPackageInfs()
     for item in p:
         if item in deps:
             deps.remove(item)
-    return deps,d
+    return deps, d
+
+
 def findDeps(dep):
     parents = []
     p = loadPackageInfs()
@@ -34,83 +42,132 @@ def findDeps(dep):
         if dep in item["deps"]:
             parents.append(item["name"])
     return parents
+
+
 def GeneratePackageInf(pkgInfs):
     z = {}
     for item in pkgInfs:
         x = pkgInfs[item]
-        p = PackageInf(x["name"],x["version"],x["deps"],x["binary"])
+        p = PackageInf(x["name"], x["version"], x["deps"], x["binary"])
         z[item] = p
     return z
+
+
+
 def getDepList():
     deps = set()
     for item in GeneratePackageInf(loadPackageInfs()).values():
         for i in item.deps:
             deps.add(i)
     return deps
+
+
 def loadPackageInfs():
     try:
-        with open("config/pkginf.d","rb") as f:
+        with open("config/pkginf.d", "rb") as f:
             return pickle.load(f)
     except:
-        with open("config/pkginf.d","wb") as f:
-            pickle.dump({},f)
+        with open("config/pkginf.d", "wb") as f:
+            pickle.dump({}, f)
             return {}
+
+
 def savePackageInfs(pkgInfs):
-    with open("config/pkginf.d","wb") as f:
-        pickle.dump(pkgInfs,f)
+    with open("config/pkginf.d", "wb") as f:
+        pickle.dump(pkgInfs, f)
+
+
 def registerPkgInf(pkgInf):
     pkgInfs = loadPackageInfs()
     pkgInfs[pkgInf["name"]] = pkgInf
     savePackageInfs(pkgInfs)
+
+
 def downloadFile(url, fileName):
     urllib.request.urlretrieve(url, fileName)
-    
+
+
 def save_db(db):
-    with open("config/pkm3.cfg","wb") as f:
-        pickle.dump(db,f)
+    with open("config/pkm3.cfg", "wb") as f:
+        pickle.dump(db, f)
+
+
 def list_app():
     return loadPackageInfs().keys()
     return sorted(z)
+
+
 def update_db():
     DB = {
-        "core":"https://codeberg.org/Pythinux/Core/raw/branch/main/pkm.db.cfg",
-        "community":"https://codeberg.org/Pythinux/Community/raw/branch/main/pkm.db.cfg",
-        }
+        "core": "https://codeberg.org/Pythinux/Core/raw/branch/main/pkm.db.cfg",
+        "community": "https://codeberg.org/Pythinux/Community/raw/branch/main/pkm.db.cfg",
+    }
     try:
-        with open("config/pkm3.cfg","rb") as f:
+        with open("config/pkm3.cfg", "rb") as f:
             return pickle.load(f)
     except:
         save_db(DB)
         return DB
-def give_dbs(online=False,silent=False,fileName="config/db.pkm"):
-    if not online:
-        silent = True
+
+
+def downloadDatabases(db, databaseList, fileName, silent):
+    '''
+    Given a list of databases, downloads their contents and saves it to a file.
+    This can then be loaded later.
+    '''
+    for item in databaseList:
+        try:
+            if not silent:
+                print(f"Downloading database '{item}'...")
+            downloadFile(databaseList[item], fileName)
+            with open(fileName, "rb") as f:
+                x = pickle.load(f)
+            db = {**db, **x}
+
+        except Exception as e:
+            print(traceback.format_exc())
+
+    with open(fileName, "wb") as f:
+        pickle.dump(db, f)
+    return db
+
+def give_dbs(online = False, silent=False, fileName="config/pkm.db.cfg"):
+    """
+    Returns a list of packages that can be installed.
+    """
+
+    def loadOffline(fileName):
+        with open(fileName, "rb") as f:
+            return pickle.load(f)
+
+    def saveOffline(db, fileName):
+        with open(fileName, "wb") as f:
+            pickle.dump(db, f)
+    silent = True if not online else silent
+
     if not silent:
         print("Updating database...")
-    dbs = update_db()
-    db = {}
+
+    dbList = update_db() # Get list of HTTP sources to grab from.
+    db = {} # List of packages
+
     if online:
-        for item in dbs.keys():
-            try:
-                if not silent:
-                    print(f"Downloading database '{item}'...")
-                downloadFile(dbs[item],fileName)
-                with open(fileName,"rb") as f:
-                    x = pickle.load(f)
-                db = mergeDict(db,x)
-            except Exception as e:
-                print(f"{type(e).__name__}: {e}")
-            with open(fileName,"wb") as f:
-                pickle.dump(db,f)
+        db = downloadDatabases(db, dbList, fileName, silent) # Download all package lists
+        saveOffline(db, fileName)
+        if not silent:
+            print("Successfully updated database.")
+        return {k: v for k, v in sorted(db.items())}
     else:
         try:
-            with open(fileName,"rb") as f:
-                return pickle.load(f)
+            db = loadOffline(fileName)
+            if not silent:
+                print("Successfully updated database.")
+            return {k: v for k, v in sorted(db.items())}
         except:
-            return give_dbs(True)
-    if not silent:
-        print("Successfully updated database.")
-    return db
+            return give_dbs(online=True) ## Falls back to online mode if no file is found.
+
+
+
 if args == ["silent"]:
     pass
 elif args == ["version"] or args == ["-v"]:
@@ -122,19 +179,19 @@ elif args == ["version"] or args == ["-v"]:
 elif args == ["update"]:
     if os.path.isfile("config/db.pkm"):
         os.remove("config/db.pkm")
-    db = give_dbs(True)
+    db = give_dbs(online=True)
 elif "install" in args and len(args) >= 2:
     if "-y" in args:
         args.remove("-y")
-        yesMode=True
+        yesMode = True
     else:
-        yesMode=False
+        yesMode = False
     if "-d" in args:
         args.remove("-d")
-        yesMode=True
-        depMode=True
+        yesMode = True
+        depMode = True
     else:
-        depMode=False
+        depMode = False
     args.pop(0)
     for item in args:
         if not depMode:
@@ -150,13 +207,13 @@ elif "install" in args and len(args) >= 2:
                 x = db[x]["url"]
             else:
                 x = db[item]["url"]
-            downloadFile(x,"tmp/pkm.szip3")
+            downloadFile(x, "tmp/pkm.szip3")
             if depMode:
-                main(currentUser,"installd -d tmp/pkm.szip3",True)
+                main(currentUser, "installd -d tmp/pkm.szip3", True)
             elif yesMode:
-                main(currentUser,"installd -y tmp/pkm.szip3",True)
+                main(currentUser, "installd -y tmp/pkm.szip3", True)
             else:
-                main(currentUser,"installd tmp/pkm.szip3",True)
+                main(currentUser, "installd tmp/pkm.szip3", True)
 elif args == ["info"]:
     div()
     print("pkm info [package name]")
@@ -177,7 +234,7 @@ elif "info" in args and len(args) == 2:
     print("Release Date: {}".format(pkg["releaseDate"]))
     print("Dependencies: {}".format("; ".join(pkgDeps) if pkgDeps else "None"))
     print("Required By: {}".format(depended))
-    print("Package Type: {}".format('Binary' if bool(pkg["binary"]) else 'Library'))
+    print("Package Type: {}".format("Binary" if bool(pkg["binary"]) else "Library"))
     div()
 elif args == ["db"]:
     div()
@@ -189,7 +246,7 @@ elif args == ["db"]:
     print("    remove: removes a database")
     print("    reset: reverts to the default")
     div()
-elif args == ["db","add"]:
+elif args == ["db", "add"]:
     div()
     print("pkm db add [db_name] [url]")
     div()
@@ -199,7 +256,7 @@ elif "db" in args and "add" in args and len(args) == 4:
     dbs = update_db()
     dbs[args[2]] = args[3]
     save_db(dbs)
-elif args == ["db","remove"]:
+elif args == ["db", "remove"]:
     div()
     print("pkm db remove [database]")
     div()
@@ -209,7 +266,11 @@ elif "remove" in args and len(args) == 2:
     d = getDepList()
     if args[1] in d:
         for item in findDeps(args[1]):
-            print("ERROR: '{}' is a dependency of '{}' and cannot be removed.".format(args[1],item))
+            print(
+                "ERROR: '{}' is a dependency of '{}' and cannot be removed.".format(
+                    args[1], item
+                )
+            )
     else:
         p = loadPackageInfs()
         z = GeneratePackageInf(p)
@@ -225,7 +286,7 @@ elif "db" in args and "remove" in args and len(args) == 3:
     dbs = update_db()
     dbs.pop(args[2])
     save_db(dbs)
-elif args == ["db","list"]:
+elif args == ["db", "list"]:
     div()
     d = update_db()
     if d:
@@ -247,13 +308,13 @@ elif args == ["all"]:
         print("No packages found.")
     div()
 elif args == ["allc"]:
-    db = give_dbs(True,True)
+    db = give_dbs(True, True)
     for item in db:
         print(item)
 elif args == ["list"]:
     z = list(list_app())
     if z:
-        z= [z[i:i+10] for i in range(0, len(z), 10)]
+        z = [z[i : i + 10] for i in range(0, len(z), 10)]
         div()
         for i in z:
             print(" ".join(i))
@@ -285,8 +346,8 @@ elif args == ["upgrade"]:
             x.append(item)
     if x:
         for item in x:
-            print("({}/{}) Upgrading '{}'...".format(i,len(x),item))
-            main(currentUser,f"pkm install -y {item}",True)
+            print("({}/{}) Upgrading '{}'...".format(i, len(x), item))
+            main(currentUser, f"pkm install -y {item}", True)
             i += 1
         print("All packages upgraded.")
     else:
@@ -307,14 +368,14 @@ elif "register" in args and len(args) == 8:
         else:
             deps = deps.split("|")
         c = {
-            "name":name, 
-            "version":version,
+            "name": name,
+            "version": version,
             "deps": deps,
-            "binary":hasBinary,
-            "humanName":humanName,
-            "releaseDate":releaseDate,
-            "author":author,
-            }
+            "binary": hasBinary,
+            "humanName": humanName,
+            "releaseDate": releaseDate,
+            "author": author,
+        }
         registerPkgInf(c)
     else:
         print("Error: This is a hidden argument.")
@@ -323,11 +384,25 @@ elif "register" in args and len(args) == 8:
 elif args == ["clear"]:
     while list_app():
         for item in list_app():
-            main(currentUser,"pkm remove {}".format(item))
+            main(currentUser, "pkm remove {}".format(item))
     print("Successfully removed all programs.")
-elif args == ["db","reset"]:
+elif args == ["db", "reset"]:
     os.remove("config/pkm3.cfg")
     update_db()
+elif args == ["batch"]:
+    div()
+    print("pkm batch <database>")
+    div()
+    print("Installs all packages in a database.")
+    div()
+elif "batch" in args and args[0] == "batch":
+    dataBase = args[1]
+    dbs = update_db()
+    db = dbs[dataBase]
+    packageList = downloadDatabases({}, {dataBase:db}, "tmp/batch.cfg", True)
+    packageList = [x for x in packageList.keys()]
+    for package in packageList:
+        main(currentUser, "pkm install -y {}".format(package))
 else:
     div()
     print("pkm [args]")
@@ -345,6 +420,6 @@ else:
     print("    update: updates the database")
     print("    upgrade: upgrades all installed packages")
     print("    db: manages databases PKM accesses")
-##    print("    batch: installs every package in a particular database")
+    ##    print("    batch: installs every package in a particular database")
     print("    version: states the version of PKM")
     div()
