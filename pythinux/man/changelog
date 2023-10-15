@@ -10,3 +10,7 @@ div()
         * Allows you to install every package in a database.
         * Not recommended for use, will remain a hidden parameter.
 div()
+Pythinux 2.7.1 changelog
+div()
+* Fixed a bug where "python -m ensurepip" was run every time a package was installed, rather than when a package with pip dependencies was installed.
+div()
