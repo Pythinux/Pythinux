@@ -56,7 +56,7 @@ def fixDirectories(returnMode=False):
     Reconstructs the blank directories if they do not exist,
     because git doesn't count directories as files.
     """
-    l = [
+    dirList = [
         "app",
         "app_high",
         "config",
@@ -68,8 +68,8 @@ def fixDirectories(returnMode=False):
         "tmp",
     ]
     if returnMode:
-        return l
-    for item in l:
+        return dirList
+    for item in dirList:
         if not os.path.isdir(item):
             os.mkdir(item)
 
