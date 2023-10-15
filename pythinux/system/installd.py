@@ -110,7 +110,9 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                 main(currentUser,f"pkm install -d {item}")
                 no += 1
             py = sys.executable
-            os.system(f"{py} -m ensurepip")
+            if pipDeps:
+                os.system(f"{py} -m ensurepip")
+
             for item in pipDeps:
                 os.system(f"{py} -m pip install {item}")
             if setupMode and not yesMode:
