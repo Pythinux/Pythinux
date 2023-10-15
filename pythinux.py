@@ -17,7 +17,7 @@ from getpass import getpass
 
 global osName, version, cdir, var
 osName = "Pythinux"
-version = [2, 6, 0]
+version = [2, 7, 0]
 var = {}
 
 
@@ -61,6 +61,7 @@ def fixDirectories(returnMode=False):
         "app_high",
         "config",
         "home",
+        "icon",
         "lib",
         "log",
         "rscript",
