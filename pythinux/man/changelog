@@ -1,7 +1,7 @@
 div()
 Pythinix 2.7 Changelog
 div()
-* Updated pkm
+* Updated pkm to 3.5
     * Improved code for getting package lists
         * More readable and maintainable
     * Newer databases no longer override packages with existing names
