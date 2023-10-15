@@ -109,11 +109,10 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                 print(f"({no}/{len(deps)}) Installing '{item}' (dependency of '{name}')...")
                 main(currentUser,f"pkm install -d {item}")
                 no += 1
-            if pipDeps:
-                py = sys.executable
-                os.system(f"{py} -m ensurepip")
-                for item in pipDeps:
-                    os.system(f"{py} -m pip install {item}")
+            py = sys.executable
+            os.system(f"{py} -m ensurepip")
+            for item in pipDeps:
+                os.system(f"{py} -m pip install {item}")
             if setupMode and not yesMode:
                 if input("Review setup script? [y/n]").lower() == "y":
                     cls()
