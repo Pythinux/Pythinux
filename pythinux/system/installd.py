@@ -52,13 +52,6 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             manualsMode=True
         else:
             manualsMode=False
-        if os.path.isfile("pip_requirements.txt"):
-            with open("pip_requirements.txt") as f:
-                pipDeps = f.read().split("\n")
-            pipMode=True
-        else:
-            pipMode=False
-            pipDeps = []
         if os.path.isfile("program.py"):
             with open("program.py","rb") as f:
                 program = f.read()
@@ -110,11 +103,10 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                 main(currentUser,f"pkm install -d {item}")
                 no += 1
             py = sys.executable
-            if pipDeps:
+            if os.path.isfile("tmp/pip_requirements.txt"):
+                ## Install required pip modules
                 os.system(f"{py} -m ensurepip")
-
-            for item in pipDeps:
-                os.system(f"{py} -m pip install {item}")
+                os.system(f"{py} -m pip install -r tmp/pip_requirements.txt")
             if setupMode and not yesMode:
                 if input("Review setup script? [y/n]").lower() == "y":
                     cls()
