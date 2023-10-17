@@ -218,7 +218,7 @@ def giveOutput(command, user, split=False, shell="terminal"):
     Positional arguments:
         (str) command: the command to execute
         (User) user: the user executing the command. Pass currentUser.
-        (bool) split: if true, returns it split into a list with \n as a
+        (bool) split: if true, returns it split into a list with \\n as a
         separator.
         (str) shell: Passed to main().
     """
@@ -230,7 +230,7 @@ def giveOutput(command, user, split=False, shell="terminal"):
     main(user, command, shell=shell)
 
     # Get the output from the buffer
-    output = sys.stdout.getvalue()
+    output = sys.stdout.getvalue().strip("\n")
 
     # Restore stdout
     sys.stdout = stdout_backup
