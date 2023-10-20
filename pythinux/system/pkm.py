@@ -199,7 +199,6 @@ elif "install" in args and len(args) >= 2:
         db = give_dbs(silent=True)
         print(f"Downloading package '{item}'...")
         if not item in db:
-            div()
             print(f"Error: Cannot find package '{item}'")
         else:
             if db[item]["url"].startswith("link://"):

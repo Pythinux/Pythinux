@@ -418,7 +418,7 @@ CLASSES
      |  args
     
     class User(Base)
-     |  User(group, username, password='fd5c054f6134f2fa15d1ec82275e102b90ce1485add09324a37b5904bf65df141810e7f1c7c023ca5b9d027135dee9ca', hidden=False)
+     |  User(group, username, password='5a709439147c16f264dd16246b2fc8b50845db82d23c3282db0c3b9c7ca96f331bb7d10ad5ddbe1537a5f554f7109344', hidden=False)
      |  
      |  User class used by Pythinux.
      |  See __init__() for how to create User objects properly.
@@ -433,7 +433,7 @@ CLASSES
      |  USERTYPE(self)
      |      Returns the name of the user's group.
      |  
-     |  __init__(self, group, username, password='fd5c054f6134f2fa15d1ec82275e102b90ce1485add09324a37b5904bf65df141810e7f1c7c023ca5b9d027135dee9ca', hidden=False)
+     |  __init__(self, group, username, password='5a709439147c16f264dd16246b2fc8b50845db82d23c3282db0c3b9c7ca96f331bb7d10ad5ddbe1537a5f554f7109344', hidden=False)
      |      Constructor for User class.
      |      Args:
      |          group: a Group object.
@@ -448,7 +448,7 @@ CLASSES
      |      Returns whether or not the user's level is 2 or higher,
      |      indicating a root user.
      |  
-     |  check(self, username, password='00fee12c38b551ea14e063e3b4857cd0c4cf71a7c42b82a10d58ac97f970d5f1c85a3ee267ec10cb7ad69798655fba4b')
+     |  check(self, username, password='f7b9ab454635c4a305590bc581424d5830a5c4e131b81f67e9d632899798e31dc4ad2c0831306d98822ac75840a0514c')
      |      Function for checking whether a User class and passed details match.
      |      Args:
      |          username: string
@@ -667,14 +667,13 @@ FUNCTIONS
         because git doesn't count directories as files.
     
     giveOutput(command, user, split=False, shell='terminal')
-           Returns the output of a command.
-           Positional arguments:
-               (str) command: the command to execute
-               (User) user: the user executing the command. Pass currentUser.
-               (bool) split: if true, returns it split into a list with 
-        as a
-               separator.
-               (str) shell: Passed to main().
+        Returns the output of a command.
+        Positional arguments:
+            (str) command: the command to execute
+            (User) user: the user executing the command. Pass currentUser.
+            (bool) split: if true, returns it split into a list with \n as a
+            separator.
+            (str) shell: Passed to main().
     
     giveVars()
         Returns the list of variables loaded by the program.
@@ -851,4 +850,4 @@ FUNCTIONS
 DATA
     osName = 'Pythinux'
     var = {}
-    version = [2, 7, 0]
+    version = [2, 7, 1]

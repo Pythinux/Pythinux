@@ -17,7 +17,7 @@ from getpass import getpass
 
 global osName, version, cdir, var
 osName = "Pythinux"
-version = [2, 7, 1]
+version = [2, 8, 0]
 var = {}
 
 

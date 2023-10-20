@@ -48,6 +48,14 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                     item.strip()
         else:
             raise InstallerError("No program.info file provided")
+        if os.path.isfile("desktop.entry"):
+            entryMode=True
+        else:
+            entryMode=False
+        if os.path.isfile("icon.svg"):
+            hasIcon = True
+        else:
+            hasIcon = False
         if os.path.isfile("manuals.zip"):
             manualsMode=True
         else:
@@ -94,6 +102,17 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             os.chdir("..")
             if upgradeMode:
                 return info
+            try:
+                v = info[4]
+                v = v.split(".")
+                z = []
+                for i in v:
+                    z.append(int(i))
+                v = z
+                if v > [version[0],version[1]]:
+                    raise InstallerError(f"Package requires newer OS version: {v[0]}.{v[1]}")
+            except Exception as e:
+                raise InstallerError(str(e))
             dd = "|".join(originalDeps)
             cmd = "pkm register '{}' '{}' '{}' {} '{}' '{}' '{}'".format(name,info[1],dd if originalDeps else [],1 if program else 0,info[0],info[2],info[3])
             load_program(cmd,currentUser,shell="installd")
@@ -114,17 +133,6 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                     br()
                 print(setupCode)
                 exec(setupCode)
-            try:
-                v = info[4]
-                v = v.split(".")
-                z = []
-                for i in v:
-                    z.append(int(i))
-                v = z
-                if v > [version[0],version[1]]:
-                    raise InstallerError(f"Package requires newer OS version: {v[0]}.{v[1]}")
-            except Exception as e:
-                raise InstallerError(str(e))
             if system:
                 fn = f"app_high/{name}.py"
             else:
@@ -135,6 +143,16 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             if program:                
                 with open(fn,"wb") as f:
                     f.write(program)
+            if entryMode:
+                with open("tmp/desktop.entry") as f:
+                    entry = f.read()
+                with open("icon/{}.entry".format(name)) as f:
+                    f.write(entry)
+            if hasIcon:
+                with open("tmp/icon.svg", "rb") as f:
+                    icon_bytes = f.read()
+                with open("icon/{}.svg".format(name), "wb") as f:
+                    f.write(icon_bytes)
             if manualsMode:
                 os.mkdir(f"man/{name}")
                 zip_path = os.getcwd()+"/tmp/manuals.zip"

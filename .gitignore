@@ -13,3 +13,4 @@ pythinux/log/*
 pickle
 urllib.request
 *.kate-swp
+pythinux/icon
