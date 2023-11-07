@@ -14,3 +14,4 @@ pickle
 urllib.request
 *.kate-swp
 pythinux/icon
+pythinux/*.jajl
