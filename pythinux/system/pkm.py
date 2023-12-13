@@ -419,6 +419,48 @@ elif "from" in args and args[0] == "from" and len(args) == 3:
     print("Downloading package...")
     downloadFile(database[package]["url"], "tmp/pkm_from.szip3")
     main(currentUser,"installd tmp/pkm_from.szip3")
+elif args == ["search"]:
+    div()
+    print("pkm search <package name>")
+    div()
+    print("Searches for installable packages.")
+    div()
+elif "search" in args:
+    found = {}
+    args = " ".join(args[1:])
+    db = give_dbs()
+    silent(lambda: main(currentUser, "pkm update"))
+    for x in db:
+        if args in x:
+            found[x] = db[x]
+    for f in found:
+        div()
+        print(f)
+        div()
+        print(found[f]["name"])
+        print(found[f]["desc"])
+    div()
+elif args == ["remoteinfo"]:
+    div()
+    print("pkm remoteinfo <package>")
+    div()
+    print("Prints information about a remote package")
+    div()
+elif "remoteinfo" in args and len(args) == 2:
+    pkg = args[1]
+    silent(lambda: main(currentUser, "pkm update"))
+    try:
+        db = give_dbs()
+        pkgi = db[pkg]
+        div()
+        print(pkgi["name"])
+        div()
+        print(pkgi["desc"])
+        div()
+        print("Version: {}".format(".".join([str(x) for x in pkgi["version"]])))
+        div()
+    except KeyError:
+        print("ERROR: Invalid package name.")
 else:
     div()
     print("pkm [args]")
@@ -427,10 +469,12 @@ else:
     div()
     print("Positional arguments:")
     print("    install <package>: installs a package")
+    print("    search <package name>: searches for a package by name")
     print("    remove <package>: remove a package")
     print("    clear: removes all installed packages")
     print("    list: lists all installed programs")
     print("    info <package>: prints information about an installed package")
+    print("    remoteinfo <package>: prints information about an installable package")
     print("    all: lists all installable packages")
     print("    allc: lists all installable packages [compact]")
     print("    update: updates the database")
