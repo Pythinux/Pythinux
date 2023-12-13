@@ -5,7 +5,7 @@ import traceback
 global db, dbs, VERSION
 db = {}
 dbs = {}
-VERSION = [3, 5, 0]
+VERSION = [3, 6, 0]
 
 
 def removeProgram(program):
@@ -402,6 +402,23 @@ elif "batch" in args and args[0] == "batch":
     packageList = [x for x in packageList.keys()]
     for package in packageList:
         main(currentUser, "pkm install -y {}".format(package))
+elif args == ["from"]:
+    div()
+    print("pkm from <database name> <package name>")
+    div()
+    print("Installs a package from a specific database")
+    div()
+elif "from" in args and args[0] == "from" and len(args) == 3:
+    dbName = args[1]
+    package = args[2]
+    dbs = update_db()
+    db = dbs[dbName]
+    print("Downloading database...")
+    packageList = downloadDatabases({}, {dbName:db}, "tmp/pkm-from.cfg", True)
+    database = give_dbs(fileName="tmp/pkm-from.cfg")
+    print("Downloading package...")
+    downloadFile(database[package]["url"], "tmp/pkm_from.szip3")
+    main(currentUser,"installd tmp/pkm_from.szip3")
 else:
     div()
     print("pkm [args]")
@@ -409,16 +426,17 @@ else:
     print("PKM is Pythinux's package manager.")
     div()
     print("Positional arguments:")
-    print("    install: installs a package")
-    print("    remove: remove a package")
+    print("    install <package>: installs a package")
+    print("    remove <package>: remove a package")
     print("    clear: removes all installed packages")
     print("    list: lists all installed programs")
-    print("    info: prints information about an installed package")
+    print("    info <package>: prints information about an installed package")
     print("    all: lists all installable packages")
     print("    allc: lists all installable packages [compact]")
     print("    update: updates the database")
     print("    upgrade: upgrades all installed packages")
     print("    db: manages databases PKM accesses")
-    ##    print("    batch: installs every package in a particular database")
+    print("    batch <database>: installs every package in a particular database")
+    print("    from <database> <package>: installs a package from a specific database")
     print("    version: states the version of PKM")
     div()
