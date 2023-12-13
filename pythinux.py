@@ -23,7 +23,7 @@ except:
 
 global osName, version, cdir, var
 osName = "Pythinux"
-version = [2, 8, 0]
+version = [2, 9, 0]
 var = {}
 
 
