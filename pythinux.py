@@ -15,6 +15,12 @@ import copy as cp
 from io import StringIO
 from getpass import getpass
 
+try:
+    import pty
+    unixMode = True
+except:
+    unixMode = False
+
 global osName, version, cdir, var
 osName = "Pythinux"
 version = [2, 8, 0]
@@ -212,32 +218,41 @@ def attachDebugger(globals):
     code.InteractiveConsole(locals=globals)
 
 
-def giveOutput(command, user, split=False, shell="terminal"):
+def giveOutput(command, user, split=False, shell="terminal", ptyMode=False):
     """
     Returns the output of a command.
     Positional arguments:
         (str) command: the command to execute
         (User) user: the user executing the command. Pass currentUser.
-        (bool) split: if true, returns it split into a list with \\n as a
-        separator.
+        (bool) split: if true, returns output split into a list with \n as a
+        separator. This is ignored if `ptyMode=True` is passed.
         (str) shell: Passed to main().
+        (bool) ptyMode: If True, will return pty.openpty()'s slave and master.
+        ONLY WORKS ON UNIX SYSTEMS! IF ON WINDOWS, AN ERROR IS RAISED!
     """
-    # Redirect stdout to a buffer
-    stdout_backup = sys.stdout
-    sys.stdout = StringIO()
-
-    # Call the function
-    main(user, command, shell=shell)
-
-    # Get the output from the buffer
-    output = sys.stdout.getvalue().strip("\n")
-
-    # Restore stdout
-    sys.stdout = stdout_backup
-    if split:
-        return output.split("\n")
+    if ptyMode:
+        if not unixMode:
+            raise PythinuxError("This system does not support the `pty` module. Only Unix-based systems support `pty`.")
+        slave, master = pty.openpty()
+        pid = os.fork()
+        if pid == 0:
+            os.dup2(slave, 1)
+            os.close(master)
+            main(user, command, shell=shell)
+        else:
+            pass
     else:
-        return output
+        stdout_backup = sys.stdout
+        sys.stdout = StringIO()
+
+        main(user, command, shell=shell)
+
+
+        output = sys.stdout.getvalue().strip("\n")
+
+
+        sys.stdout = stdout_backup
+        return output.split("\n") if split else output
 
 
 def doCalc(text):
