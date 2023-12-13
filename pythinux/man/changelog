@@ -1,23 +1,14 @@
 div()
-Pythinix 2.7 Changelog
+Pythinix 2.9 Changelog
 div()
-* Updated pkm to 3.5
-    * Improved code for getting package lists
-        * More readable and maintainable
-    * Newer databases no longer override packages with existing names
-        * Now, the higher databases have more priority.
-    * Added "pkm batch" parameter
-        * Allows you to install every package in a database.
-        * Not recommended for use, will remain a hidden parameter.
-        * It is disabled in 2.7.0 and 2.7.1.
-div()
-Pythinux 2.7.1 Changelog
-div()
-* Fixed a bug where "python -m ensurepip" was run every time a package was installed, rather than when a package with pip dependencies was installed.
-div()
-Pythinux 2.7.2 Changelog
-div()
-* The pip part of the install process now uses "pip install -r".
-* The "pkm batch" command was added in 2.7.0 but was disabled at release. It is now usable again.
-* Removed the part of the LICENSE file that isn't the GPL2 license (I am a moron)
-div()
+* PKM 2.6
+	* New command: `pkm from`
+		* Allows you to install a specific package from a specific database
+		* Uses some custom code to achieve this
+	* New command: `pkm remoteinfo`
+		* Provides info about a remote package.
+		* Specifically, its name, description, and version.
+	* New command: `pkm search`
+		* Searches for a package by name using substring matching.
+
+
