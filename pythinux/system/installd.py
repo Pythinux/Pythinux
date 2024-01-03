@@ -127,7 +127,7 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                 os.system(f"{py} -m ensurepip")
                 os.system(f"{py} -m pip install -r tmp/pip_requirements.txt")
             if setupMode and not yesMode:
-                if input("Review setup script? [y/n]").lower() == "y":
+                if input("Review setup script? (STRONGLY recommended) [y/n]").lower() == "y":
                     cls()
                     print(setupCode)
                     br()
