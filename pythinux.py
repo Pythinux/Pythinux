@@ -12,6 +12,7 @@ import importlib.util
 import threading
 import ast
 import copy as cp
+import asyncio
 from io import StringIO
 from getpass import getpass
 
@@ -23,8 +24,33 @@ except:
 
 global osName, version, cdir, var
 osName = "Pythinux"
-version = [2, 9, 0]
+version = [3, 0, 0]
 var = {}
+
+class Process:
+    def __init__(self, name, pid, function):
+        self.name = name
+        self.pid = pid
+        self.function = function
+        self.parent = parent
+    def isSubProcess(self):
+        return self.parent is not None
+
+class ProcessManager:
+    def __init__(self):
+        self.processes = []
+    def add_process(self, name, function, parent=None):
+        pid = len(self.processes) + 1
+        process = Process(name, pid, function)
+        self.processes.append(process)
+    def list(self):
+        d = {}
+        for p in self.processes:
+            d[p.pid] = p.name
+        return d
+    
+    async def run(self):
+        await asyncio.gather(*(process.function for process in self.processes))
 
 
 class PythinuxError(Exception):
