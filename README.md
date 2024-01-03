@@ -1,5 +1,8 @@
 # Pythinux
 ### A fully-featured, multi-purpose operating system written entirely in Python.
+No dependencies, no tricks*, no compromises. 
+
+*Except for the one where it isn't really a true operating system.
 ## Features
 * 30+ built-in commands
 * Setup Wizard
