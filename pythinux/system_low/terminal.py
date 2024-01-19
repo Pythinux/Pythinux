@@ -1,9 +1,11 @@
-def terminal(user):
+def terminal(user, manager):
     prompt = main(user,input(f"{user.group.name}@{user.username} $"))
     if prompt == LOGOFFEVENT:
         loginScreen()
     elif prompt in ["exit","quit"]:
         return
+    elif prompt == "ps":
+        manager.list()
     elif prompt:
         if isinstance(prompt,list):
             div()
@@ -16,5 +18,4 @@ def terminal(user):
             div()
         else:
             print(prompt)
-    terminal(user)
-terminal(currentUser)
+    terminal(user, manager)

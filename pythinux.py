@@ -28,7 +28,7 @@ version = [3, 0, 0]
 var = {}
 
 class Process:
-    def __init__(self, name, pid, function):
+    def __init__(self, name, pid, function, parent):
         self.name = name
         self.pid = pid
         self.function = function
@@ -39,15 +39,18 @@ class Process:
 class ProcessManager:
     def __init__(self):
         self.processes = []
+        self.pid = 1
     def add_process(self, name, function, parent=None):
-        pid = len(self.processes) + 1
-        process = Process(name, pid, function)
+        process = Process(name, self.pid, function, parent)
+        self.pid += 1
         self.processes.append(process)
     def list(self):
         d = {}
         for p in self.processes:
             d[p.pid] = p.name
         return d
+    def garbage_collect(self):
+        self.processes = [process for process in self.processes if process.is_running]
     
     async def run(self):
         await asyncio.gather(*(process.function for process in self.processes))
@@ -806,7 +809,7 @@ def main(user, prompt, sudoMode=False, shell="terminal", doNotExecute=False):
                 print("Bad command or file name:", prompt)
     except Exception as e:
         e = doNothing(e)
-        return traceback.format_exc()
+        return traceback.format_exc() # Prevents flake8 from complaining about e being unused
     except KeyboardInterrupt:
         return "Operation interrupted by user"
 
@@ -1044,6 +1047,10 @@ def loadProgramBase(
                 if user.god():
                     system_objects["CompileOS"] = copy(CompileOS)
                     system_objects["setupWizard"] = copy(setupWizard)
+                
+                if program_name == "initd":
+                    shared_objects["ProcessManager"] = copy(ProcessManager)
+
                 shared_objects.update(system_objects)
             # Expose the objects to the loaded program
             if isolatedMode:
@@ -1215,8 +1222,12 @@ def init(user, x):
             + ' a God account, type "logoff".'
         )
         div()
-    main(user, "initd --init")
-    sys.exit()
+    manager = ProcessManager()
+    initd = silent(lambda: load_program("initd", user))
+    shell = silent(lambda: load_program("shell", user))
+    manager = initd.init(manager)
+    shell.terminal(user, manager)
+
 
 
 def saveUserList(userList):
