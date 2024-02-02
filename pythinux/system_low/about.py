@@ -1,4 +1,8 @@
+import time
+friendlyVersion = ".".join([str(x) for x in version])
+year = time.strftime("%Y")
+
 div()
-print(f"Pythinux {version[0]}.{version[1]}.{version[2]}")
-print("(c) 2023 WinFan3672, some rights reserved.")
+print("{} {}".format(osName, friendlyVersion))
+print("(c) 2021-{} WinFan3672, some rights reserved.".format(year))
 div()

@@ -3,12 +3,6 @@ import traceback
 import asyncio
 
 def init(manager):
-    async def gc(manager):
-        while True:
-            manager.garbage_collect()
-            await asyncio.sleep(10)
-
-    manager.add_process("gc", lambda: gc(manager))
     manager.run()
     return manager
 

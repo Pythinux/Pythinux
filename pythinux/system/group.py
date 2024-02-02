@@ -20,17 +20,19 @@ elif args == ["remove"]:
     print("Remove a group (and all of its users).")
     div()
 elif "remove" in args and len(args) == 2:
-    print("Removing users in group...")
-    for user in userList.list():
-        if user.group.name == args[1]:
-            removeUser(userList,user)
-            print("Removed '{}'.".format(user.username))
-    print("Deleting group...")
     gr = groupList.byName(args[1])
-    groupList.remove(gr)
-    saveGroupList(groupList)
-    saveUserList(userList)
-    print("Successfully removed '{}'.".format(args[1]))
+    if not gr:
+        print("ERROR: Invalid group.")
+    elif gr.locked:
+        print("ERROR: Group is locked.")
+    else:
+        print("Removing users in group...")
+
+        print("Deleting group...")
+        groupList.remove(gr)
+        saveGroupList(groupList)
+        saveUserList(userList)
+        print("Successfully removed '{}'.".format(args[1]))
 elif args == ["info"]:
     div()
     print("group info <name>")
@@ -38,8 +40,24 @@ elif args == ["info"]:
     print("Prints info about a group.")
     div()
 elif "info" in args and len(args) == 2:
-    gr = groupList.byName(args[1])
-    pprint(gr)
+    group = groupList.byName(args[1])
+    if group:
+        div()
+        print("BASIC INFO")
+        div()
+        print("Name:       {}".format(group.name))
+        print("Locked:     {}".format(group.locked))
+        div()
+        print("PERMISSIONS")
+        div()
+        print("CanApp:     {}".format(group.canApp))
+        print("CanAppHigh: {}".format(group.canAppHigh))
+        print("CanSys:     {}".format(group.canSys))
+        print("CanSysHigh: {}".format(group.canSysHigh))
+        print("CanSudo:    {}".format(group.canSudo))
+        div()
+    else:
+        print("ERROR: Invalid group.")
 elif args == ["list"]:
     div()
     for item in groupList.list():

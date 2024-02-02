@@ -602,7 +602,8 @@ class UserList(Base):
 
 def copy(obj):
     """
-    See python's copy.deepcopy(). It's the same thing.
+    Tries copy.deepcopy(), then copy.copy(), then nothing to ensure nothing fails.
+    To my knowledge, this is pointless.
     """
     try:
         return cp.deepcopy(obj)
@@ -922,6 +923,34 @@ def addPythinuxModule(module, shared_objects, user):
     module.pythinux = pythinux
     return module
 
+def generateAPI(module, user, sudoMode):
+    global BLACKLIST
+    BLACKLIST = ["system", "system_high", "system_low", "app", "app_high"]
+    def openFile(filename, mode="r"):
+        global BLACKLIST
+        return open(filename, mode)
+            
+    def isUnix():
+        return unixMode
+    """
+    Internal function to expose Pythinux 3.x API's to a module.
+    """
+
+    ## Define API modules
+    #file = createModule("file")
+    shell = createModule("shell")
+    
+    ## Add functions to modules
+    shell.isUnix = copy(isUnix)
+
+    ## Attach to module
+    #module.file = file
+    module.shell = shell
+    if not sudoMode and not user.admin():
+        module.open = copy(openFile)
+
+
+
 
 def loadProgramBase(
     program_name_with_args,
@@ -1056,6 +1085,7 @@ def loadProgramBase(
             if isolatedMode:
                 shared_objects = {}
             exposeObjects(module, shared_objects)
+            generateAPI(module, user, sudoMode)
             # Add custom sys.path
             d = {
                 "sys": copy(sys),
