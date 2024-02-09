@@ -19,6 +19,11 @@ class Manager:
             if isinstance(token, Switch):
                 if token.test(args):
                     SWITCHES.append(token.full_name)
+            elif isinstance(token, Option):
+                for arg in args:
+                    if token.test(arg):
+                        lenToRemove = len("--{}=".format(self.name))
+                        ARGUMENTS[token.name] = arg[lenToRemove:]
         return SWITCHES, ARGUMENTS, ISARGS
     def print_help(self):
         div()
@@ -51,3 +56,20 @@ class Switch:
         else:
             return False
 
+class Option:
+    """
+    An argument to be passed to the program.
+    Example: Option("name", "STRING", "Name of program")
+    When the above example is used, --name=<string> corresponds to the program.
+    Differing values for TYPE:
+        TYPE="string": does not cast anything
+        TYPE="int": casts to an integer
+        TYPE="bool": casts to a bool
+    """
+    def __init__(self, name, TYPE, description):
+        self.name = name
+        self.description = description
+    def test(self, arg):
+        if arg.startswith("--{}=".format(self.name)):
+            return True
+        return False
