@@ -1,25 +1,19 @@
-Aliases allow for custom commands.
-Aliases are controlled using the 'alias' command.
-div()
-Adding an alias
-div()
-To add an alias, use alias add:
-div()
-alias add '<alias>' '<command>'
-div()
-Remember to use apostrophes('') and NOT quotation marks("").
-div()
-Listing all aliases
-div()
-To list all aliases, run:
-div()
-alias list
-div()
-This will list all aliases in the format '<alias> --> <command>'.
-div()
-Removing an alias
-div()
-To remove an alias, use the command:
-div()
-alias remove '<alias>'
-div()
+NAME
+    alias - manager for aliases
+DESCRIPTION
+    Aliases are redirects for commands. For example, you may want `clear` to redirect to `cls`. The alias command is for you.
+SWITCHES
+    alias add <alias> <command>
+        Creates a new alias that redirects to <command>.
+    alias list
+        Lists all aliases. Note that no aliases are pre-installed.
+    alias remove <alias>
+        Remove an alias. 
+    alias clear
+        Clears all aliases.
+EXAMPLES
+    alias add clear cls
+        Creates an alias called "clear" that runs "cls".
+    alias add hello 'echo hello world'
+        Creates an alias called "hello" that runs "echo hello world".
+

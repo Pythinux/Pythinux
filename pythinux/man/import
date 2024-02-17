@@ -1,0 +1,21 @@
+NAME
+    How to import libraries into Pythinux programs
+DESCRIPTION
+    Some programs (almost all, as of Pythinux 3), have built-in functions that are designed to be called by user programs.
+    This manpage serves as a quick tutorial on how to import libraries into your program.
+IMPORTING
+    Importing a program is simple. For example, to import `libargs`, a common thing to import, simply call:
+
+    libargs = load_program("libargs", currentUser)
+TERMINAL OUTPUT
+    That's it! You're done. However, because this function is designed to load programs, as the name suggets, some programs may display text when they're imported.
+    The way to deal with that is `libsilent` (see `libsilent`), which is a built-in libary (see `lib`) that allows you to silence the terminal and then un-silence it:
+
+    libsilent = load_program("libsilent", currentUser)
+    stdout = libsilent.silence()
+    ## Perform whatever import code you need to Perform
+    libsilent.unsilence(stdout)
+
+SEE ALSO
+    lib: list of libraries in the OS, as well as instructions on external ones
+    libsilent: instructions on libsilent

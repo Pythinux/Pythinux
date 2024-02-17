@@ -1,10 +1,10 @@
 if args:
-    args = " ".join(args)
-    with open(args) as f:
-        print(f.read())
+    for arg in args:
+        with open(arg) as f:
+            print(f.read())
 else:
     div()
-    print("cat <file>")
+    print("cat [files]")
     div()
-    print("Prints the contents of <file>.")
+    print("Prints the contents of a file.")
     div()

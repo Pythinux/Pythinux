@@ -13,12 +13,19 @@ def dirTree(path):
             for file in files:
                 print(os.path.join(root,file))
         div()
+
+
 if args == []:
     main(currentUser,"man man")
 elif args == ["/"]:
     dirTree("man")
 else:
-    with open("man/"+" ".join(args)) as f:
-        x = f.read()
-        x = x.replace("div()",div2())
-        print(x)
+    manual = "man/" + " ".join(args)
+    if os.path.isfile(manual):
+        with open(manual) as f:
+            cls()
+            print(f.read())
+            br()
+            cls()
+    else:
+        print("ERROR: Invalid manual.")

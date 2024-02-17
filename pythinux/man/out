@@ -1,0 +1,16 @@
+NAME
+    out - save the output of a command to a file
+DESCRIPTION
+    OUT is similar to the use of `>` in UNIX-like terminals.
+SYNTAX
+    out <command> <file>
+EXAMPLES
+    out 'cat file1' file2
+        Runs `cat file1` and saves it to file2.
+    out 'echo hello world' hworld
+        Ditto.
+    out 'man man' man/man
+        Saves the contents of the man manual to man.
+LIBRARY
+    out.out(command, filename)
+        The libary version of the out command. 

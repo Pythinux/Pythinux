@@ -1,7 +1,24 @@
-div()
-'man' is a manual system that allows you to read documentation for programs. It is fully integrated with SZIPS3 and supports plaintext files.
-div()
-'man' supports plaintext files and does not use any file extension. 
-div()
-To load a manual, type 'man <manual name>'. To see a list of manuals you can load, type 'man /'.
-div()
+NAME
+    man - viewer for built-in manuals
+DESCRIPTION
+    To quote the film WarGames, "The more complicated [computer systems] are, the more they have to help you out". 
+    This was the case 40 years ago and it's still the case today. 
+    MAN is a program that is used to view the various built-in 'manpages' included with Pythinux.  
+MANPAGES
+    Every manpage is formatted identically, and is split up into "sections".
+    There are several standard sections (and even required ones), but a good example would be the `alias` man page or the `area` man page.
+    The one exception to this rule is the `pydoc` manual, which is generated automatically using Python's pydoc module.
+SWITCHES
+    man
+        Displays this manual.
+    man /
+        Displays the list of all manuals.
+    man <manual>
+        Displays a specific manual.
+EXAMPLES
+    man lib
+        Displays the lib manual.
+    man import
+        Displays the import manual.
+    man alias
+        Displays the alias manual.

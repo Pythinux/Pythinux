@@ -1,0 +1,17 @@
+NAME
+    ping - check if a domain is alive
+DESCRIPTION
+    PING is a port of the standard PING utility found in both Windows and UNIX-like systems to pure Python. It is not a redirect to your system's ping.
+    PING is its own utility.
+EXAMPLES
+    ping google.com
+        Ping a server.
+    ping gnu.org google.com
+        Ping multiple servers.
+LIBRARY
+    ping.ping(host, timeout=1)
+       Ping a host.
+    ping.checksum(data)
+        Performs a checksum of data.
+        Algorithm used: I don't know.
+

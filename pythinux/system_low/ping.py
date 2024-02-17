@@ -37,7 +37,7 @@ def ping(host, timeout=1):
         except socket.timeout:
             return "TIMEOUT"
         except socket.herror as e:
-            return "HERROR:{}".format(e.)
+            return "HERROR:{}".format(e)
 
 if args:
     for arg in args:
@@ -49,8 +49,4 @@ if args:
         else:
             print("{}: {}ms".format(arg, result))
 else:
-    div()
-    print("ping [hostnames]")
-    div()
-    print("Sends an ICMP ping request to a hostname.")
-    div()
+    main(currentUser, "man ping")
