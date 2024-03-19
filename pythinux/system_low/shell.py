@@ -1,22 +1,30 @@
 import traceback
-def terminal(user, manager):
-    cmd = input("{}@{} $".format(user.group.name, user.username))
-    if cmd == "ps":
-        pids = manager.list()
-        print("PID\tNAME\t\tRUNNING")
-        for x in pids:
-            running = pids[x]["running"]
-            running = running if running is not None else "Unknown"
-            print("{}\t{}\t\t{}".format(x, pids[x]["name"],running))
-    elif cmd == "":
+
+def run(user, cmd, shell="shell"):
+    if cmd == "":
         pass
     elif cmd in ["quit", "exit"]:
         return
     else:
-        try:
-            main(user, cmd)
-        except Exception as e:
-            print(traceback.format_exc())
-    terminal(user, manager)
+        runCommand(user, cmd, shell=shell)
 
-print("ERROR: Cannot launch `shell` directly.")
+
+def terminal(user):
+    cmd = input("{}@{} $".format(user.group.name, user.username))
+    run(user, cmd)
+    terminal(user)
+
+def runScript(user, filename):
+    with open(filename) as f:
+        for cmd in f.read():
+            run(user, cmd, "script")
+def main(args):
+    if args:
+        for arg in args:
+            runScript(currentUser, arg)
+    else:
+        div()
+        print("shell <script_name.xx>")
+        div()
+        print("Runs a shell script.")
+        div()

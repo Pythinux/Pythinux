@@ -1,1 +1,2 @@
-br()
+def main():
+    br()

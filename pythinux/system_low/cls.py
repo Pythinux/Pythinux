@@ -1,1 +1,2 @@
-cls() 
+def main(args):
+    cls() 

@@ -73,3 +73,4 @@ class Option:
         if arg.startswith("--{}=".format(self.name)):
             return True
         return False
+

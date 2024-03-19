@@ -1,0 +1,22 @@
+NAME
+    shell - Fully-functional shell
+DESCRIPTION
+    SHELL is the default shell for Pythinux. When used as a library, it can be used to spawn shell instances. When used as a program, it runs scripts.
+SYNTAX
+    shell [list of scripts]
+EXAMPLE
+    shell 
+LIBARRY
+    shell.terminal(user)
+        Spawns a new terminal for that user.
+    shell.run(cmd)
+        Runs a command as a shell.
+        This is useful because it allows you to write your own custom shell and allow someone else to handle piping etc.
+EXAMPLE SHELL
+    Below is an example shell that only uses 3 lines of code:
+
+    shell = load_program("shell", currentUser)
+    while True:
+        shell.run(user, input("$"))
+SEE ALSO
+    import: how to import libaries

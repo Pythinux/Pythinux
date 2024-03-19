@@ -172,29 +172,31 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             print("Dependency '{}' installed.".format(name))
     except Exception as e:
         print(traceback.format_exc())
-if arguments:
-    if "-y" in arguments:
-        arguments.remove("-y")
-        yesMode=True
+
+def main(arguments):
+    if arguments:
+        if "-y" in arguments:
+            arguments.remove("-y")
+            yesMode=True
+        else:
+            yesMode=False
+        if "-d" in arguments:
+            arguments.remove("-d")
+            yesMode=True
+            depMode=True
+        else:
+            depMode=False
+        if "-u" in args:
+            args.remove("-u")
+            upMode=True
+        else:
+            upMode=False
+        installd(" ".join(arguments),yesMode,depMode,upMode)
     else:
-        yesMode=False
-    if "-d" in arguments:
-        arguments.remove("-d")
-        yesMode=True
-        depMode=True
-    else:
-        depMode=False
-    if "-u" in args:
-        args.remove("-u")
-        upMode=True
-    else:
-        upMode=False
-    installd(" ".join(arguments),yesMode,depMode,upMode)
-else:
-    div()
-    print("installd <path/to/installer.szip3>")
-    print("Installs an SZIPS3 program.")
-    div()
-    print("Optional positional arguments:")
-    print("    -y: installs without confirmation")
-    div()
+        div()
+        print("installd <path/to/installer.szip3>")
+        print("Installs an SZIPS3 program.")
+        div()
+        print("Optional positional arguments:")
+        print("    -y: installs without confirmation")
+        div()

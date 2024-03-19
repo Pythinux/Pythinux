@@ -1,21 +1,27 @@
-if args:
-    args = " ".join(args)
-    if currentUser.group.canSudo:
-        if sudo(currentUser):
-            g = groupList.byName("root")
-            u = User(g,currentUser.username, currentUser.password)
-            main(u,args)
-        else:
-            print("ERROR: Failed to authenticate.")
-            print("Please try again.")
+import getpass
+def sudo(user, password, command):
+    """
+    Runs a command as administrator.
+    """
+
+    if not user.group.canSudo:
+        return "ERROR: The {} group is disallowed from running sudo.".format(user.group.name)
+
+    if password != user.password:
+        return "ERROR: Invalid authentication provided."
+
+    rootGroup = loadGroupList().byName("root")
+    rootUser = User(rootGroup, "root")
+    runCommand(rootUser, command, shell="sudo")
+
+def main(args):
+    if args:
+        cmd = " ".join(args)
+        passwd = getpass.getpass("[sudo] Password for {}: ".format(user.name))
+        sudo(currentUser, )
     else:
-        print("ERROR: The current user does not have sudo priveleges.")
-        print("Contact your sysadmin.")
-else:
-    div()
-    print("sudo <command>")
-    div()
-    print("Runs a command as a root user, with the same username and password as the current one.")
-    print("The current user requires sudo priveleges.")
-    print("Can you run sudo: {}".format("Yes" if currentUser.group.canSudo else "No"))
-    div()
+        div()
+        print("sudo <command>")
+        div()
+        print("Run a command as root.")
+        div()

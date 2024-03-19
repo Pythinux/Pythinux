@@ -16,6 +16,8 @@ CLASSES
             UserList
         CurrentProgram
         LOGOFFEVENT
+        Process
+        ProcessManager
         rangedInt
     
     class Base(builtins.object)
@@ -40,7 +42,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
     
     class CurrentProgram(builtins.object)
      |  CurrentProgram(name)
@@ -56,10 +58,10 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __dict__
-     |      dictionary for instance variables (if defined)
+     |      dictionary for instance variables
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
      |  
      |  name
      |  
@@ -94,7 +96,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
      |  
      |  ----------------------------------------------------------------------
      |  Static methods inherited from builtins.Exception:
@@ -178,7 +180,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __dict__
-     |      dictionary for instance variables (if defined)
+     |      dictionary for instance variables
      |  
      |  ----------------------------------------------------------------------
      |  Methods inherited from Base:
@@ -198,7 +200,7 @@ CLASSES
      |  Data descriptors inherited from Base:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
     
     class GroupList(Base)
      |  GroupList class for use in saveGroupList()/loadGroupList().
@@ -233,7 +235,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __dict__
-     |      dictionary for instance variables (if defined)
+     |      dictionary for instance variables
      |  
      |  ----------------------------------------------------------------------
      |  Methods inherited from Base:
@@ -250,7 +252,7 @@ CLASSES
      |  Data descriptors inherited from Base:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
     
     class LOGOFFEVENT(builtins.object)
      |  This class(not an instance of it) is returned by main() when
@@ -259,10 +261,52 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __dict__
-     |      dictionary for instance variables (if defined)
+     |      dictionary for instance variables
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
+    
+    class Process(builtins.object)
+     |  Process(name, pid, function, parent)
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, name, pid, function, parent)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  isSubProcess(self)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables
+     |  
+     |  __weakref__
+     |      list of weak references to the object
+    
+    class ProcessManager(builtins.object)
+     |  Methods defined here:
+     |  
+     |  __init__(self)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |  
+     |  add_process(self, name, function, parent=None)
+     |  
+     |  garbage_collect(self)
+     |  
+     |  list(self)
+     |  
+     |  async run(self)
+     |  
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |  
+     |  __dict__
+     |      dictionary for instance variables
+     |  
+     |  __weakref__
+     |      list of weak references to the object
     
     class PythinuxError(builtins.Exception)
      |  PythinuxError(text)
@@ -287,7 +331,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
      |  
      |  ----------------------------------------------------------------------
      |  Static methods inherited from builtins.Exception:
@@ -358,7 +402,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
      |  
      |  ----------------------------------------------------------------------
      |  Methods inherited from builtins.Exception:
@@ -418,7 +462,7 @@ CLASSES
      |  args
     
     class User(Base)
-     |  User(group, username, password='5a709439147c16f264dd16246b2fc8b50845db82d23c3282db0c3b9c7ca96f331bb7d10ad5ddbe1537a5f554f7109344', hidden=False)
+     |  User(group, username, password='16ea2160191ad1cb32759479f0751158b335297f186da011c107a835b23db76762500b1bc9a347c10c3b8beb28863e83', hidden=False)
      |  
      |  User class used by Pythinux.
      |  See __init__() for how to create User objects properly.
@@ -433,7 +477,7 @@ CLASSES
      |  USERTYPE(self)
      |      Returns the name of the user's group.
      |  
-     |  __init__(self, group, username, password='5a709439147c16f264dd16246b2fc8b50845db82d23c3282db0c3b9c7ca96f331bb7d10ad5ddbe1537a5f554f7109344', hidden=False)
+     |  __init__(self, group, username, password='16ea2160191ad1cb32759479f0751158b335297f186da011c107a835b23db76762500b1bc9a347c10c3b8beb28863e83', hidden=False)
      |      Constructor for User class.
      |      Args:
      |          group: a Group object.
@@ -448,7 +492,7 @@ CLASSES
      |      Returns whether or not the user's level is 2 or higher,
      |      indicating a root user.
      |  
-     |  check(self, username, password='f7b9ab454635c4a305590bc581424d5830a5c4e131b81f67e9d632899798e31dc4ad2c0831306d98822ac75840a0514c')
+     |  check(self, username, password='5bfb49548812e2c9953e46e2cb21cb5b70ae5a05495f8106dab5c18f286e03fa580c80f9ecb92ccb652a74268a630945')
      |      Function for checking whether a User class and passed details match.
      |      Args:
      |          username: string
@@ -465,7 +509,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __dict__
-     |      dictionary for instance variables (if defined)
+     |      dictionary for instance variables
      |  
      |  ----------------------------------------------------------------------
      |  Methods inherited from Base:
@@ -485,7 +529,7 @@ CLASSES
      |  Data descriptors inherited from Base:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
     
     class UserList(Base)
      |  Method resolution order:
@@ -518,7 +562,7 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __dict__
-     |      dictionary for instance variables (if defined)
+     |      dictionary for instance variables
      |  
      |  ----------------------------------------------------------------------
      |  Methods inherited from Base:
@@ -535,7 +579,7 @@ CLASSES
      |  Data descriptors inherited from Base:
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
     
     class rangedInt(builtins.object)
      |  rangedInt(value, min_value, max_value)
@@ -576,10 +620,10 @@ CLASSES
      |  Data descriptors defined here:
      |  
      |  __dict__
-     |      dictionary for instance variables (if defined)
+     |      dictionary for instance variables
      |  
      |  __weakref__
-     |      list of weak references to the object (if defined)
+     |      list of weak references to the object
 
 FUNCTIONS
     CompileOS()
@@ -620,7 +664,8 @@ FUNCTIONS
         Works for both Windows and Unix-like systems, so basically everything.
     
     copy(obj)
-        See python's copy.deepcopy(). It's the same thing.
+        Tries copy.deepcopy(), then copy.copy(), then nothing to ensure nothing fails.
+        To my knowledge, this is pointless.
     
     createModule(moduleName)
         Creates a module object, which not normally creatable.
@@ -666,14 +711,19 @@ FUNCTIONS
         Reconstructs the blank directories if they do not exist,
         because git doesn't count directories as files.
     
-    giveOutput(command, user, split=False, shell='terminal')
-        Returns the output of a command.
-        Positional arguments:
-            (str) command: the command to execute
-            (User) user: the user executing the command. Pass currentUser.
-            (bool) split: if true, returns it split into a list with \n as a
-            separator.
-            (str) shell: Passed to main().
+    generateAPI(module, user, sudoMode)
+    
+    giveOutput(command, user, split=False, shell='terminal', ptyMode=False)
+           Returns the output of a command.
+           Positional arguments:
+               (str) command: the command to execute
+               (User) user: the user executing the command. Pass currentUser.
+               (bool) split: if true, returns output split into a list with 
+        as a
+               separator. This is ignored if `ptyMode=True` is passed.
+               (str) shell: Passed to main().
+               (bool) ptyMode: If True, will return pty.openpty()'s slave and master.
+               ONLY WORKS ON UNIX SYSTEMS! IF ON WINDOWS, AN ERROR IS RAISED!
     
     giveVars()
         Returns the list of variables loaded by the program.
@@ -849,5 +899,6 @@ FUNCTIONS
 
 DATA
     osName = 'Pythinux'
+    unixMode = True
     var = {}
-    version = [2, 7, 1]
+    version = [3, 0, 0]

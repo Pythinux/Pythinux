@@ -1,9 +1,3 @@
 import code
-global pythinux
-def main():
-    pythinux_api = pythinux
+def main(args):
     code.interact(local=locals(),banner="Python Interpreter: press Ctrl+D to exit",exitmsg="Exit Python interpreter.")
-if args == ["--global"]:
-    code.interact(local=locals(),banner="Python Interpreter: press Ctrl+D to exit",exitmsg="Exit Python interpreter.")
-else:    
-    main()

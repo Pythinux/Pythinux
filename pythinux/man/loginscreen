@@ -1,8 +1,0 @@
-div()
-The login screen is a complex function that retrieves the user from the user list if the authentication checks are passed.
-* The user list is retrieved on startup
-* The username and password is entered
-* The username is verified to exist
-    * If it does not, it fails
-* The password hash is retrieved and decoded. If it matches, the retrieved user is logged in by passing that user object to init(). 
-div()

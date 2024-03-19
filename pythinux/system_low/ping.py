@@ -39,14 +39,21 @@ def ping(host, timeout=1):
         except socket.herror as e:
             return "HERROR:{}".format(e)
 
-if args:
-    for arg in args:
-        result = ping(arg)
-        if result == "TIMEOUT":
-            print("ERROR: Request to {} timed out.".format(arg))
-        elif result.startswith("HERROR:"):
-            print("ERROR ({}): {}".format(arg, result[7:]))
-        else:
-            print("{}: {}ms".format(arg, result))
-else:
-    main(currentUser, "man ping")
+def main(args):
+    if args:
+        for arg in args:
+            result = ping(arg)
+            if result == "TIMEOUT":
+                print("ERROR: Request to {} timed out.".format(arg))
+            elif result.startswith("HERROR:"):
+                print("ERROR ({}): {}".format(arg, result[7:]))
+            else:
+                print("{}: {}ms".format(arg, result))
+    else:
+        div()
+        print("ping [list of addresses]")
+        div()
+        print("Checks to see if a host is alive.")
+        div()
+        print("Trivia: This program is a fully Pythonic implementation of the ping utility and does NOT rely on your OS's ping command.")
+        div()

@@ -167,320 +167,318 @@ def give_dbs(online = False, silent=False, fileName="config/pkm.db.cfg"):
             return give_dbs(online=True) ## Falls back to online mode if no file is found.
 
 
-
-if args == ["silent"]:
-    pass
-elif args == ["version"] or args == ["-v"]:
-    div()
-    print("PKM {}".format(".".join([str(x) for x in VERSION])))
-    div()
-    print("PKM (c) 2023 WinFan3672, some rights reserved.")
-    div()
-elif args == ["update"]:
-    if os.path.isfile("config/db.pkm"):
-        os.remove("config/db.pkm")
-    db = give_dbs(online=True)
-elif "install" in args and len(args) >= 2:
-    if "-y" in args:
-        args.remove("-y")
-        yesMode = True
-    else:
-        yesMode = False
-    if "-d" in args:
-        args.remove("-d")
-        yesMode = True
-        depMode = True
-    else:
-        depMode = False
-    args.pop(0)
-    for item in args:
-        if not depMode:
-            print(f"Installing {item}...")
-        db = give_dbs(silent=True)
-        print(f"Downloading package '{item}'...")
-        if not item in db:
-            print(f"Error: Cannot find package '{item}'")
+def main(args):
+    if args == ["version"] or args == ["-v"]:
+        div()
+        print("PKM {}".format(".".join([str(x) for x in VERSION])))
+        div()
+        print("PKM (c) 2023 WinFan3672, some rights reserved.")
+        div()
+    elif args == ["update"]:
+        if os.path.isfile("config/db.pkm"):
+            os.remove("config/db.pkm")
+        db = give_dbs(online=True)
+    elif "install" in args and len(args) >= 2:
+        if "-y" in args:
+            args.remove("-y")
+            yesMode = True
         else:
-            if db[item]["url"].startswith("link://"):
-                x = db[item]["url"][7:]
-                x = db[x]["url"]
+            yesMode = False
+        if "-d" in args:
+            args.remove("-d")
+            yesMode = True
+            depMode = True
+        else:
+            depMode = False
+        args.pop(0)
+        for item in args:
+            if not depMode:
+                print(f"Installing {item}...")
+            db = give_dbs(silent=True)
+            print(f"Downloading package '{item}'...")
+            if not item in db:
+                print(f"Error: Cannot find package '{item}'")
             else:
-                x = db[item]["url"]
-            downloadFile(x, "tmp/pkm.szip3")
-            if depMode:
-                main(currentUser, "installd -d tmp/pkm.szip3", True)
-            elif yesMode:
-                main(currentUser, "installd -y tmp/pkm.szip3", True)
-            else:
-                main(currentUser, "installd tmp/pkm.szip3", True)
-elif args == ["info"]:
-    div()
-    print("pkm info [package name]")
-    div()
-    print("Prints information about a package.")
-    div()
-elif "info" in args and len(args) == 2:
-    args.remove("info")
-    pkgs = loadPackageInfs()
-    pkg = pkgs[args[0]]
-    pkgDeps = pkg["deps"]
-    depended = findDeps(args[0])
-    depended = "; ".join(depended) if depended else "Nothing"
-    div()
-    print("Name: {}".format(pkg["humanName"]))
-    print("Author: {}".format(pkg["author"]))
-    print("Version: {}".format(".".join(pkg["version"])))
-    print("Release Date: {}".format(pkg["releaseDate"]))
-    print("Dependencies: {}".format("; ".join(pkgDeps) if pkgDeps else "None"))
-    print("Required By: {}".format(depended))
-    print("Package Type: {}".format("Binary" if bool(pkg["binary"]) else "Library"))
-    div()
-elif args == ["db"]:
-    div()
-    print("pkm db [args]")
-    div()
-    print("Arguments:")
-    print("    add: adds a database")
-    print("    list: lists all databases")
-    print("    remove: removes a database")
-    print("    reset: reverts to the default")
-    div()
-elif args == ["db", "add"]:
-    div()
-    print("pkm db add [db_name] [url]")
-    div()
-    print("Adds [url] to database list")
-    div()
-elif "db" in args and "add" in args and len(args) == 4:
-    dbs = update_db()
-    dbs[args[2]] = args[3]
-    save_db(dbs)
-elif args == ["db", "remove"]:
-    div()
-    print("pkm db remove [database]")
-    div()
-    print("Removes [db] from database list.")
-    div()
-elif "remove" in args and len(args) == 2:
-    d = getDepList()
-    if args[1] in d:
-        for item in findDeps(args[1]):
-            print(
-                "ERROR: '{}' is a dependency of '{}' and cannot be removed.".format(
-                    args[1], item
+                if db[item]["url"].startswith("link://"):
+                    x = db[item]["url"][7:]
+                    x = db[x]["url"]
+                else:
+                    x = db[item]["url"]
+                downloadFile(x, "tmp/pkm.szip3")
+                if depMode:
+                    runCommand(currentUser, "installd -d tmp/pkm.szip3", True)
+                elif yesMode:
+                    runCommand(currentUser, "installd -y tmp/pkm.szip3", True)
+                else:
+                    runCommand(currentUser, "installd tmp/pkm.szip3", True)
+    elif args == ["info"]:
+        div()
+        print("pkm info [package name]")
+        div()
+        print("Prints information about a package.")
+        div()
+    elif "info" in args and len(args) == 2:
+        args.remove("info")
+        pkgs = loadPackageInfs()
+        pkg = pkgs[args[0]]
+        pkgDeps = pkg["deps"]
+        depended = findDeps(args[0])
+        depended = "; ".join(depended) if depended else "Nothing"
+        div()
+        print("Name: {}".format(pkg["humanName"]))
+        print("Author: {}".format(pkg["author"]))
+        print("Version: {}".format(".".join(pkg["version"])))
+        print("Release Date: {}".format(pkg["releaseDate"]))
+        print("Dependencies: {}".format("; ".join(pkgDeps) if pkgDeps else "None"))
+        print("Required By: {}".format(depended))
+        print("Package Type: {}".format("Binary" if bool(pkg["binary"]) else "Library"))
+        div()
+    elif args == ["db"]:
+        div()
+        print("pkm db [args]")
+        div()
+        print("Arguments:")
+        print("    add: adds a database")
+        print("    list: lists all databases")
+        print("    remove: removes a database")
+        print("    reset: reverts to the default")
+        div()
+    elif args == ["db", "add"]:
+        div()
+        print("pkm db add [db_name] [url]")
+        div()
+        print("Adds [url] to database list")
+        div()
+    elif "db" in args and "add" in args and len(args) == 4:
+        dbs = update_db()
+        dbs[args[2]] = args[3]
+        save_db(dbs)
+    elif args == ["db", "remove"]:
+        div()
+        print("pkm db remove [database]")
+        div()
+        print("Removes [db] from database list.")
+        div()
+    elif "remove" in args and len(args) == 2:
+        d = getDepList()
+        if args[1] in d:
+            for item in findDeps(args[1]):
+                print(
+                    "ERROR: '{}' is a dependency of '{}' and cannot be removed.".format(
+                        args[1], item
+                    )
                 )
-            )
-    else:
-        p = loadPackageInfs()
-        z = GeneratePackageInf(p)
+        else:
+            p = loadPackageInfs()
+            z = GeneratePackageInf(p)
+            try:
+                x = z[args[1]]
+                if z[args[1]].binary:
+                    removeProgram(args[1])
+                p.pop(args[1])
+                savePackageInfs(p)
+            except KeyError:
+                print("ERROR: Invalid package name.")
+    elif "db" in args and "remove" in args and len(args) == 3:
+        dbs = update_db()
+        dbs.pop(args[2])
+        save_db(dbs)
+    elif args == ["db", "list"]:
+        div()
+        d = update_db()
+        if d:
+            for item in d.keys():
+                print(f"{item} --> {d[item]}")
+        else:
+            print("Error: No databases.")
+        div()
+    elif args == ["all"]:
+        db = give_dbs(True)
+        for item in db:
+            div()
+            print(item)
+            div()
+            print(db[item]["name"])
+            print(db[item]["desc"])
+        if db == {}:
+            div()
+            print("No packages found.")
+        div()
+    elif args == ["allc"]:
+        db = give_dbs(True, True)
+        for item in db:
+            print(item)
+    elif args == ["list"]:
+        z = list(list_app())
+        if z:
+            z = [z[i : i + 10] for i in range(0, len(z), 10)]
+            div()
+            for i in z:
+                print(" ".join(i))
+            div()
+        else:
+            div()
+            print("No programs installed.")
+            div()
+    elif args == ["install"]:
+        div()
+        print("pkm install [package]")
+        div()
+        print("Installs [package] if it is available.")
+        div()
+    elif args == ["remove"]:
+        div()
+        print("pkm remove [package]")
+        div()
+        print("Removes [package].")
+        div()
+    elif args == ["upgrade"]:
+        i = 1
+        z = list_app()
+        pkgInfs = loadPackageInfs()
+        x = []
+        xdb = give_dbs(True)
+        for item in z:
+            if xdb[item]["version"] > pkgInfs[item]["version"]:
+                x.append(item)
+        if x:
+            for item in x:
+                print("({}/{}) Upgrading '{}'...".format(i, len(x), item))
+                runCommand(currentUser, f"pkm install -y {item}", True)
+                i += 1
+            print("All packages upgraded.")
+        else:
+            print("ERROR: No packages to upgrade.")
+            print("Your system is fully up-to-date.")
+    elif "register" in args and len(args) == 8:
+        if getTerm() == "installd":
+            name = args[1]
+            version = args[2]
+            version = version.split(".")
+            deps = args[3]
+            hasBinary = bool(int(args[4]))
+            humanName = args[5]
+            releaseDate = args[6]
+            author = args[7]
+            if deps == "[]":
+                deps = []
+            else:
+                deps = deps.split("|")
+            c = {
+                "name": name,
+                "version": version,
+                "deps": deps,
+                "binary": hasBinary,
+                "humanName": humanName,
+                "releaseDate": releaseDate,
+                "author": author,
+            }
+            registerPkgInf(c)
+        else:
+            print("Error: This is a hidden argument.")
+            print("It is intended for use by internal programs only.")
+            print("Trying to run it can break your system.")
+    elif args == ["clear"]:
+        while list_app():
+            for item in list_app():
+                runCommand(currentUser, "pkm remove {}".format(item))
+        print("Successfully removed all programs.")
+    elif args == ["db", "reset"]:
+        os.remove("config/pkm3.cfg")
+        update_db()
+    elif args == ["batch"]:
+        div()
+        print("pkm batch <database>")
+        div()
+        print("Installs all packages in a database.")
+        div()
+    elif "batch" in args and args[0] == "batch":
+        dataBase = args[1]
+        dbs = update_db()
+        db = dbs[dataBase]
+        packageList = downloadDatabases({}, {dataBase:db}, "tmp/batch.cfg", True)
+        packageList = [x for x in packageList.keys()]
+        for package in packageList:
+            runCommand(currentUser, "pkm install -y {}".format(package))
+    elif args == ["from"]:
+        div()
+        print("pkm from <database name> <package name>")
+        div()
+        print("Installs a package from a specific database")
+        div()
+    elif "from" in args and args[0] == "from" and len(args) == 3:
+        dbName = args[1]
+        package = args[2]
+        dbs = update_db()
+        db = dbs[dbName]
+        print("Downloading database...")
+        packageList = downloadDatabases({}, {dbName:db}, "tmp/pkm-from.cfg", True)
+        database = give_dbs(fileName="tmp/pkm-from.cfg")
+        print("Downloading package...")
+        downloadFile(database[package]["url"], "tmp/pkm_from.szip3")
+        runCommand(currentUser,"installd tmp/pkm_from.szip3")
+    elif args == ["search"]:
+        div()
+        print("pkm search <package name>")
+        div()
+        print("Searches for installable packages.")
+        div()
+    elif "search" in args:
+        found = {}
+        args = " ".join(args[1:])
+        db = give_dbs()
+        silent(lambda: runCommand(currentUser, "pkm update"))
+        for x in db:
+            if args in x:
+                found[x] = db[x]
+        for f in found:
+            div()
+            print(f)
+            div()
+            print(found[f]["name"])
+            print(found[f]["desc"])
+        div()
+    elif args == ["remoteinfo"]:
+        div()
+        print("pkm remoteinfo <package>")
+        div()
+        print("Prints information about a remote package")
+        div()
+    elif "remoteinfo" in args and len(args) == 2:
+        pkg = args[1]
+        silent(lambda: runCommand(currentUser, "pkm update"))
         try:
-            x = z[args[1]]
-            if z[args[1]].binary:
-                removeProgram(args[1])
-            p.pop(args[1])
-            savePackageInfs(p)
+            db = give_dbs()
+            pkgi = db[pkg]
+            div()
+            print(pkgi["name"])
+            div()
+            print(pkgi["desc"])
+            div()
+            print("Version: {}".format(".".join([str(x) for x in pkgi["version"]])))
+            div()
         except KeyError:
             print("ERROR: Invalid package name.")
-elif "db" in args and "remove" in args and len(args) == 3:
-    dbs = update_db()
-    dbs.pop(args[2])
-    save_db(dbs)
-elif args == ["db", "list"]:
-    div()
-    d = update_db()
-    if d:
-        for item in d.keys():
-            print(f"{item} --> {d[item]}")
-    else:
-        print("Error: No databases.")
-    div()
-elif args == ["all"]:
-    db = give_dbs(True)
-    for item in db:
-        div()
-        print(item)
-        div()
-        print(db[item]["name"])
-        print(db[item]["desc"])
-    if db == {}:
-        div()
-        print("No packages found.")
-    div()
-elif args == ["allc"]:
-    db = give_dbs(True, True)
-    for item in db:
-        print(item)
-elif args == ["list"]:
-    z = list(list_app())
-    if z:
-        z = [z[i : i + 10] for i in range(0, len(z), 10)]
-        div()
-        for i in z:
-            print(" ".join(i))
-        div()
     else:
         div()
-        print("No programs installed.")
+        print("pkm [args]")
         div()
-elif args == ["install"]:
-    div()
-    print("pkm install [package]")
-    div()
-    print("Installs [package] if it is available.")
-    div()
-elif args == ["remove"]:
-    div()
-    print("pkm remove [package]")
-    div()
-    print("Removes [package].")
-    div()
-elif args == ["upgrade"]:
-    i = 1
-    z = list_app()
-    pkgInfs = loadPackageInfs()
-    x = []
-    xdb = give_dbs(True)
-    for item in z:
-        if xdb[item]["version"] > pkgInfs[item]["version"]:
-            x.append(item)
-    if x:
-        for item in x:
-            print("({}/{}) Upgrading '{}'...".format(i, len(x), item))
-            main(currentUser, f"pkm install -y {item}", True)
-            i += 1
-        print("All packages upgraded.")
-    else:
-        print("ERROR: No packages to upgrade.")
-        print("Your system is fully up-to-date.")
-elif "register" in args and len(args) == 8:
-    if getTerm() == "installd":
-        name = args[1]
-        version = args[2]
-        version = version.split(".")
-        deps = args[3]
-        hasBinary = bool(int(args[4]))
-        humanName = args[5]
-        releaseDate = args[6]
-        author = args[7]
-        if deps == "[]":
-            deps = []
-        else:
-            deps = deps.split("|")
-        c = {
-            "name": name,
-            "version": version,
-            "deps": deps,
-            "binary": hasBinary,
-            "humanName": humanName,
-            "releaseDate": releaseDate,
-            "author": author,
-        }
-        registerPkgInf(c)
-    else:
-        print("Error: This is a hidden argument.")
-        print("It is intended for use by internal programs only.")
-        print("Trying to run it can break your system.")
-elif args == ["clear"]:
-    while list_app():
-        for item in list_app():
-            main(currentUser, "pkm remove {}".format(item))
-    print("Successfully removed all programs.")
-elif args == ["db", "reset"]:
-    os.remove("config/pkm3.cfg")
-    update_db()
-elif args == ["batch"]:
-    div()
-    print("pkm batch <database>")
-    div()
-    print("Installs all packages in a database.")
-    div()
-elif "batch" in args and args[0] == "batch":
-    dataBase = args[1]
-    dbs = update_db()
-    db = dbs[dataBase]
-    packageList = downloadDatabases({}, {dataBase:db}, "tmp/batch.cfg", True)
-    packageList = [x for x in packageList.keys()]
-    for package in packageList:
-        main(currentUser, "pkm install -y {}".format(package))
-elif args == ["from"]:
-    div()
-    print("pkm from <database name> <package name>")
-    div()
-    print("Installs a package from a specific database")
-    div()
-elif "from" in args and args[0] == "from" and len(args) == 3:
-    dbName = args[1]
-    package = args[2]
-    dbs = update_db()
-    db = dbs[dbName]
-    print("Downloading database...")
-    packageList = downloadDatabases({}, {dbName:db}, "tmp/pkm-from.cfg", True)
-    database = give_dbs(fileName="tmp/pkm-from.cfg")
-    print("Downloading package...")
-    downloadFile(database[package]["url"], "tmp/pkm_from.szip3")
-    main(currentUser,"installd tmp/pkm_from.szip3")
-elif args == ["search"]:
-    div()
-    print("pkm search <package name>")
-    div()
-    print("Searches for installable packages.")
-    div()
-elif "search" in args:
-    found = {}
-    args = " ".join(args[1:])
-    db = give_dbs()
-    silent(lambda: main(currentUser, "pkm update"))
-    for x in db:
-        if args in x:
-            found[x] = db[x]
-    for f in found:
+        print("PKM is Pythinux's package manager.")
         div()
-        print(f)
+        print("Positional arguments:")
+        print("    install <package>: installs a package")
+        print("    search <package name>: searches for a package by name")
+        print("    remove <package>: remove a package")
+        print("    clear: removes all installed packages")
+        print("    list: lists all installed programs")
+        print("    info <package>: prints information about an installed package")
+        print("    remoteinfo <package>: prints information about an installable package")
+        print("    all: lists all installable packages")
+        print("    allc: lists all installable packages [compact]")
+        print("    update: updates the database")
+        print("    upgrade: upgrades all installed packages")
+        print("    db: manages databases PKM accesses")
+        print("    batch <database>: installs every package in a particular database")
+        print("    from <database> <package>: installs a package from a specific database")
+        print("    version: states the version of PKM")
         div()
-        print(found[f]["name"])
-        print(found[f]["desc"])
-    div()
-elif args == ["remoteinfo"]:
-    div()
-    print("pkm remoteinfo <package>")
-    div()
-    print("Prints information about a remote package")
-    div()
-elif "remoteinfo" in args and len(args) == 2:
-    pkg = args[1]
-    silent(lambda: main(currentUser, "pkm update"))
-    try:
-        db = give_dbs()
-        pkgi = db[pkg]
-        div()
-        print(pkgi["name"])
-        div()
-        print(pkgi["desc"])
-        div()
-        print("Version: {}".format(".".join([str(x) for x in pkgi["version"]])))
-        div()
-    except KeyError:
-        print("ERROR: Invalid package name.")
-else:
-    div()
-    print("pkm [args]")
-    div()
-    print("PKM is Pythinux's package manager.")
-    div()
-    print("Positional arguments:")
-    print("    install <package>: installs a package")
-    print("    search <package name>: searches for a package by name")
-    print("    remove <package>: remove a package")
-    print("    clear: removes all installed packages")
-    print("    list: lists all installed programs")
-    print("    info <package>: prints information about an installed package")
-    print("    remoteinfo <package>: prints information about an installable package")
-    print("    all: lists all installable packages")
-    print("    allc: lists all installable packages [compact]")
-    print("    update: updates the database")
-    print("    upgrade: upgrades all installed packages")
-    print("    db: manages databases PKM accesses")
-    print("    batch <database>: installs every package in a particular database")
-    print("    from <database> <package>: installs a package from a specific database")
-    print("    version: states the version of PKM")
-    div()

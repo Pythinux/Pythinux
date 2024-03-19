@@ -9,8 +9,8 @@ delete_pycache() {
 curr = $(date +%s)
 touch .working
 echo BUILD START.
-echo RESET INSTALLATION
-python resetinstall.py
+# echo RESET INSTALLATION
+# python resetinstall.py
 echo CLEANING UP INSTALLATION [PASS 1/2]
 delete_pyc
 delete_pycache

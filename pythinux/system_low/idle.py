@@ -1,1 +1,1 @@
-import idlelib.idle 
+import idlelib.idle

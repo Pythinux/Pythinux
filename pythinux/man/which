@@ -1,0 +1,15 @@
+NAME
+    which - find the executable path of a program
+DESCRIPTION
+    Sometimes, you need to grab the executable path of a script. There are many ways to do it, but WHICH is the best way, because it searches for scripts in the same order as Pythinux's program loader does, meaning it's 100% accurate.
+SYNTAX
+    which [list of programs]
+        Searches for the file path of a program and displays it if it finds one. If not, it displays "N/A".
+EXAMPLES
+    which help
+        Displays the file path of "help".
+LIBRARY
+    which.which(args)
+       Finds and returns the path of a list of program names, e.g ["help"].
+SEE ALSO
+    import: how to import a libary

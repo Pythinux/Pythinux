@@ -1,14 +1,25 @@
-div()
-Pythinix 2.9 Changelog
-div()
-* PKM 2.6
-	* New command: `pkm from`
-		* Allows you to install a specific package from a specific database
-		* Uses some custom code to achieve this
-	* New command: `pkm remoteinfo`
-		* Provides info about a remote package.
-		* Specifically, its name, description, and version.
-	* New command: `pkm search`
-		* Searches for a package by name using substring matching.
-
-
+NAME
+	Changelog
+DESCRIPTION
+	This manpage keeps track of all changes made in Pythinux v3.0.0.
+CHANGELOG
+	- New libraries:
+		- libargs
+			Argument parser.
+		- libgrab
+			Library for 'grabbing' the output of the terminal.
+			Successor to `giveOutput()`.
+	- New programs:
+		- out
+			Saves the result of a command to a file.
+		- ping
+			Implementation of the UNIX ping utility in Pythinux.
+		- shell
+			Replacement for terminal.
+		- curl
+			Prints the contents of Internet files to the terminal.
+	- Updated programs:
+		- Updated most programs to be usable as libraries.
+		- `sudo` is now a library instead of a command-line tool, meaning it
+		is used instead of calling sudo().
+	- Removed `initd` due to it not being necessary.

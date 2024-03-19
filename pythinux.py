@@ -1062,12 +1062,11 @@ def loadProgramBase(
                     "saveAliases": copy(saveAliases),
                     "createUser": copy(createUser),
                     "saveUserList": saveUserList,
-                    "main": copy(main),
+                    "runCommand": copy(main),
                     "saveAL": copy(saveAL),
                     "clearTemp": copy(clearTemp),
                     "run_script": copy(run_script),
                     "removeUser": copy(removeUser),
-                    "sudo": copy(sudo),
                     "loginScreen": copy(loginScreen),
                     "LOGOFFEVENT": copy(LOGOFFEVENT),
                     "load_program": copy(load_program),
@@ -1110,29 +1109,29 @@ def load_program(
     baseMode=False,
     __name__=None,
     isolatedMode=False,
+    libMode=False,
 ):
     if debugMode:
         print(
             "### Load Arguments:",
             [program_name_with_args, user, sudoMode, shell, __name__],
         )
-    try:
-        module, module_spec = loadProgramBase(
-            program_name_with_args,
-            user,
-            sudoMode,
-            shell,
-            __name__,
-            isolatedMode,
-        )
-        if baseMode:
-            return module, module_spec
-    except Exception:
-        return
+    module, module_spec = loadProgramBase(
+        program_name_with_args,
+        user,
+        sudoMode,
+        shell,
+        __name__,
+        isolatedMode,
+    )
+    if baseMode:
+        return module, module_spec
     if module:
         if debugMode:
             print("### Arguments:", module.args)
         module_spec.loader.exec_module(module)
+        if not libMode:
+            module.main(module.args)
         return module
 
 
@@ -1252,11 +1251,8 @@ def init(user, x):
             + ' a God account, type "logoff".'
         )
         div()
-    manager = ProcessManager()
-    initd = silent(lambda: load_program("initd", user))
     shell = silent(lambda: load_program("shell", user))
-    manager = initd.init(manager)
-    shell.terminal(user, manager)
+    shell.terminal(user)
 
 
 
