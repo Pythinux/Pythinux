@@ -9,8 +9,10 @@ LIST
         Experimental.
     libsilent
         Silence and unsilence the terminal with ease.
+    libconfig
+        Create INI configuration files and manage them.
 EXTERNAL
-    There are loads of external libraries, including some official ones (see `lib.2`. 
+    There are loads of external libraries, including some official ones (see `lib.2`). 
     To install an external libary:
 
     $ pkm install <libary>

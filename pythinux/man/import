@@ -6,16 +6,9 @@ DESCRIPTION
 IMPORTING
     Importing a program is simple. For example, to import `libargs`, a common thing to import, simply call:
 
-    libargs = load_program("libargs", currentUser)
-TERMINAL OUTPUT
-    That's it! You're done. However, because this function is designed to load programs, as the name suggets, some programs may display text when they're imported.
-    The way to deal with that is `libsilent` (see `libsilent`), which is a built-in libary (see `lib`) that allows you to silence the terminal and then un-silence it:
+    libargs = load_program("libargs", currentUser, libMode=True)
 
-    libsilent = load_program("libsilent", currentUser)
-    stdout = libsilent.silence()
-    ## Perform whatever import code you need to Perform
-    libsilent.unsilence(stdout)
-
+    This will import `libargs` (or any program for that matter) as a library, and, if it's properly implemented, no text will be printed to the terminal.
 SEE ALSO
     lib: list of libraries in the OS, as well as instructions on external ones
     libsilent: instructions on libsilent

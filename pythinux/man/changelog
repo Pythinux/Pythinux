@@ -22,4 +22,8 @@ CHANGELOG
 		- Updated most programs to be usable as libraries.
 		- `sudo` is now a library instead of a command-line tool, meaning it
 		is used instead of calling sudo().
-	- Removed `initd` due to it not being necessary.
+	- Removed some programs:
+		- initd
+			Is no longer needed: `shell` now handles initialisation.
+		- tutorial
+			Was bad and outdated.

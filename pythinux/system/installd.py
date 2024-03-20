@@ -5,7 +5,7 @@ import traceback
 import shutil
 import sys
 
-pkm = load_program("pkm silent",currentUser)
+pkm = load_program("pkm silent",currentUser, libMode=True)
 def filterDeps(deps):
     filtered_deps = [x for x in deps if x not in pkm.list_app()]
     return filtered_deps, deps
@@ -119,7 +119,7 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
             no = 1
             for item in deps:
                 print(f"({no}/{len(deps)}) Installing '{item}' (dependency of '{name}')...")
-                main(currentUser,f"pkm install -d {item}")
+                runCommand(currentUser,f"pkm install -d {item}")
                 no += 1
             py = sys.executable
             if os.path.isfile("tmp/pip_requirements.txt"):
@@ -163,9 +163,9 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
                 os.chdir(cdir)
             if os.path.isfile("tmp/setup.xx"):
                 if depMode:
-                    silent(lambda:main(currentUser,f"script tmp/setup.xx"))
+                    silent(lambda:runCommand(currentUser,f"script tmp/setup.xx"))
                 else:
-                    main(currentUser,f"script tmp/setup.xx")
+                    runCommand(currentUser,f"script tmp/setup.xx")
         if not depMode:
             print(f"Successfully installed '{name}'.")
         else:
@@ -173,15 +173,15 @@ def installd(path,yesMode=False,depMode=False,upgradeMode=False):
     except Exception as e:
         print(traceback.format_exc())
 
-def main(arguments):
-    if arguments:
-        if "-y" in arguments:
-            arguments.remove("-y")
+def main(args):
+    if args:
+        if "-y" in args:
+            args.remove("-y")
             yesMode=True
         else:
             yesMode=False
-        if "-d" in arguments:
-            arguments.remove("-d")
+        if "-d" in args:
+            args.remove("-d")
             yesMode=True
             depMode=True
         else:
@@ -191,12 +191,12 @@ def main(arguments):
             upMode=True
         else:
             upMode=False
-        installd(" ".join(arguments),yesMode,depMode,upMode)
+        installd(" ".join(args),yesMode,depMode,upMode)
     else:
         div()
         print("installd <path/to/installer.szip3>")
         print("Installs an SZIPS3 program.")
         div()
-        print("Optional positional arguments:")
+        print("Positional arguments:")
         print("    -y: installs without confirmation")
         div()

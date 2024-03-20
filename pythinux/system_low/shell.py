@@ -1,12 +1,24 @@
 import traceback
+libconfig = load_program("libconfig", currentUser, libMode=True)
+
+default = libconfig.newConfig()
+
+default.add_section("shell")
+default.set("shell", "allowExit", "true")
+
+config = libconfig.loadConfig(default, "shell")
+allowExit = config.getboolean("shell", "allowexit", fallback=False)
 
 def run(user, cmd, shell="shell"):
     if cmd == "":
         pass
-    elif cmd in ["quit", "exit"]:
+    elif cmd in ["quit", "exit"] and not allowExit:
         return
     else:
-        runCommand(user, cmd, shell=shell)
+        try:
+            runCommand(user, cmd, shell=shell)
+        except Exception as e:
+            print(traceback.format_exc())
 
 
 def terminal(user):

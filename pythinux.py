@@ -774,6 +774,7 @@ def parseInput(user, string, shell):
     for item in aliases:
         if string == item:
             string = aliases[item]
+
     import re
 
     pattern = r"\$\((.*?)\)"
@@ -807,10 +808,7 @@ def main(user, prompt, sudoMode=False, shell="terminal", doNotExecute=False):
             i = load_program(prompt, user, sudoMode, shell)
             os.chdir(cdir)
             if not i:
-                print("Bad command or file name:", prompt)
-    except Exception as e:
-        e = doNothing(e)
-        return traceback.format_exc() # Prevents flake8 from complaining about e being unused
+                print("ERROR: Bad command or file name.")
     except KeyboardInterrupt:
         return "Operation interrupted by user"
 
@@ -1039,6 +1037,7 @@ def loadProgramBase(
                 "giveVars": copy(giveVars),
                 "createService": copy(createService),
                 "attachDebugger": copy(attachDebugger),
+                "PythinuxError": copy(PythinuxError),
             }
             if directory in [
                 system_directory,
@@ -1099,6 +1098,8 @@ def loadProgramBase(
             module = addPythinuxModule(module, shared_objects, user)
             return module, module_spec
 
+def isProgramReal(program_name, user):
+    return program_name in list_loadable_programs(user)
 
 def load_program(
     program_name_with_args,
@@ -1111,11 +1112,18 @@ def load_program(
     isolatedMode=False,
     libMode=False,
 ):
+    if program_name_with_args == "":
+        return
     if debugMode:
         print(
             "### Load Arguments:",
             [program_name_with_args, user, sudoMode, shell, __name__],
         )
+    
+    program_name = program_name_with_args.split(" ")[0]
+    if not isProgramReal(program_name, user):
+        return
+
     module, module_spec = loadProgramBase(
         program_name_with_args,
         user,
@@ -1251,7 +1259,7 @@ def init(user, x):
             + ' a God account, type "logoff".'
         )
         div()
-    shell = silent(lambda: load_program("shell", user))
+    shell = load_program("shell", user, libMode=True)
     shell.terminal(user)
 
 
@@ -1482,17 +1490,12 @@ def setupWizard():
     userList = UserList()
     userList = createUser(userList, user)
     saveUserList(userList)
-    cls()
-    div()
-    print(f'Created user "{username}".')
-    br()
-    cls()
-    if input("Set up autologin? [y/n] $").lower() == "y":
+    if input("Set up autologin? [Y/n] $").lower() != "n":
         saveAL(username)
-        cls()
+    cls()
     div()
-    print("Thank you for setting up Pythinux.")
-    print("For an introduction to Pythinux, run the `welcome` command.")
+    print("You have successfully set up Pythinux.")
+    print("To get started, log in and run the `welcome` command.")
     br()
 
 

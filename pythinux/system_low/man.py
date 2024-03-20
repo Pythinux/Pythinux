@@ -14,15 +14,6 @@ def dirTree(path):
                 print(os.path.join(root,file))
         div()
 
-def man(manual):
-    if os.path.isfile(manual):
-        with open(manual) as f:
-            cls()
-            div()
-            print(f.read())
-            br()
-            cls()
-
 def main(args):
     if args == []:
         runCommand(currentUser,"man man")
@@ -30,6 +21,12 @@ def main(args):
         dirTree("man")
     else:
         manual = "man/" + " ".join(args)
-        man(manual)
+        if os.path.isfile(manual):
+            with open(manual) as f:
+                cls()
+                div()
+                print(f.read())
+                br()
+                cls()
         else:
             print("ERROR: Invalid manual.")
