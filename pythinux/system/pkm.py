@@ -5,7 +5,7 @@ import traceback
 global db, dbs, VERSION
 db = {}
 dbs = {}
-VERSION = [3, 6, 0]
+VERSION = [4, 0, 0]
 
 
 def removeProgram(program):
@@ -92,7 +92,7 @@ def save_db(db):
         pickle.dump(db, f)
 
 
-def list_app():
+def getAppList():
     return loadPackageInfs().keys()
     return sorted(z)
 
@@ -309,7 +309,7 @@ def main(args):
         for item in db:
             print(item)
     elif args == ["list"]:
-        z = list(list_app())
+        z = list(getAppList())
         if z:
             z = [z[i : i + 10] for i in range(0, len(z), 10)]
             div()
@@ -334,7 +334,7 @@ def main(args):
         div()
     elif args == ["upgrade"]:
         i = 1
-        z = list_app()
+        z = getAppList()
         pkgInfs = loadPackageInfs()
         x = []
         xdb = give_dbs(True)
@@ -379,8 +379,8 @@ def main(args):
             print("It is intended for use by internal programs only.")
             print("Trying to run it can break your system.")
     elif args == ["clear"]:
-        while list_app():
-            for item in list_app():
+        while getAppList():
+            for item in getAppList():
                 runCommand(currentUser, "pkm remove {}".format(item))
         print("Successfully removed all programs.")
     elif args == ["db", "reset"]:
@@ -426,7 +426,7 @@ def main(args):
     elif "search" in args:
         found = {}
         args = " ".join(args[1:])
-        db = give_dbs()
+        db = getPackageDatabase()
         silent(lambda: runCommand(currentUser, "pkm update"))
         for x in db:
             if args in x:
@@ -438,17 +438,17 @@ def main(args):
             print(found[f]["name"])
             print(found[f]["desc"])
         div()
-    elif args == ["remoteinfo"]:
+    elif args == ["rinfo"]:
         div()
-        print("pkm remoteinfo <package>")
+        print("pkm rinfo <package>")
         div()
         print("Prints information about a remote package")
         div()
-    elif "remoteinfo" in args and len(args) == 2:
+    elif "rinfo" in args and len(args) == 2:
         pkg = args[1]
         silent(lambda: runCommand(currentUser, "pkm update"))
         try:
-            db = give_dbs()
+            db = getPackageDatabase()
             pkgi = db[pkg]
             div()
             print(pkgi["name"])
@@ -472,7 +472,7 @@ def main(args):
         print("    clear: removes all installed packages")
         print("    list: lists all installed programs")
         print("    info <package>: prints information about an installed package")
-        print("    remoteinfo <package>: prints information about an installable package")
+        print("    rinfo <package>: prints information about an installable package")
         print("    all: lists all installable packages")
         print("    allc: lists all installable packages [compact]")
         print("    update: updates the database")
