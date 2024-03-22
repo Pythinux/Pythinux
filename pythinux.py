@@ -22,38 +22,14 @@ try:
 except:
     unixMode = False
 
-global osName, version, cdir, var
+global osName, version, CURRDIR, ROOTDIR, DEFAULT_SHELL_SCRIPT, var
 osName = "Pythinux"
 version = [3, 0, 0]
 var = {}
 
-class Process:
-    def __init__(self, name, pid, function, parent):
-        self.name = name
-        self.pid = pid
-        self.function = function
-        self.parent = parent
-    def isSubProcess(self):
-        return self.parent is not None
 
-class ProcessManager:
-    def __init__(self):
-        self.processes = []
-        self.pid = 1
-    def add_process(self, name, function, parent=None):
-        process = Process(name, self.pid, function, parent)
-        self.pid += 1
-        self.processes.append(process)
-    def list(self):
-        d = {}
-        for p in self.processes:
-            d[p.pid] = p.name
-        return d
-    def garbage_collect(self):
-        self.processes = [process for process in self.processes if process.is_running]
-    
-    async def run(self):
-        await asyncio.gather(*(process.function for process in self.processes))
+DEFAULT_SHELL_SCRIPT = """var set ALLOW_CLS true
+var set SHELL_ALLOW_EXIT false"""
 
 
 class PythinuxError(Exception):
@@ -92,16 +68,16 @@ def fixDirectories(returnMode=False):
     because git doesn't count directories as files.
     """
     dirList = [
-        "app",
-        "app_high",
-        "config",
-        "home",
-        "icon",
-        "lib",
-        "log",
-        "rscript",
-        "tmp",
-    ]
+            "app",
+            "app_high",
+            "config",
+            "home",
+            "icon",
+            "lib",
+            "log",
+            "rscript",
+            "tmp",
+            ]
     if returnMode:
         return dirList
     for item in dirList:
@@ -303,8 +279,8 @@ def doCalc(text):
             if isinstance(node, ast.Name) and node.id not in allowed_names:
                 raise ValueError("Invalid expression")
             if isinstance(node, ast.BinOp) and not isinstance(
-                node.op, allowed_operators
-            ):
+                    node.op, allowed_operators
+                    ):
                 raise ValueError("Invalid expression: {}".format(text))
         namespace = {}
         exec(compile(module, filename="<ast>", mode="exec"), namespace)
@@ -397,15 +373,15 @@ class Group(Base):
     """
 
     def __init__(
-        self,
-        name,
-        canApp=False,
-        canAppHigh=False,
-        canSys=False,
-        canSysHigh=False,
-        canSudo=False,
-        locked=False,
-    ):
+            self,
+            name,
+            canApp=False,
+            canAppHigh=False,
+            canSys=False,
+            canSysHigh=False,
+            canSudo=False,
+            locked=False,
+            ):
         """
         Defines nanme and permissions of the Group.
         name: name of group. Set to all-lowercase.
@@ -434,11 +410,11 @@ class GroupList(Base):
 
     def __init__(self):
         self.groups = [
-            Group("guest"),
-            Group("user", True, canSudo=True, locked=True),
-            Group("root", True, True, True, canSudo=True, locked=True),
-            Group("god", True, True, True, True, True),
-        ]
+                Group("guest"),
+                Group("user", True, canSudo=True, locked=True),
+                Group("root", True, True, True, canSudo=True, locked=True),
+                Group("god", True, True, True, True, True),
+                ]
 
     def add(self, group):
         """
@@ -490,8 +466,8 @@ class CurrentProgram:
             self._name = value
         else:
             raise AttributeError(
-                "Cannot modify name after object construction"
-            )
+                    "Cannot modify name after object construction"
+                    )
 
     def __class__(self):
         return type
@@ -596,6 +572,9 @@ class UserList(Base):
     def list(self):
         return copy(self.users)
 
+    def check(self, user):
+        return user in self.list()
+
     def __len__(self):
         return len(self.users)
 
@@ -641,9 +620,6 @@ def verifyHash(plaintext, saltedHashString):
     hashed_plaintext = hashString(plaintext, salt)
     return hashed_plaintext == saltedHashString
 
-    return hashed_plaintext == saltedHashString
-
-
 def sha256(string, salt=None):
     """
     Performs a SHA256 og a string.
@@ -687,12 +663,12 @@ class rangedInt:
     def __add__(self, other):
         if isinstance(other, rangedInt):
             return rangedInt(
-                self._value + other.get(), self.min_value, self.max_value
-            )
+                    self._value + other.get(), self.min_value, self.max_value
+                    )
         elif isinstance(other, (int, float)):
             return rangedInt(
-                self._value + other, self.min_value, self.max_value
-            )
+                    self._value + other, self.min_value, self.max_value
+                    )
         else:
             return NotImplemented
 
@@ -702,12 +678,12 @@ class rangedInt:
     def __sub__(self, other):
         if isinstance(other, rangedInt):
             return rangedInt(
-                self._value - other.get(), self.min_value, self.max_value
-            )
+                    self._value - other.get(), self.min_value, self.max_value
+                    )
         elif isinstance(other, (int, float)):
             return rangedInt(
-                self._value - other, self.min_value, self.max_value
-            )
+                    self._value - other, self.min_value, self.max_value
+                    )
         else:
             return NotImplemented
 
@@ -717,12 +693,12 @@ class rangedInt:
     def __mul__(self, other):
         if isinstance(other, rangedInt):
             return rangedInt(
-                self._value * other.get(), self.min_value, self.max_value
-            )
+                    self._value * other.get(), self.min_value, self.max_value
+                    )
         elif isinstance(other, (int, float)):
             return rangedInt(
-                self._value * other, self.min_value, self.max_value
-            )
+                    self._value * other, self.min_value, self.max_value
+                    )
         else:
             return NotImplemented
 
@@ -732,12 +708,12 @@ class rangedInt:
     def __truediv__(self, other):
         if isinstance(other, rangedInt):
             return rangedInt(
-                self._value / other.get(), self.min_value, self.max_value
-            )
+                    self._value / other.get(), self.min_value, self.max_value
+                    )
         elif isinstance(other, (int, float)):
             return rangedInt(
-                self._value / other, self.min_value, self.max_value
-            )
+                    self._value / other, self.min_value, self.max_value
+                    )
         else:
             return NotImplemented
 
@@ -745,11 +721,15 @@ class rangedInt:
         return self.__truediv__(other)
 
 
-def div():
+def div(returnMode=False):
     """
     Prints 20 hyphen/dash symbols.
     """
-    print("--------------------")
+    s = "--------------------"
+    if returnMode:
+        return s
+    else:
+        print(s)
 
 
 def div2():
@@ -796,7 +776,6 @@ def main(user, prompt, sudoMode=False, shell="terminal", doNotExecute=False):
         (str) shell: the name of the terminal that executes the command.
     """
     try:
-        global cdir
         if prompt == "":
             return
         elif prompt == "logoff":
@@ -806,7 +785,7 @@ def main(user, prompt, sudoMode=False, shell="terminal", doNotExecute=False):
             if doNotExecute:
                 return prompt
             i = load_program(prompt, user, sudoMode, shell)
-            os.chdir(cdir)
+            os.chdir(evalDir(CURRDIR, user))
             if not i:
                 print("ERROR: Bad command or file name.")
     except KeyboardInterrupt:
@@ -922,12 +901,10 @@ def addPythinuxModule(module, shared_objects, user):
     return module
 
 def generateAPI(module, user, sudoMode):
-    global BLACKLIST
-    BLACKLIST = ["system", "system_high", "system_low", "app", "app_high"]
     def openFile(filename, mode="r"):
-        global BLACKLIST
+        BLACKLIST = ["system", "system_high", "system_low", "app", "app_high"]
         return open(filename, mode)
-            
+
     def isUnix():
         return unixMode
     """
@@ -935,29 +912,34 @@ def generateAPI(module, user, sudoMode):
     """
 
     ## Define API modules
-    #file = createModule("file")
     shell = createModule("shell")
-    
+    file = createModule("file")
+
     ## Add functions to modules
     shell.isUnix = copy(isUnix)
+    file.evalDir = copy(evalDir)
+    file.root = lambda: os.chdir(ROOTDIR)
 
     ## Attach to module
-    #module.file = file
     module.shell = shell
-    if not sudoMode and not user.admin():
+    module.file = file
+
+    if not sudoMode or not user.admin():
         module.open = copy(openFile)
 
 
 
-
+def limitedProgramLoad(program, user, libMode=True):
+    if program in ["help", "sudo", "alias", "var", "calc", "which", "libargs", "libconfig", "libgrab"]:
+        return load_program(program, user, libMode)
 def loadProgramBase(
-    program_name_with_args,
-    user,
-    sudoMode=False,
-    shell="terminal",
-    __name__=None,
-    isolatedMode=False,
-):
+        program_name_with_args,
+        user,
+        sudoMode=False,
+        shell="terminal",
+        __name__=None,
+        isolatedMode=False,
+        ):
     def getTerm():
         return shell
 
@@ -997,86 +979,84 @@ def loadProgramBase(
             if not __name__:
                 __name__ = program_name
             module_spec = importlib.util.spec_from_file_location(
-                program_name, program_path
-            )
+                    program_name, program_path
+                    )
             module = importlib.util.module_from_spec(module_spec)
             sp = copy(sys.path)
             sp.insert(0, "app")
             shared_objects = {
-                "castObject": copy(castObject),
-                "Base": copy(Base),
-                "__name__": copy(__name__),
-                "currentUser": copy(user),
-                "div": copy(div),
-                "div2": copy(div2),
-                "br": copy(br),
-                "load_program": copy(load_program),
-                "list_loadable_programs": copy(list_loadable_programs),
-                "version": copy(version),
-                "hashString": copy(hashString),
-                "verifyHash": copy(verifyHash),
-                "pprint_dict": copy(pprint_dict),
-                "pprint": copy(pprint),
-                "obj_to_dict": copy(obj_to_dict),
-                "os": copy(os),
-                "alias": copy(aliases),
-                "cls": copy(cls),
-                "doCalc": copy(doCalc),
-                "mergeDict": copy(mergeDict),
-                "copy": copy(copy),
-                "logEvent": copy(logEvent),
-                "getTerm": copy(getTerm),
-                "currentProgram": copy(program_name),
-                "giveOutput": copy(giveOutput),
-                "osName": copy(osName),
-                "FileError": copy(FileError),
-                "startService": copy(startService),
-                "createModule": copy(createModule),
-                "silent": copy(silent),
-                "setVars": copy(setVars),
-                "giveVars": copy(giveVars),
-                "createService": copy(createService),
-                "attachDebugger": copy(attachDebugger),
-                "PythinuxError": copy(PythinuxError),
-            }
+                    "castObject": copy(castObject),
+                    "Base": copy(Base),
+                    "__name__": copy(__name__),
+                    "currentUser": copy(user),
+                    "div": copy(div),
+                    "div2": copy(div2),
+                    "br": copy(br),
+                    "load_program": copy(load_program),
+                    "list_loadable_programs": copy(list_loadable_programs),
+                    "version": copy(version),
+                    "hashString": copy(hashString),
+                    "verifyHash": copy(verifyHash),
+                    "pprint_dict": copy(pprint_dict),
+                    "pprint": copy(pprint),
+                    "obj_to_dict": copy(obj_to_dict),
+                    "os": copy(os),
+                    "alias": copy(aliases),
+                    "cls": copy(cls),
+                    "doCalc": copy(doCalc),
+                    "mergeDict": copy(mergeDict),
+                    "copy": copy(copy),
+                    "logEvent": copy(logEvent),
+                    "getTerm": copy(getTerm),
+                    "currentProgram": copy(program_name),
+                    "giveOutput": copy(giveOutput),
+                    "osName": copy(osName),
+                    "FileError": copy(FileError),
+                    "startService": copy(startService),
+                    "createModule": copy(createModule),
+                    "silent": copy(silent),
+                    "setVars": copy(setVars),
+                    "giveVars": copy(giveVars),
+                    "createService": copy(createService),
+                    "attachDebugger": copy(attachDebugger),
+                    "PythinuxError": copy(PythinuxError),
+                    "CURRDIR": copy(CURRDIR),
+                    "ROOTDIR": copy(ROOTDIR),
+                    }
             if directory in [
-                system_directory,
-                hsystem_directory,
-                lsystem_directory,
-                happ_directory,
-            ]:
+                    system_directory,
+                    hsystem_directory,
+                    lsystem_directory,
+                    happ_directory,
+                    ]:
                 sp.insert(0, "app_high")
                 system_objects = {
-                    "cdir": copy(cdir),
-                    "User": copy(User),
-                    "Group": copy(Group),
-                    "GroupList": copy(GroupList),
-                    "UserList": copy(UserList),
-                    "loadGroupList": copy(loadGroupList),
-                    "saveGroupList": copy(saveGroupList),
-                    "currentUser": user,
-                    "aliases": aliases,
-                    "userList": userList,
-                    "groupList": groupList,
-                    "saveAliases": copy(saveAliases),
-                    "createUser": copy(createUser),
-                    "saveUserList": saveUserList,
-                    "runCommand": copy(main),
-                    "saveAL": copy(saveAL),
-                    "clearTemp": copy(clearTemp),
-                    "run_script": copy(run_script),
-                    "removeUser": copy(removeUser),
-                    "loginScreen": copy(loginScreen),
-                    "LOGOFFEVENT": copy(LOGOFFEVENT),
-                    "load_program": copy(load_program),
-                    "parseInput": copy(parseInput),
-                }
+                        "User": copy(User),
+                        "Group": copy(Group),
+                        "GroupList": copy(GroupList),
+                        "UserList": copy(UserList),
+                        "loadGroupList": copy(loadGroupList),
+                        "saveGroupList": copy(saveGroupList),
+                        "currentUser": user,
+                        "aliases": aliases,
+                        "userList": userList,
+                        "groupList": groupList,
+                        "saveAliases": copy(saveAliases),
+                        "createUser": copy(createUser),
+                        "saveUserList": saveUserList,
+                        "runCommand": copy(main),
+                        "saveAL": copy(saveAL),
+                        "clearTemp": copy(clearTemp),
+                        "run_script": copy(run_script),
+                        "removeUser": copy(removeUser),
+                        "loginScreen": copy(loginScreen),
+                        "LOGOFFEVENT": copy(LOGOFFEVENT),
+                        "load_program": copy(load_program),
+                        "parseInput": copy(parseInput),
+                        }
                 if user.god():
                     system_objects["CompileOS"] = copy(CompileOS)
                     system_objects["setupWizard"] = copy(setupWizard)
-                
-                if program_name == "initd":
-                    shared_objects["ProcessManager"] = copy(ProcessManager)
 
                 shared_objects.update(system_objects)
             # Expose the objects to the loaded program
@@ -1086,9 +1066,9 @@ def loadProgramBase(
             generateAPI(module, user, sudoMode)
             # Add custom sys.path
             d = {
-                "sys": copy(sys),
-                "sys.path": copy(sp),
-            }
+                    "sys": copy(sys),
+                    "sys.path": copy(sp),
+                    }
             exposeObjects(module, d)
             # Set arguments as a custom attribute
             module.arguments = args
@@ -1101,37 +1081,84 @@ def loadProgramBase(
 def isProgramReal(program_name, user):
     return program_name in list_loadable_programs(user)
 
+
+def changeDirectory(directory: str, user: User):
+    directory = evalDir(directory, user)
+
+    os.chdir(directory)
+    CURRDIR = directory
+
+
+def simplifyDir(directory: str, user: User):
+    """
+    Opposite
+    """
+
+def evalDir(directory: str, user: User):
+    """
+    Evaluates a directory, turning a path like "/home/root" to a full directory.
+    Supports:
+        `.` - Resolves to current directory.
+        `..` - Resolves to previous directory.
+        `~` - User's home directory.
+        `/` - Evaluates to root directory.
+
+    Also ensures no directory above the root directory is selected, ensuring no 
+    VM escapes occur.
+    """
+    directory = directory.replace("\\", "/")
+    if directory.startswith(".") and not directory.endswith(".."):
+        directory = directory.replace(".", CURRDIR, 1)
+    elif directory.startswith("~"):
+        directory = directory.replace("~", "/home/{}".format(user.username), 1)
+    else:
+        directory = "{}{}".format(CURRDIR, directory)
+
+    if directory.startswith("/"):
+        directory = directory.replace("/", ROOTDIR+"/", 1)
+
+    if directory.endswith(".."):
+        parts = directory.split("/")
+        parts.pop()
+        parts.pop()
+        directory = "/".join(parts)
+
+    if not directory.startswith(ROOTDIR):
+        return ROOTDIR
+    else:
+        return directory.replace("//", "/")
+
 def load_program(
-    program_name_with_args,
-    user,
-    sudoMode=False,
-    shell="terminal",
-    debugMode=False,
-    baseMode=False,
-    __name__=None,
-    isolatedMode=False,
-    libMode=False,
-):
+        program_name_with_args,
+        user,
+        sudoMode=False,
+        shell="terminal",
+        debugMode=False,
+        baseMode=False,
+        __name__=None,
+        isolatedMode=False,
+        libMode=False,
+        ):
     if program_name_with_args == "":
         return
     if debugMode:
         print(
-            "### Load Arguments:",
-            [program_name_with_args, user, sudoMode, shell, __name__],
-        )
-    
+                "### Load Arguments:",
+                [program_name_with_args, user, sudoMode, shell, __name__],
+                )
+
     program_name = program_name_with_args.split(" ")[0]
     if not isProgramReal(program_name, user):
         return
 
     module, module_spec = loadProgramBase(
-        program_name_with_args,
-        user,
-        sudoMode,
-        shell,
-        __name__,
-        isolatedMode,
-    )
+            program_name_with_args,
+            user,
+            sudoMode,
+            shell,
+            __name__,
+            isolatedMode,
+            )
     if baseMode:
         return module, module_spec
     if module:
@@ -1139,7 +1166,10 @@ def load_program(
             print("### Arguments:", module.args)
         module_spec.loader.exec_module(module)
         if not libMode:
-            module.main(module.args)
+            if "main" in dir(module):
+                module.main(module.args)
+            else:
+                print("WARNING: Program {} does not have a main() function.".format(program_name))
         return module
 
 
@@ -1228,38 +1258,28 @@ def list_loadable_programs(user, sudoMode=False):
     for directory in directories:
         if os.path.exists(directory) and os.path.isdir(directory):
             programs = [
-                f[:-3] for f in os.listdir(directory) if f.endswith(".py")
-            ]
+                    f[:-3] for f in os.listdir(directory) if f.endswith(".py")
+                    ]
             loadable_programs.update(programs)
 
     if os.path.exists(app_directory) and os.path.isdir(app_directory):
         programs = [
-            "*" + f[:-3]
-            for f in os.listdir(app_directory)
-            if f.endswith(".xx")
-        ]
+                "*" + f[:-3]
+                for f in os.listdir(app_directory)
+                if f.endswith(".xx")
+                ]
         loadable_programs.update(programs)
 
     return sorted(loadable_programs)
 
 
-def init(user, x):
+def init(user):
     """
-    Init function. Runs the  'initd --init' command.
+    Init function.
     """
     main(user, "cls")
-    if user.god() and x:
-        div()
-        print("God Warning")
-        div()
-        print("You have logged in as a God account.")
-        print("Do not use a God account unless you HAVE to.")
-        print(
-            "If you are unaware of the security risks of using"
-            + ' a God account, type "logoff".'
-        )
-        div()
     shell = load_program("shell", user, libMode=True)
+    shell.init(user)
     shell.terminal(user)
 
 
@@ -1312,7 +1332,7 @@ def loginScreen(username=None, password=None):
         password = getpass("Password $")
     for item in userList.list():
         if item.check(username, password):
-            init(item, x)
+            init(item)
             return
     div()
     print("Incorrect username/password sequence.")
@@ -1376,12 +1396,13 @@ def createUser(userlist, user):
     for item in userlist.list():
         if item.username == user.username:
             removeUser(userlist, item)
-    try:
-        os.mkdir(f"home/{user.username}")
-    except FileExistsError:
-        pass
-    with open(f"home/{user.username}/init.d", "w") as f:
-        f.write("terminal")
+    for directory in ["~", "~/config", "~/doc", "~/download"]:
+        try:
+            os.mkdir(evalDir(directory, user))
+        except FileExistsError:
+            pass
+    with open(evalDir("~/shellrc.xx", user), "w") as f:
+        f.write(DEFAULT_SHELL_SCRIPT)
     userlist.add(user)
     return userlist
 
@@ -1476,7 +1497,14 @@ def setupWizard():
             br()
     cls()
     print(f"{div2()}\nSetup Wizard\n{div2()}")
-    username = input("Enter Your Username $")
+    username = ""
+    while not username:
+        username = input("Enter Your Username $")
+        if username == "":
+            print("ERROR: You must enter a username.")
+        if username in ["root"]:
+            username = ""
+            print("ERROR: That username is disallowed.")
     password = ""
     while password == "":
         password = getpass("Set A Password $")
@@ -1484,12 +1512,17 @@ def setupWizard():
             print("Error: Cannot set blank password.")
     if password == "":
         password = None
+
     groupList = GroupList()
-    g = groupList.byName("root")
+    g = groupList.byName("user")
+    rootGroup = groupList.byName("root")
     user = User(g, username, password)
-    userList = UserList()
+    root = User("root")
+    userList = User(rootGroup, "root")
     userList = createUser(userList, user)
+    userList.createUser(userList, root)
     saveUserList(userList)
+
     if input("Set up autologin? [Y/n] $").lower() != "n":
         saveAL(username)
     cls()
@@ -1508,12 +1541,12 @@ if __name__ == "__main__":
         print("CRITICAL ERROR!")
         div()
         print("The Pythinux install directory has been removed.")
-        print(
-            "Reinstall Pythinux from source:"
-            "https://github.com/WinFan3672/Pythinux"
-        )
+        print("This is normally a result of catastrophic user error.")
+        print("Reinstall Pythinux from source:")
+        print("https://codeberg.org/Pythinux/Pythinux")
         br()
-    cdir = os.getcwd()
+    ROOTDIR = os.getcwd()
+    CURRDIR = "/"
     global userList, groupList
     if loadUserList().users == []:
         setupWizard()

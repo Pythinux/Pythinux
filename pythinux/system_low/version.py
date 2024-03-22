@@ -1,5 +1,5 @@
-x = version
-z = []
-for i in x:
-    z.append(str(i))
-print(f"Pythinux {'.'.join(z)}")
+def get():
+    return "Pythinux {}".format(".".join([str(x) for x in version]))
+
+def main(args):
+    print(get())

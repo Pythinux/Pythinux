@@ -34,24 +34,21 @@ class Manager:
         print("Positional arguments:")
         for token in self.tokens:
             if isinstance(token, Switch):
-                print("--{}, -{}: {}".format(token.full_name, token.short_name, token.description))
+                print("{}: {}".format(token.full_name, token.description))
         div()
 
 class Switch:
     """
     A basic switch argument.
-    Example: Switch('recursive', 'r', 'Enables recursion')
-    When the above example is used, both --recursive and -r are accepted.
+    Example: Switch('--recursive', 'Enables recursion')
+    When the above example is used, --recursive is accepted.
     NOTE: when the Manager class returns SWITCHES, the full_name attribute is always appended.
     """
-    def __init__(self, full_name, short_name, description):
+    def __init__(self, full_name, description):
         self.full_name = full_name
-        self.short_name = short_name
         self.description = description
     def test(self, args):
-        if "--{}".format(self.full_name) in args:
-            return True
-        elif "-{}".format(self.short_name) in args:
+        if "{}".format(self.full_name) in args:
             return True
         else:
             return False

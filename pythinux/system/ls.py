@@ -4,11 +4,8 @@ def main(args):
         print("ls: lists contents of /")
         print("ls <directpry>: lists contents of <directory>")
         div()
-    elif args:
-        div()
-        print(" ".join(os.listdir(" ".join(args))))
-        div()
     else:
+        directory = file.evalDir(" ".join(args), currentUser) if args else file.evalDir(CURRDIR, currentUser)
         div()
-        print(" ".join(os.listdir(cdir)))
+        print("\n".join(os.listdir(directory)))
         div()

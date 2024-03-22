@@ -5,9 +5,9 @@ import traceback
 import shutil
 import sys
 
-pkm = load_program("pkm silent",currentUser, libMode=True)
+pkm = load_program("pkm",currentUser, libMode=True)
 def filterDeps(deps):
-    filtered_deps = [x for x in deps if x not in pkm.list_app()]
+    filtered_deps = [x for x in deps if x not in pkm.getAppList()]
     return filtered_deps, deps
 PackageInf = pkm.PackageInf
 class InstallerError(Exception):

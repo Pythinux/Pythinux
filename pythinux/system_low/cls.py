@@ -1,2 +1,5 @@
+var = load_program("var", currentUser, libMode=True)
+
 def main(args):
-    cls() 
+    if var.getbool("ALLOW_CLS", True):
+        cls() 

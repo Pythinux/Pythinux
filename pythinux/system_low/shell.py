@@ -1,19 +1,21 @@
 import traceback
-libconfig = load_program("libconfig", currentUser, libMode=True)
 
-default = libconfig.newConfig()
+var = load_program("var", currentUser, libMode=True)
 
-default.add_section("shell")
-default.set("shell", "allowExit", "true")
+allowExit = var.getbool("SHELL_ALLOW_EXIT", False)
 
-config = libconfig.loadConfig(default, "shell")
-allowExit = config.getboolean("shell", "allowexit", fallback=False)
+def run(user, cmd, lastCommand="", shell="shell",):
+    
+    lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
+    if "!!" in cmd:
+        cmd = cmd.replace("!!", lastCommand)
+    if "!" in cmd:
+        cmd = cmd.replace("!", lastCommandArgs)
 
-def run(user, cmd, shell="shell"):
     if cmd == "":
         pass
     elif cmd in ["quit", "exit"] and not allowExit:
-        return
+        print("ERROR: Exiting has been disabled.")
     else:
         try:
             runCommand(user, cmd, shell=shell)
@@ -21,14 +23,22 @@ def run(user, cmd, shell="shell"):
             print(traceback.format_exc())
 
 
-def terminal(user):
-    cmd = input("{}@{} $".format(user.group.name, user.username))
-    run(user, cmd)
-    terminal(user)
+def init(user):
+    fileName = "~/shellrc.xx"
+    script = file.evalDir(fileName, user)
+    runScript(user, script)
+
+def terminal(user, lastCommand=""):
+    cmd = input("[{}@{} {}] $".format(user.group.name, user.username, CURRDIR))
+    run(user, cmd, lastCommand)
+    if ["!"] in cmd.split(" "):
+        terminal(user, lastCommand)
+    else:
+        terminal(user, str(cmd))
 
 def runScript(user, filename):
     with open(filename) as f:
-        for cmd in f.read():
+        for cmd in f.read().split("\n"):
             run(user, cmd, "script")
 def main(args):
     if args:

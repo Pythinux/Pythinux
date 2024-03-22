@@ -1,10 +1,36 @@
-def get(var):
-    return giveVars()[var]
+def get(var, fallback=""):
+    vars = giveVars()
+    try:
+        return giveVars()[var]
+    except KeyError:
+        return fallback
 
-def set(var, val):
+def getint(var, fallback=0):
+    vars = giveVars()
+    try:
+        return int(giveVars[var])
+    except ValueError:
+        return fallback
+    except KeyError:
+        return fallback
+
+def getbool(var, fallback=True):
+    vars = giveVars()
+
+    try:
+        if giveVars()[var] in ["true", "True", "yes", "Yes", "1"]:
+            return True
+        else:
+            return False
+    except KeyError:
+        return fallback
+
+def set(var, val, fallback=""):
     v = giveVars()
     v[var] = val
     setVars(v)
+
+
 def list():
     var = giveVars()
     div()
@@ -20,7 +46,7 @@ def rm(name):
     removed = False
     var = giveVars()
     try:
-        var.remove(name)
+        del(giveVars()[name])
         removed = True
     except:
         pass
@@ -53,9 +79,7 @@ def main(args):
         print("Delete the variable.")
         div()
     elif "rm" in args and len(args) == 2:
-        if rm(args[1]):
-            print("Successfully removed.")
-        else:
+        if not rm(args[1]):
             print("ERROR: Unable to remove.")
     else:
         div()
@@ -64,6 +88,6 @@ def main(args):
         print("Positional Arguments:")
         print("    set: sets a variable")
         print("    get: returns the value of a variable")
-        #print("    rm: delete a variable")
+        print("    rm: delete a variable")
         print("    list: lists all variables")
         div()

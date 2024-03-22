@@ -1,21 +1,25 @@
 """
-libconfig2: library for easy configuration file management using python's configparser module.
+libconfig: library for easy configuration file management using python's configparser module.
 
 Code example:
 
-libconfig = load_program("libconfig2", currentUser, libMode=True)
+libconfig = load_program("libconfig", currentUser, libMode=True)
 
-## Load a config
-default = libconfig.newConfig({"foo": "bar", "isEnabled": True})
+## Make a default config
+default = libconfig.newConfig()
+
+## Set default values
+default.add_section("settings")
+default.set("settings", "allow_multiple_sessions", "false")
+default.set("DEFAULT", "foo", "bar")
+
+## Load the config
+
 config = libconfig.loadConfig(default, os.path.expanduser("~/myapp.ini"))
 
-## Retrieve a value
-
-print(config.get("foo")) ## Prints 'bar'
-print(config.getbool("isEnabled")) ## Prints "True"
-
-## Modify the config
-config.set("bar", "foo")
+## Get some values
+print(config.getboolean("settings," "allow_multiple_sessions")) ## returns True
+print(config.get("DEFAULT", "foo")) ## Returns 'bar'
 
 ## Save the config
 libconfig.saveConfig(config, "~/myapp.ini")
@@ -52,8 +56,8 @@ def loadConfig(default: Config, fileName: str):
     """
     config = default.copy()
 
-    if os.path.isfile(fileName):
-        config.read([filename])
+    if os.path.isfile("config/{}.ini".format(fileName)):
+        config.read([fileName])
     else:
         saveConfig(default, fileName)
 

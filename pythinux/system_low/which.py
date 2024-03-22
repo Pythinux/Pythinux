@@ -15,12 +15,11 @@ def which(args):
         if not found:
             foundFiles.append("N/A")
     return foundFiles
-
-if args:
-    for x in which(args):
-        print(x)
-else:
-    if getTerm() != "silent":
+def main(args):
+    if args:
+        for x in which(args):
+            print(x)
+    else:
         div()
         print("which [list of programs]")
         div()

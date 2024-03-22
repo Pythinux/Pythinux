@@ -5,8 +5,7 @@ DESCRIPTION
     Do note that some user-facing programs (such as AREA) may have libraries as well, and are not listed here. To find out if a built-in program can be used as a library, open the manpage and check if there is a LIBRARY section.
 LIST
     libargs
-        Advanced argument parser that returns a dictionary of results.
-        Experimental.
+        Advanced argument parser that returns a dictionary of results. Experimental.
     libsilent
         Silence and unsilence the terminal with ease.
     libconfig
