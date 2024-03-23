@@ -12,6 +12,10 @@ LIBARRY
     shell.run(cmd)
         Runs a command as a shell.
         This is useful because it allows you to write your own custom shell and allow someone else to handle piping etc.
+ENVIRONMENT VARIABLES
+    SHELL_ALLOW_EXIT
+        Set to "false" by default in ~/shellrc.xx
+        If set to "true", the shell will allow you to run the commands `quit` and `exit`.
 EXAMPLE SHELL
     Below is an example shell that only uses 3 lines of code:
 
@@ -20,3 +24,4 @@ EXAMPLE SHELL
         shell.run(user, input("$"))
 SEE ALSO
     import: how to import libaries
+    var: environment variables

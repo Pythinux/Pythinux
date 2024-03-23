@@ -7,7 +7,7 @@ def which(args):
     for arg in args:
         found = False
         for DIR in DIRS:
-            FILE = "{}/{}.py".format(DIR, arg)
+            FILE = file.evalDir("{}/{}.py".format(DIR, arg), currentUser)
             if os.path.isfile(FILE):
                 foundFiles.append(FILE)
                 found = True

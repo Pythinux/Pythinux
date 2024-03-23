@@ -2,10 +2,7 @@ import traceback
 
 var = load_program("var", currentUser, libMode=True)
 
-allowExit = var.getbool("SHELL_ALLOW_EXIT", False)
-
-def run(user, cmd, lastCommand="", shell="shell",):
-    
+def run(user, cmd, lastCommand="", shell="shell",):    
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
     if "!!" in cmd:
         cmd = cmd.replace("!!", lastCommand)
@@ -14,8 +11,8 @@ def run(user, cmd, lastCommand="", shell="shell",):
 
     if cmd == "":
         pass
-    elif cmd in ["quit", "exit"] and not allowExit:
-        print("ERROR: Exiting has been disabled.")
+    elif cmd in ["quit", "exit"] and not var.getbool("SHELL_ALLOW_EXIT", False):
+        pass
     else:
         try:
             runCommand(user, cmd, shell=shell)
@@ -29,8 +26,15 @@ def init(user):
     runScript(user, script)
 
 def terminal(user, lastCommand=""):
-    cmd = input("[{}@{} {}] $".format(user.group.name, user.username, CURRDIR))
-    run(user, cmd, lastCommand)
+    try:
+        cmd = input("[{}@{} {}] $".format(user.group.name, user.username, CURRDIR))
+    except KeyboardInterrupt:
+        print()
+        terminal(user, lastCommand)
+    try:
+        run(user, cmd, lastCommand)
+    except KeyboardInterrupt:
+        pass
     if ["!"] in cmd.split(" "):
         terminal(user, lastCommand)
     else:

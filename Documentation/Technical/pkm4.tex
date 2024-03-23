@@ -1,0 +1,45 @@
+\documentclass[english,12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{babel}
+\usepackage{hyperref}
+\usepackage{ffcode}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	urlcolor=blue,
+}
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.95}
+\newcommand{\code}[1]{\colorbox{light-gray}{\texttt{#1}}}
+
+\title{PKM 4 Documentation}
+\author{Gordinator}
+\begin{document}
+	\maketitle
+	\tableofcontents
+	\section{Introduction}
+	This Document contains information about PKM 4, how it works, and how to implement it.
+	\subsection{What Is PKM4?}
+	PKM is Pythinux's package manager. Version 4 released with Pythinux 3.0.
+	\subsection{What Is Pythinux?}
+	Pythinux is a multi-user single- operating environment written in Python and designed in a way similar to UNIX-like systems. 
+	\section{Terminology}
+	\begin{itemize}
+		\item \textbf{SZIPS}: \textbf{S}tandard \textbf{Z}ipped \textbf{I}nternal \textbf{P}rogram \textbf{S}cheme. Refers to the series of file formats for packaging Pythinux programs.
+		\item \textbf{SZIP4}: Version 4 of SZIPS. Current version.
+		\item \textbf{Repository}: An Internet location which stores programs.
+		\item \textbf{buildr}: Utility that creates repositories.
+	\end{itemize}
+	\section{Repositories}
+	\subsection{Hosting}
+	Repository contents are fetched over HTTP. As such, any HTTP server is suitable works.
+	\subsection{Folder Structure}
+	\begin{ffcode}
+		./buildr.py
+		./db.ini
+		./<program>
+		./<program>/program.szip4
+		./<program>/program/program.ini
+		./<program>/program/*
+	\end{ffcode}
+\end{document}

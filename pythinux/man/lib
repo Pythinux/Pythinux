@@ -6,8 +6,6 @@ DESCRIPTION
 LIST
     libargs
         Advanced argument parser that returns a dictionary of results. Experimental.
-    libsilent
-        Silence and unsilence the terminal with ease.
     libconfig
         Create INI configuration files and manage them.
 EXTERNAL

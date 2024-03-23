@@ -1,7 +1,0 @@
-NAME
-    initd - init daemon
-DESCRIPTION
-    INITD is used to initialise the system. 
-SWITCHES
-    initd --init
-        Runs the init script located in /home/{user}/init.d

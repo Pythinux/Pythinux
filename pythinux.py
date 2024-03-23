@@ -76,6 +76,7 @@ def fixDirectories(returnMode=False):
             "lib",
             "log",
             "rscript",
+            "share",
             "tmp",
             ]
     if returnMode:
@@ -902,8 +903,10 @@ def addPythinuxModule(module, shared_objects, user):
 
 def generateAPI(module, user, sudoMode):
     def openFile(filename, mode="r"):
-        BLACKLIST = ["system", "system_high", "system_low", "app", "app_high"]
-        return open(filename, mode)
+        """
+        Custom open() operation.
+        """
+        return open(evalDir(filename, user), mode)
 
     def isUnix():
         return unixMode
@@ -923,9 +926,6 @@ def generateAPI(module, user, sudoMode):
     ## Attach to module
     module.shell = shell
     module.file = file
-
-    if not sudoMode or not user.admin():
-        module.open = copy(openFile)
 
 
 

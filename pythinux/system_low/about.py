@@ -5,5 +5,5 @@ def main(args):
 
     div()
     print("{} {}".format(osName, friendlyVersion))
-    print("(c) 2021-{} WinFan3672, some rights reserved.".format(year))
+    print("(c) 2021-{} Pythinux, some rights reserved.".format(year))
     div()

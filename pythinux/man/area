@@ -2,7 +2,7 @@ NAME
     area - find the area of a rectangle, circle, or triangle in one command
 DESCRIPTION
     Sometimes you need to find the area of a rectangle/triangle/circle. The AREA command allows you to do it quickly.
-SWITCHES
+SYNTAX
     -r <base> <height>
         Performs <base>*<height> and prints the result. Used to find the area of a rectangle (or square).
     -c <radius>
@@ -25,3 +25,6 @@ LIBRARY
         Finds the area of a circle and returns the result (either an int or float)
     area.triangle(base, height)
         Finds the area of a triangle and returns the result (either an int or float).
+SEE ALSO
+    import: how to import libraries
+    calc: perform arithmetic calculations

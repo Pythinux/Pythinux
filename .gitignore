@@ -17,3 +17,9 @@ pythinux/icon
 pythinux/*.jajl
 pythinux/crash_report.log
 pythinux/memory.pkl
+*.aux
+*.log
+*.out
+*.pdf
+*.synctex.gz
+*.toc

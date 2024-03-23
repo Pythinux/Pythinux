@@ -1,0 +1,43 @@
+NAME
+    var - Manage environment variables
+DESCRIPTION
+    Environment variables are temporary data values applicable to all users that can be accessed by any program.
+    They are commonly used as an alternative to config files (see libconfig).
+    var is a command and library for managing environment variables.
+SYNTAX
+    var list
+        Lists all assigned variables.
+    var set <variable> <value>
+        Creates a new variable and sets its value.
+        Overwrites an old variable if it exists.
+    var get <variable>
+        Prints the value of a variable.
+    var rm <variable>
+        Removes a variable. Fails safely if unable to remove a variable.
+EXAMPLE
+    var set SHELL_ALLOW_EXIT true
+        Sets "SHELL_ALLOW_EXIT" to "true". 
+        Running this command enables the ability to exit Pythinux by running "exit".
+    var get SHELL_ALLOW_EXIT
+        Prints the value of SHELL_ALLOW_EXIT.
+    var rm foo
+        Removes the variable "foo" if it exists.
+LIBRARY
+    var.list()
+        Prints all variables. NOTE: To access the list, run "giveVars()".
+    var.set(var, value)
+        Sets var to value.
+    var.get(var, fallback="")
+        Returns the value of var (as a string).
+        If var doesn't exist, return fallback.
+    var.getint(var, fallback=0)
+        Returns the value of var (as an int).
+        If var doesn't exist or isn't valid, return fallback.
+    var.getbool(var, fallback=True)
+        Returns True if the value of var is "true", "True", "yes", "Yes", or "1", and False for all other values.
+        If var doesn't exist or isn't valid, return fallback.
+    var.rm(var)
+        Deletes a variable.
+SEE ALSO
+    import: how to import libraries
+    libconfig: manage INI config files
