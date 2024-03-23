@@ -75,8 +75,9 @@ def fixDirectories(returnMode=False):
             "icon",
             "lib",
             "log",
-            "rscript",
             "share",
+            "share/pkm",
+            "share/pkm/rscript",
             "tmp",
             ]
     if returnMode:
@@ -922,6 +923,9 @@ def generateAPI(module, user, sudoMode):
     shell.isUnix = copy(isUnix)
     file.evalDir = copy(evalDir)
     file.root = lambda: os.chdir(ROOTDIR)
+    
+    if user.admin() or sudoMode:
+        file.changeDirectory = copy(changeDirectory)
 
     ## Attach to module
     module.shell = shell
@@ -943,14 +947,12 @@ def loadProgramBase(
     def getTerm():
         return shell
 
-    if user.god():
-        sudoMode = True
-    current_directory = os.getcwd()
-    system_directory = os.path.join(current_directory, "system")
-    hsystem_directory = os.path.join(current_directory, "system_high")
-    lsystem_directory = os.path.join(current_directory, "system_low")
-    app_directory = os.path.join(current_directory, "app")
-    happ_directory = os.path.join(current_directory, "app_high")
+    current_directory = evalDir("/", user)
+    system_directory = evalDir("/system", user)
+    hsystem_directory = evalDir("/system_high", user)
+    lsystem_directory = evalDir("/system_low", user)
+    app_directory = evalDir("/app", user)
+    happ_directory = evalDir("/app_high", user)
 
     directories = [system_directory, lsystem_directory, app_directory]
     if user.admin() or sudoMode:
@@ -1089,10 +1091,6 @@ def changeDirectory(directory: str, user: User):
     CURRDIR = directory
 
 
-def simplifyDir(directory: str, user: User):
-    """
-    Opposite
-    """
 
 def evalDir(directory: str, user: User):
     """
@@ -1234,15 +1232,12 @@ def list_loadable_programs(user, sudoMode=False):
     Note: if sudoMode is True, the app and system
     directories are always authorised.
     """
-    current_directory = os.getcwd()
-    system_directory = os.path.join(current_directory, "system")
-    app_directory = os.path.join(current_directory, "app")
-    current_directory = os.getcwd()
-    system_directory = os.path.join(current_directory, "system")
-    hsystem_directory = os.path.join(current_directory, "system_high")
-    lsystem_directory = os.path.join(current_directory, "system_low")
-    app_directory = os.path.join(current_directory, "app")
-    happ_directory = os.path.join(current_directory, "app_high")
+    current_directory = evalDir("/", user)
+    system_directory = evalDir("/system", user)
+    hsystem_directory = evalDir("/system_high", user)
+    lsystem_directory = evalDir("/system_low", user)
+    app_directory = evalDir("/app", user)
+    happ_directory = evalDir("/app_high", user)
 
     directories = [lsystem_directory]
     if user.group.canApp:

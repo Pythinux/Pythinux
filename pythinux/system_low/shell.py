@@ -24,6 +24,7 @@ def init(user):
     fileName = "~/shellrc.xx"
     script = file.evalDir(fileName, user)
     runScript(user, script)
+    file.changeDirectory("~", user)
 
 def terminal(user, lastCommand=""):
     try:
