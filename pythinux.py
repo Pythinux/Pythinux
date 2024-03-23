@@ -1169,7 +1169,7 @@ def load_program(
             if "main" in dir(module):
                 module.main(module.args)
             else:
-                print("WARNING: Program {} does not have a main() function.".format(program_name))
+                print("WARNING: '{}' does not have a main() function.".format(program_name))
         return module
 
 

@@ -1,0 +1,13 @@
+NAME
+    libsemver - work with semantic versioning
+DESCRIPTION
+    Semantic versioning is used in many areas of Pythinux development, including the format for SZIP4 package versions.
+    As such, you need a library to check if a string is a valid semantic version, and to compare semantic versions to see if
+    they are higher.
+LIBRARY
+    libsemver.check(version)
+        Checks version against a regex and returns True if it is in a semantic version format, and False if it is not.
+    libsemver.compare(a, b)
+        Takes 2 semantic versions (checked with check() for safety) and returns 0 if a = b, 1 if a > b, and -1 if a < b.
+SEE ALSO
+    import: how to import libraries

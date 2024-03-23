@@ -1,22 +1,8 @@
-"""
-PKM 4.x
-
-Package manager
-
-API:
-    getPackageData()
-        Returns a dict with package data.
-    saveConfig()
-        Saves the config to /config/pkm.ini
-    loadConfig()
-        Refreshes the config from /config/pkm.ini
-    
-"""
-
 import configparser
 import urllib.request
 import traceback
 installd = load_program("install", currentUser, libMode=True)
+libsemver = load_program("libsemver", currentUser, libMode=True)
 
 global config, version
 
@@ -52,7 +38,7 @@ def sectionToDict(config, section):
         dict_section[option] = config.get(section, option)
     return dict_section
 
-def getPackageData(offline=True):
+def getPackageData(offline=True, silent=False):
     """
     This function returns package data as a dict
     """
@@ -61,14 +47,17 @@ def getPackageData(offline=True):
     if offline:
         packageData.read(file.evalDir("config/pkmdata.ini", currentUser))
     else:
-        print("Updating database...")
+        if not silent:
+            print("Updating database...")
         for repo in repos:
-            print("Downloading '{}'...".format(repo))
+            if not silent:
+                print("Downloading '{}'...".format(repo))
             downloadFile(repos[repo], "/tmp/repo")
             packageData.read("tmp/repo")
     with open(file.evalDir("/config/pkmdata.ini", currentUser), "w") as f:
         packageData.write(f)
-    print("Successfully updated database.")
+    if not silent:
+        print("Successfully updated database.")
     return packageData
 def saveConfig():
     with open(file.evalDir("/config/pkm.ini", currentUser), "w") as f:
@@ -109,6 +98,20 @@ def main(args):
         for repo in repos:
             print("{} --> {}".format(repo, repos[repo]))
         div()
+    elif args == ["all"]:
+        packages = getPackageData(False, True)
+        for package in packages.sections():
+            div()
+            print("{} {}".format(package, packages.get(package, "version")))
+            print("    {}".format(packages.get(package, "name")))
+            print("    {}".format(packages.get(package, "description")))
+        div()
+        if len(packages.sections()) == 0:
+            print("ERROR: No packages found.")
+            div()
+    elif args == ["allc"]:
+        packages = getPackageData(False, True)
+        print("\n".join(packages.sections()))
     else:
         div()
         print("pkm [args]")
@@ -126,7 +129,7 @@ def main(args):
         # print("    info <package>: prints information about an installed package")
         # print("    rinfo <package>: prints information about an installable package")
         # print("    all: lists all installable packages")
-        # print("    allc: lists all installable packages [compact]")
+        print("    allc: lists all installable packages [compact]")
         print("    repo: manages repositories")
         # print("    batch <database>: installs every package in a particular database")
         # print("    from <database> <package>: installs a package from a specific database")

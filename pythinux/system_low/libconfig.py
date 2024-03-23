@@ -62,6 +62,3 @@ def loadConfig(default: Config, fileName: str):
         saveConfig(default, fileName)
 
     return config
-
-def main(args):
-    pass
