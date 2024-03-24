@@ -74,10 +74,6 @@ def saveConfig():
 def loadConfig():
     config.read(file.evalDir("/config/pkm.ini", currentUser))
 
-def registerApp(app):
-    data = getPackageData()
-    applications.add_section(app)
-
 def main(args):
     loadConfig()
     saveConfig()
@@ -96,9 +92,9 @@ def main(args):
         print("Manage repositories.")
         div()
         print("Positional arguments:")
-        # print("    add <name> <url>: add a repository")
+        print("    add <name> <url>: add a repository")
         print("    list: lists all repositories")
-        # print("    remove <name>: remove a repository")
+        print("    rm <name>: remove a repository")
         div()
     elif args in [["repo", "list"], ["repo", "ls"]]:
         repos = sectionToDict(config, "repos")
@@ -106,6 +102,21 @@ def main(args):
         for repo in repos:
             print("{} --> {}".format(repo, repos[repo]))
         div()
+    elif args == ["repo", "add"]:
+        div()
+        print("pkm repo add <name> <url")
+        div()
+        print("Adds a repository to PKM's database.")
+        div()
+    elif "repo" in args and "add" in args and len(args) == 4:
+        args.remove("repo")
+        args.remove("add")
+        name = args[0]
+        url = args[1]
+        loadConfig()
+        config.set("repos", name, url)
+        saveConfig()
+        getPackageData(False)
     elif args == ["all"]:
         packages = getPackageData(False, True)
         for package in packages.sections():
@@ -117,6 +128,20 @@ def main(args):
         if len(packages.sections()) == 0:
             print("ERROR: No packages found.")
             div()
+    elif args == ["repo", "rm"]:
+        div()
+        print("pkm repo rm <name>")
+        div()
+        print("Remove a repository from PKM's repo list.")
+        div()
+    elif "repo" in args and "rm" in args and len(args) == 3:
+        args.remove("repo")
+        args.remove("rm")
+        name = args[0]
+        loadConfig()
+        config.remove_option("repos", name)
+        saveConfig()
+        print("Successfully removed repository '{}'.".format(name))
     elif args == ["allc"]:
         packages = getPackageData(False, True)
         print("\n".join(packages.sections()))
