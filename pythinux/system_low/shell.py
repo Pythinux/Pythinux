@@ -42,7 +42,7 @@ def terminal(user, lastCommand=""):
         terminal(user, str(cmd))
 
 def runScript(user, filename):
-    with open(filename) as f:
+    with file.open(filename, user) as f:
         for cmd in f.read().split("\n"):
             run(user, cmd, "script")
 def main(args):

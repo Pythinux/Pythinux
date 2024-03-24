@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#/usr/bin/env python
 import os
 import pickle
 import sys
@@ -22,10 +22,12 @@ try:
 except:
     unixMode = False
 
-global osName, version, CURRDIR, ROOTDIR, DEFAULT_SHELL_SCRIPT, var
+global osName, version, CURRDIR, ROOTDIR, DEFAULT_SHELL_SCRIPT, var, aliases, EVALHIST
 osName = "Pythinux"
 version = [3, 0, 0]
 var = {}
+aliases = {}
+EVALHIST = []
 
 
 DEFAULT_SHELL_SCRIPT = """var set ALLOW_CLS true
@@ -72,12 +74,14 @@ def fixDirectories(returnMode=False):
             "app_high",
             "config",
             "home",
-            "icon",
             "lib",
             "log",
             "share",
             "share/pkm",
-            "share/pkm/rscript",
+            "share/pkm/programs",
+            "share/pkm/script",
+            "share/pkm/script/remove",
+            "share/pkm/script/update",
             "tmp",
             ]
     if returnMode:
@@ -765,6 +769,7 @@ def parseInput(user, string, shell):
         o = giveOutput(match, user, shell=shell)
         match = "$({})".format(match)
         string = string.replace(match, o)
+
     return string
 
 
@@ -808,12 +813,7 @@ def loadAliases():
     """
     Returns the list of aliases, or {} if there isn't one.
     """
-    try:
-        with open("config/alias.cfg", "rb") as f:
-            return pickle.load(f)
-    except Exception:
-        saveAliases({})
-        return {}
+    return aliases.copy()
 
 
 def exposeObjects(module, objects):
@@ -903,11 +903,11 @@ def addPythinuxModule(module, shared_objects, user):
     return module
 
 def generateAPI(module, user, sudoMode):
-    def openFile(filename, mode="r"):
+    def openFile(filename, user, mode="r", **kwargs):
         """
         Custom open() operation.
         """
-        return open(evalDir(filename, user), mode)
+        return open(evalDir(filename, user), mode, **kwargs)
 
     def isUnix():
         return unixMode
@@ -926,6 +926,7 @@ def generateAPI(module, user, sudoMode):
     
     if user.admin() or sudoMode:
         file.changeDirectory = copy(changeDirectory)
+    file.open = copy(openFile)
 
     ## Attach to module
     module.shell = shell
@@ -1104,6 +1105,8 @@ def evalDir(directory: str, user: User):
     Also ensures no directory above the root directory is selected, ensuring no 
     VM escapes occur.
     """
+    if directory in EVALHIST:
+        return directory
     directory = directory.replace("\\", "/")
     if directory.startswith(".") and not directory.endswith(".."):
         directory = directory.replace(".", CURRDIR, 1)
@@ -1124,7 +1127,11 @@ def evalDir(directory: str, user: User):
     if not directory.startswith(ROOTDIR):
         return ROOTDIR
     else:
-        return directory.replace("//", "/")
+        directory = directory.replace("//", "/")
+        EVALHIST.append(directory)
+        return directory
+
+
 
 def load_program(
         program_name_with_args,
@@ -1171,17 +1178,17 @@ def load_program(
         return module
 
 
-def clearTemp():
+def clearTemp(user):
     """
     Clears the contents of the tmp/ directory in the
     Pythinux install directory.
     """
     try:
-        shutil.rmtree("tmp")
+        shutil.rmtree(evalDir("/tmp", user))
     except Exception:
         pass
     try:
-        os.mkdir("tmp")
+        os.mkdir(evalDir("/tmp", user))
     except Exception:
         pass
 
@@ -1548,7 +1555,6 @@ if __name__ == "__main__":
     userList = loadUserList()
     groupList = loadGroupList()
     global pdir
-    global aliases
     aliases = loadAliases()
     pdir = dir()
     loginScreen(loadAL())

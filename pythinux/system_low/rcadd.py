@@ -2,7 +2,7 @@ def add(command):
     """
     Adds `command` to `~/shellrc.xx`.
     """
-    with open(file.evalDir("~/shellrc.xx", currentUser), "a") as f:
+    with file.open("~/shellrc.xx", currentUser, "a") as f:
         f.write("\n{}".format(command))
 def main(args):
     if args:

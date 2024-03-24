@@ -1,7 +1,11 @@
 import configparser
 import urllib.request
 import traceback
-installd = load_program("install", currentUser, libMode=True)
+
+disallowInstalld = getTerm() == "installd"
+
+if not disallowInstalld:
+    installd = load_program("installd", currentUser, libMode=True)
 libsemver = load_program("libsemver", currentUser, libMode=True)
 
 global config, version
@@ -56,9 +60,13 @@ def getPackageData(offline=True, silent=False):
             packageData.read("tmp/repo")
     with open(file.evalDir("/config/pkmdata.ini", currentUser), "w") as f:
         packageData.write(f)
-    if not silent:
+    if not silent and not offline:
         print("Successfully updated database.")
     return packageData
+
+def getPackageList():
+    return os.listdir(file.evalDir("/share/pkm/programs/", currentUser))
+
 def saveConfig():
     with open(file.evalDir("/config/pkm.ini", currentUser), "w") as f:
         config.write(f)
@@ -112,6 +120,49 @@ def main(args):
     elif args == ["allc"]:
         packages = getPackageData(False, True)
         print("\n".join(packages.sections()))
+    elif args == ["install"]:
+        div()
+        print("pkm install <package(s)> [-y]")
+        div()
+        print("Downloads a package file and installs it.")
+        div()
+    elif "install" in args:
+        args.remove("install") ## Apparently it removes the FIRST instance, not all of them
+        if "-y" in args:
+            yesMode = True
+            args.remove("-y")
+        else:
+            yesMode = False
+        if "-d" in args:
+            depMode = True
+            yesMode = True
+            args.remove("-d")
+        else:
+            depMode = False
+        for arg in args:
+            clearTemp(currentUser)
+            data = getPackageData()
+            url = data.get(arg, "url", fallback=None)
+            if url:
+                downloadFile(url, "tmp/program.szip4")
+                result = installd.installd("tmp/program.szip4", yesMode)
+                if not depMode:
+                    if result == -1:
+                        print("ERROR: User action canceled.")
+                    elif result == 0:
+                        print("Successfully installed '{}'.".format(arg))
+                    else:
+                        print("ERROR: Exit code {}".format(result))
+                else:
+                    print("ERROR: '{}' is not a valid package.".format(arg))
+    elif args == ["list"]:
+        ls = sorted(getPackageList())
+        div()
+        if ls:
+            print("\n".join(ls))
+        else:
+            print("ERROR: No packages installed.")
+        div()
     else:
         div()
         print("pkm [args]")
@@ -119,16 +170,16 @@ def main(args):
         print("Pythinux package manager.")
         div()
         print("Positional arguments:")
-        # print("    install <package>: installs a package")
+        print("    install <package>: installs a package")
         # print("    search <package name>: searches for a package by name")
         # print("    remove <package>: remove a package")
         # print("    clear: removes all installed packages")
         print("    update: updates the database")
         # print("    upgrade: upgrades all installed packages")
-        # print("    list: lists all installed programs")
+        print("    list: lists all installed programs")
         # print("    info <package>: prints information about an installed package")
         # print("    rinfo <package>: prints information about an installable package")
-        # print("    all: lists all installable packages")
+        print("    all: lists all installable packages")
         print("    allc: lists all installable packages [compact]")
         print("    repo: manages repositories")
         # print("    batch <database>: installs every package in a particular database")

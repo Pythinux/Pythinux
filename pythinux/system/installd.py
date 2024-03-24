@@ -4,9 +4,88 @@ import zipfile
 import traceback
 import shutil
 import sys
+import configparser
 
-def installd(file):
+pkm = load_program("pkm", currentUser, libMode=True, shell="installd")
+shell = load_program("shell", currentUser, libMode=True)
+libsemver = load_program("libsemver", currentUser, libMode=True)
+
+class InstallError(Exception):
     pass
+
+def getScripts(ini):
+    scripts = []
+    scripts.append(ini.get("Scripts", "Install", fallback=None))
+    scripts.append(ini.get("Scripts", "Update", fallback=None))
+    scripts.append(ini.get("Scripts", "Remove", fallback=None))
+    return [x for x in scripts if x]
+
+def installd(filename, yesMode=False, depMode=False):
+    with zipfile.ZipFile(filename) as z:
+        z.extract("program.ini", file.evalDir("/tmp", currentUser))
+
+        ini = configparser.ConfigParser()
+        ini.read(file.evalDir("/tmp/program.ini", currentUser))
+        if not ini.has_section("Program"):
+            raise InstallError("File program.ini in installer has no Program section")
+
+        name = ini.get("Program", "name", fallback="[No program name]")
+        version = ini.get("Program", "version", fallback="1.0.0")
+        if not libsemver.check(version):
+            raise InstallError("Defined version ({}) is not a semantic version (x.y.z)".format(version))
+
+        author = ini.get("Program", "author", fallback="null")
+        maintainer = ini.get("Program", "maintainer", fallback="null")
+        date = ini.get("Program", "release", fallback="1 January 1970")
+        deps = ini.get("Program", "dependencies", fallback="").split("; ")
+        conflicts = ini.get("Program", "conflicts", fallback="").split("; ")
+        
+        if ini.has_section("Files"):
+            files = dict(ini["Files"])
+        else:
+            files = {}
+        folders = ini.get("Folders", "folders", fallback="").split("; ")
+        
+        if not yesMode:
+            cls()
+            div()
+            print("Package: {}".format(ini.get("Program", "package")))
+            print("Name: {}".format(name))
+            print("Version: {}".format(version))
+            print("Author: {}".format(author))
+            print("Maintainer: {}".format(maintainer))
+            print("Released: {}".format(date))
+            div()
+            inst = input("Install? [Y/n] $").lower()
+            if inst == "n":
+                return -1
+        for dep in deps:
+            runCommand(currentUser, "pkm install -d {}".format(dep))
+        for item in files:
+            location = files[item]
+            if location.startswith("@"):
+                command = "{} {}".format(location[1:], file.evalDir("/tmp/{}".format(item), currentUser))
+                z.extract(item, file.evalDir("/tmp", currentUser))
+                runCommand(currentUser, command)
+            else:
+                with z.open(item) as zff:
+                    with file.open(location, currentUser, "wb") as f:
+                        f.write(zff.read())
+        with file.open("/share/pkm/programs/{}".format(ini.get("Program", "package")), currentUser, "w") as p:
+            ini.write(p)
+
+        installScript = ini.get("Scripts", "Install", fallback=None)
+        updateScript = ini.get("Scripts", "Update", fallback=None)
+        removeScript = ini.get("Scripts", "Remove", fallback=None)
+        if installScript:
+            z.extract(installScript, file.evalDir("/tmp", currentUser))
+            shell.runScript(currentUser, "/tmp/{}".format(installScript))
+        if updateScript:
+            z.extract(updateScript, file.evalDir("/share/pkm/scripts/update", currentUser))
+        if removeScript:
+            z.extract(removeScript, file.evalDir("/share/pkm/scripts/remove", currentUser))
+            
+    return 0
 
 def main(args):
     if args:
