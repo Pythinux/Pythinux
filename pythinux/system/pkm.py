@@ -78,13 +78,13 @@ def saveConfig():
 def loadConfig():
     config.read(file.evalDir("/config/pkm.ini", currentUser))
 
-def installPackage(package, yesMode=False, depMode=False):
+def installPackage(package, yesMode=False, depMode=False, forceMode=False):
     clearTemp(currentUser)
     data = getPackageData()
     url = data.get(package, "url", fallback=None)
     if url:
         downloadFile(url, "tmp/program.szip4")
-        result = installd.installd("tmp/program.szip4", yesMode)
+        result = installd.installd("tmp/program.szip4", yesMode, forceMode)
         if result == 1:
             print("ERROR: User action canceled.")
         elif result == 0:
@@ -323,6 +323,26 @@ def main(args):
             dispInfo(ini)
         else:
             print("ERROR: Invalid package name.")
+    elif args == ["upgrade"]:
+        print("Upgrading...")
+        data = getPackageData(False, True)
+        packages = getPackageList()
+        upgrades = []
+        for package in packages:
+            remote = data.get(package, "version", fallback="1.0.0")
+            ini = configparser.ConfigParser()
+            ini.read(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
+            local = ini.get("Program", "version", fallback = "1.0.0")
+            if libsemver.compare(local, remote) == -1:
+                upgrades.append(package)
+        i = 1
+        for upgrade in upgrades:
+            print("({}/{}) Upgrading '{}'...".format(i, len(upgrades), upgrades))
+            installPackage(upgrade, True, False, True)
+        if upgrades:
+            print("Upgraded all packages.")
+        else:
+            print("No packages to upgrade.")
     else:
         div()
         print("pkm [args]")
@@ -335,14 +355,14 @@ def main(args):
         print("    remove <package>: remove a package")
         print("    clear: removes all installed packages")
         print("    update: updates the database")
-        # print("    upgrade: upgrades all installed packages")
+        print("    upgrade: upgrades all installed packages")
         print("    list: lists all installed programs")
-        # print("    info <package>: prints information about an installed package")
-        # print("    rinfo <package>: prints information about an installable package")
+        print("    info <package>: prints information about an installed package")
+        print("    rinfo <package>: prints information about an installable package")
         print("    all: lists all installable packages")
         print("    allc: lists all installable packages [compact]")
         print("    repo: manages repositories")
-        # print("    batch <database>: installs every package in a particular database")
+        print("    batch <database>: installs every package in a particular database")
         # print("    from <database> <package>: installs a package from a specific database")
         print("    version: states the version of PKM")
         div()

@@ -20,7 +20,7 @@ def getScripts(ini):
     scripts.append(ini.get("Scripts", "Remove", fallback=None))
     return [x for x in scripts if x]
 
-def installdBase(filename, yesMode=False):
+def installdBase(filename, yesMode=False, forceMode=False):
     with zipfile.ZipFile(filename) as z:
         z.extract("program.ini", file.evalDir("/tmp", currentUser))
 
@@ -41,7 +41,7 @@ def installdBase(filename, yesMode=False):
         deps = [x for x in deps if x not in pkm.getPackageList()]
         conflicts = ini.get("Program", "conflicts", fallback="").split("; ")
         
-        if ini.get("Program", "package") in pkm.getPackageList():
+        if ini.get("Program", "package") in pkm.getPackageList() and not forceMode:
             return 2 # Package already exists
 
         if ini.has_section("Files"):
@@ -105,9 +105,9 @@ def installdBase(filename, yesMode=False):
             
     return 0
 
-def installd(filename, yesMode=False):
+def installd(filename, yesMode=False, forceMode=False):
     try:
-        return installdBase(filename, yesMode)
+        return installdBase(filename, yesMode, forceMode)
     except:
         return -1
 
