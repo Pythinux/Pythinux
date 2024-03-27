@@ -15,7 +15,7 @@ default.set("DEFAULT", "foo", "bar")
 
 ## Load the config
 
-config = libconfig.loadConfig(default, os.path.expanduser("~/myapp.ini"))
+config = libconfig.loadConfig(default, "~/myapp.ini")
 
 ## Get some values
 print(config.getboolean("settings," "allow_multiple_sessions")) ## returns True

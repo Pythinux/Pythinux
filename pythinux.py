@@ -36,7 +36,7 @@ var set SHELL_ALLOW_EXIT false"""
 
 class PythinuxError(Exception):
     """
-    Exception thrown by the kernel when an issue occurs.
+    Exception thrown by the kernel (and system programs) when an issue occurs.
     """
 
     def __init__(self, text):
