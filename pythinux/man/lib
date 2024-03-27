@@ -4,10 +4,10 @@ DESCRIPTION
     Libraries are pieces of code that can be imported and called by programs. This manpage serves as a list of the libraries built into Pythinux.
     Do note that some user-facing programs (such as AREA) may have libraries as well, and are not listed here. To find out if a built-in program can be used as a library, open the manpage and check if there is a LIBRARY section.
 LIST
-    libargs
-        Advanced argument parser that returns a dictionary of results. Experimental.
     libconfig
         Create INI configuration files and manage them.
+    libsemver
+        Deals with semantic version strings.
 EXTERNAL
     There are loads of external libraries, including some official ones (see `lib.2`). 
     To install an external libary:
@@ -18,7 +18,7 @@ EXTERNAL
 
     $ pkm search lib
 
-    These libraries generally do not have documentation, but a simple look at the source code (using `xview`, an installable program) can help.
+    These libraries generally do not have documentation, but a simple look at the source code (using `viewsrc`) can help.
 SEE ALSO
     import: how to import libaries
     lib.2: list of external but official libraries

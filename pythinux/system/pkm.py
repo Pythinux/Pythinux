@@ -87,8 +87,7 @@ def installPackage(package, yesMode=False, depMode=False):
         if result == 1:
             print("ERROR: User action canceled.")
         elif result == 0:
-            if depMode:
-                print("Successfully installed '{}'.".format(package))
+            print("Successfully installed '{}'.".format(package))
         elif result == 2:
             print("ERROR: Package '{}' is already installed.".format(package))
             print("ERROR: To rectify this, run 'pkm remove {}' and try again.".format(package))
@@ -117,6 +116,12 @@ def removePackage(package):
 
     os.remove(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
     print("Successfully removed program.")
+
+def searchForPackages(term):
+    if term == "ALL":
+        return getPackageData(False,True).sections()
+    else:
+        return [x for x in getPackageData(False, True) if term in x]
 
 def main(args):
     loadConfig()
@@ -196,7 +201,7 @@ def main(args):
         print("Downloads a package file and installs it.")
         div()
     elif "install" in args:
-        args.remove("install") ## Apparently it removes the FIRST instance, not all of them
+        args.remove("install")
         if "-y" in args:
             yesMode = True
             args.remove("-y")
@@ -233,6 +238,43 @@ def main(args):
     elif args == ["clear"]:
         print("ERROR: This will remove ALL of your packages.")
         print("ERROR: Run `pkm clear -y` to confirm.")
+    elif args == ["search"]:
+        div()
+        print("pkm search <term>")
+        div()
+        print("Find a package to install.")
+        div()
+    elif "search" in args:
+        args.remove("search")
+        results = searchForPackages(" ".join(args))
+        data = getPackageData()
+        div()
+        for res in results:
+            print("{} {}".format(res, data.get(res, "version")))
+            print("    {}".format(data.get(res, "description")))
+        if not results:
+            print("No packages found.")
+        div()
+    elif args == ["batch"]:
+        div()
+        print("pkm batch <database>")
+        div()
+        print("Install all packages from a database.")
+        print("For testing purposes only.")
+        div()
+    elif "batch" in args and len(args) == 2:
+        args.remove("batch")
+        repo = config.get("repos", args[0])
+        clearTemp(currentUser)
+        downloadFile(repo, "/tmp/db.ini")
+        ini = configparser.ConfigParser()
+        ini.read(file.evalDir("/tmp/db.ini", currentUser))
+        for package in ini.sections():
+            clearTemp(currentUser)
+            downloadFile(ini.get(package, "url"), "/tmp/package.szip4")
+            exitCode = installd.installd(file.evalDir("/tmp/package.szip4", currentUser), True)
+            if exitCode:
+                print("ERROR: installd returned exit code {} for package '{}'. Run `man installd` for more info.".format(exitCode, package))
     else:
         div()
         print("pkm [args]")

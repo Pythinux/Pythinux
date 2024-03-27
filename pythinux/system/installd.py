@@ -20,7 +20,7 @@ def getScripts(ini):
     scripts.append(ini.get("Scripts", "Remove", fallback=None))
     return [x for x in scripts if x]
 
-def installd(filename, yesMode=False):
+def installdBase(filename, yesMode=False):
     with zipfile.ZipFile(filename) as z:
         z.extract("program.ini", file.evalDir("/tmp", currentUser))
 
@@ -65,7 +65,7 @@ def installd(filename, yesMode=False):
                 return 1 # Action canceled
         currDep = 1
         for dep in deps:
-            print("({}/{}) Installing '{}' (dependency of '{})...".format(currDep, len(deps), dep, ini.get("Program", "package")))
+            print("({}/{}) Installing '{}' (dependency of '{}')...".format(currDep, len(deps), dep, ini.get("Program", "package")))
             runCommand(currentUser, "pkm install -d {}".format(dep))
             currDep += 1
         for item in files:
@@ -104,6 +104,12 @@ def installd(filename, yesMode=False):
             z.extract(removeScript, file.evalDir("/share/pkm/scripts/remove", currentUser))
             
     return 0
+
+def installd(filename, yesMode=False):
+    try:
+        return installdBase(filename, yesMode)
+    except:
+        return -1
 
 def main(args):
     if args:
