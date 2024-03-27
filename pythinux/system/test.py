@@ -12,7 +12,6 @@ def blank():
 def main(args):
     for program in help.help():
         try:
-            runCommand(currentUser, "var set ALLOW_CLS false")
             mod = load_program(program, currentUser, libMode=True)
             if "main" not in dir(mod):
                 print("ERROR: {} has no main()".format(program))
