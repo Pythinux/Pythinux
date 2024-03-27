@@ -20,7 +20,7 @@ def getScripts(ini):
     scripts.append(ini.get("Scripts", "Remove", fallback=None))
     return [x for x in scripts if x]
 
-def installd(filename, yesMode=False, depMode=False):
+def installd(filename, yesMode=False):
     with zipfile.ZipFile(filename) as z:
         z.extract("program.ini", file.evalDir("/tmp", currentUser))
 
@@ -37,9 +37,13 @@ def installd(filename, yesMode=False, depMode=False):
         author = ini.get("Program", "author", fallback="null")
         maintainer = ini.get("Program", "maintainer", fallback="null")
         date = ini.get("Program", "release", fallback="1 January 1970")
-        deps = ini.get("Program", "dependencies", fallback="").split("; ")
+        deps = [x for x in ini.get("Program", "dependencies", fallback="").split("; ") if x]
+        deps = [x for x in deps if x not in pkm.getPackageList()]
         conflicts = ini.get("Program", "conflicts", fallback="").split("; ")
         
+        if ini.get("Program", "package") in pkm.getPackageList():
+            return 2 # Package already exists
+
         if ini.has_section("Files"):
             files = dict(ini["Files"])
         else:
@@ -58,9 +62,12 @@ def installd(filename, yesMode=False, depMode=False):
             div()
             inst = input("Install? [Y/n] $").lower()
             if inst == "n":
-                return -1
+                return 1 # Action canceled
+        currDep = 1
         for dep in deps:
+            print("({}/{}) Installing '{}' (dependency of '{})...".format(currDep, len(deps), dep, ini.get("Program", "package")))
             runCommand(currentUser, "pkm install -d {}".format(dep))
+            currDep += 1
         for item in files:
             location = files[item]
             if location.startswith("@"):
@@ -71,6 +78,17 @@ def installd(filename, yesMode=False, depMode=False):
                 with z.open(item) as zff:
                     with file.open(location, currentUser, "wb") as f:
                         f.write(zff.read())
+
+        ignoredFolders = []
+        for item in folders:
+            directory = file.evalDir(item, currentUser)
+            if not os.path.isdir(directory):
+                os.mkdir(directory)
+            else:
+                ignoredFolders.append(directory)
+
+        ini.set("Folders", "ignored", "; ".join(ignoredFolders))
+
         with file.open("/share/pkm/programs/{}".format(ini.get("Program", "package")), currentUser, "w") as p:
             ini.write(p)
 
@@ -89,7 +107,11 @@ def installd(filename, yesMode=False, depMode=False):
 
 def main(args):
     if args:
-        installd(" ".join(args))
+        result = installd(" ".join(args))
+        if result:
+            print("ERROR: Exit code {} given. Check installd's manpage for more information.")
+        else:
+            print("Program successfully installed.")
     else:
         div()
         print("installd /path/to/program.szip4")

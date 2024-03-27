@@ -1,0 +1,19 @@
+NAME
+    installd - installation daemon
+DESCRIPTION
+    INSTALLD is the backend used by pkm to install packages. It reads the INI config and parses it, performing relevant actions.
+SYNTAX
+    installd <path/to/program.szip4>
+        Installs an SZIP4 package.
+LIBRARY
+    installd.installd(fileName: str, yesMode=False)
+        Installs an SZIP4 package.
+        fileName is a path to an SZIP4 package.
+        if yesMode is true, the install confirmation dialogue is skipped.
+        NOTE: fileName is not passed into file.evalDir(), you need to do that yourself.
+ERROR CODES
+    0: Successful exit.
+    1: User action canceled.
+    2: Package already installed.
+SEE ALSO
+    pkm - package manager

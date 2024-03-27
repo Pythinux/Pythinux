@@ -1,26 +1,20 @@
-def dirTree(path):
-    if not os.path.isdir(path):
-        print("Error: invalid path.")
-    else:
-        div()
-        for root, dirs, files in os.walk(path):
-            if root.startswith("man/"):
-                root=root[3:]
-            elif root.startswith("man"):
-                root=root[4:]
-            if root.startswith("/"):
-                root=root[1:]
-            for file in files:
-                print(os.path.join(root,file))
-        div()
-
+def dirTree():
+    manuals = []
+    path = "man/"
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            manuals.append(file)
+    return files
 def main(args):
-    if args == []:
-        runCommand(currentUser,"man man")
-    elif args == ["/"]:
-        dirTree("man")
+    if args == ["/"]:
+        div()
+        print("\n".join(sorted(dirTree())))
+        div()
     else:
-        manual = "man/" + " ".join(args)
+        if args:
+            manual = "man/" + " ".join(args)
+        else:
+            manual = "man/man"
         if os.path.isfile(manual):
             with open(manual) as f:
                 cls()
@@ -29,4 +23,4 @@ def main(args):
                 br()
                 cls()
         else:
-            print("ERROR: Invalid manual.")
+            print("ERROR: Manual `{}` is not valid.".format(manual))

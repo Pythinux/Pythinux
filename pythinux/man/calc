@@ -12,7 +12,8 @@ EXAMPLES
     calc 2//2
         Throws an error as doCalc() doesn't support // (integer division).
 OPERATORS
-    doCalc() supports a very limited amount of operators. Specifically, it supports `+`/`-`/`*`/`/` as well as brackets (`()`).
+    doCalc() supports a very limited amount of operators. Specifically, it supports `+`, `-`, `*`, `/` as well as brackets (`()`).
+    Order of operations (BIDMAS, BODMAS, etc.) is respected.
     It does not support power operations (`^`), modulus (`%`), int division (`//`), or ANY other operation.
     This is a result of doCalc()'s extreme approach to safety, because Python's eval() is dangerous.
 SEE ALSO

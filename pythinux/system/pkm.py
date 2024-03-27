@@ -1,3 +1,5 @@
+import os
+import shutil
 import configparser
 import urllib.request
 import traceback
@@ -7,6 +9,7 @@ disallowInstalld = getTerm() == "installd"
 if not disallowInstalld:
     installd = load_program("installd", currentUser, libMode=True)
 libsemver = load_program("libsemver", currentUser, libMode=True)
+shell = load_program("shell", currentUser, libMode=True)
 
 global config, version
 
@@ -73,6 +76,47 @@ def saveConfig():
 
 def loadConfig():
     config.read(file.evalDir("/config/pkm.ini", currentUser))
+
+def installPackage(package, yesMode=False, depMode=False):
+    clearTemp(currentUser)
+    data = getPackageData()
+    url = data.get(package, "url", fallback=None)
+    if url:
+        downloadFile(url, "tmp/program.szip4")
+        result = installd.installd("tmp/program.szip4", yesMode)
+        if result == 1:
+            print("ERROR: User action canceled.")
+        elif result == 0:
+            if depMode:
+                print("Successfully installed '{}'.".format(package))
+        elif result == 2:
+            print("ERROR: Package '{}' is already installed.".format(package))
+            print("ERROR: To rectify this, run 'pkm remove {}' and try again.".format(package))
+        else:
+            print("ERROR: Exit code {}".format(result))
+
+def removePackage(package):
+    ini = configparser.ConfigParser()
+    ini.read(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
+    if ini.has_section("Files"):
+        files = dict([x for x in ini.items("Files") if "@" not in x[1]])
+    else:
+        files = []
+    if ini.has_option("Folders", "folders"):
+        folders = [file.evalDir(x, currentUser) for x in ini.get("Folders", "folders").split("; ")]
+        ignored = ini.get("Folders", "ignored").split("; ")
+    else:
+        folders = []
+    for x in files:
+        fn = file.evalDir(x, currentUser)
+        if os.path.isfile(fn):
+            os.remove(fn)
+    
+    for folder in [x for x in folders if x not in ignored]:
+        shutil.rmtree(folder)
+
+    os.remove(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
+    print("Successfully removed program.")
 
 def main(args):
     loadConfig()
@@ -165,21 +209,7 @@ def main(args):
         else:
             depMode = False
         for arg in args:
-            clearTemp(currentUser)
-            data = getPackageData()
-            url = data.get(arg, "url", fallback=None)
-            if url:
-                downloadFile(url, "tmp/program.szip4")
-                result = installd.installd("tmp/program.szip4", yesMode)
-                if not depMode:
-                    if result == -1:
-                        print("ERROR: User action canceled.")
-                    elif result == 0:
-                        print("Successfully installed '{}'.".format(arg))
-                    else:
-                        print("ERROR: Exit code {}".format(result))
-                else:
-                    print("ERROR: '{}' is not a valid package.".format(arg))
+            installPackage(arg, yesMode, depMode)
     elif args == ["list"]:
         ls = sorted(getPackageList())
         div()
@@ -188,6 +218,21 @@ def main(args):
         else:
             print("ERROR: No packages installed.")
         div()
+    elif args == ["remove"]:
+        div()
+        print("pkm remove <package>")
+        div()
+        print("Remove a package.")
+        div()
+    elif "remove" in args and len(args) == 2:
+        args.remove("remove")
+        removePackage(args[0])
+    elif args == ["clear", "-y"]:
+        for program in getPackageList():
+            removePackage(program)
+    elif args == ["clear"]:
+        print("ERROR: This will remove ALL of your packages.")
+        print("ERROR: Run `pkm clear -y` to confirm.")
     else:
         div()
         print("pkm [args]")
@@ -197,8 +242,8 @@ def main(args):
         print("Positional arguments:")
         print("    install <package>: installs a package")
         # print("    search <package name>: searches for a package by name")
-        # print("    remove <package>: remove a package")
-        # print("    clear: removes all installed packages")
+        print("    remove <package>: remove a package")
+        print("    clear: removes all installed packages")
         print("    update: updates the database")
         # print("    upgrade: upgrades all installed packages")
         print("    list: lists all installed programs")
