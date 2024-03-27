@@ -3,6 +3,7 @@ import shutil
 import configparser
 import urllib.request
 import traceback
+import zipfile
 
 disallowInstalld = getTerm() == "installd"
 
@@ -123,6 +124,20 @@ def searchForPackages(term):
     else:
         return [x for x in getPackageData(False, True) if term in x]
 
+def dispInfo(ini):
+    deps = ini.get("Programs", "dependencies", fallback="None")
+    conflicts = ini.get("Program", "conflicts", fallback="")
+    conflicts = conflicts if conflicts else "None"
+    div()
+    print("Name: {}".format(ini.get("Program", "name", fallback="Unknown")))
+    print("Version: {}".format(ini.get("Program", "version", fallback="1.0.0")))
+    print("Description: {}".format(ini.get("Program", "description", fallback="None")))
+    print("Author: {}".format(ini.get("Program", "author", fallback="Unknown")))
+    print("Maintainer: {}".format(ini.get("Program", "maintainer", fallback="Unknown")))
+    print("Min. Pythinux Version: {}".format(ini.get("Program", "min_version", fallback="3.0")))
+    print("Dependencies: {}".format(deps))
+    print("Conflicts: {}".format(conflicts))
+    div()
 def main(args):
     loadConfig()
     saveConfig()
@@ -275,6 +290,39 @@ def main(args):
             exitCode = installd.installd(file.evalDir("/tmp/package.szip4", currentUser), True)
             if exitCode:
                 print("ERROR: installd returned exit code {} for package '{}'. Run `man installd` for more info.".format(exitCode, package))
+    elif args == ["info"]:
+        div()
+        print("pkm info <package>")
+        div()
+        print("Displays info about an INSTALLED package.")
+        div()
+    elif "info" in args and len(args) == 2:
+        args.remove("info")
+        if args[0] in getPackageList():
+            ini = configparser.ConfigParser()
+            ini.read(file.evalDir("/share/pkm/programs/{}".format(args[0]), currentUser))
+            dispInfo(ini)
+        else:
+            print("ERROR: Package not installed.")
+    elif args == ["rinfo"]:
+        div()
+        print("pkm rifo <package>")
+        div()
+        print("Displays info about an INSTALLABLE package.")
+        div()
+    elif "rinfo" in args and len(args) == 2:
+        args.remove("rinfo")
+        clearTemp(currentUser)
+        if args[0] in getPackageData(False, True).sections():
+            data = getPackageData()
+            downloadFile(data.get(args[0], "url"), "/tmp/program.szip4")
+            with zipfile.ZipFile(file.evalDir("/tmp/program.szip4", currentUser)) as f:
+                f.extract("program.ini", file.evalDir("/tmp", currentUser))
+            ini = configparser.ConfigParser()
+            ini.read(file.evalDir("/tmp/program.ini", currentUser))
+            dispInfo(ini)
+        else:
+            print("ERROR: Invalid package name.")
     else:
         div()
         print("pkm [args]")
@@ -283,7 +331,7 @@ def main(args):
         div()
         print("Positional arguments:")
         print("    install <package>: installs a package")
-        # print("    search <package name>: searches for a package by name")
+        print("    search <package name>: searches for a package by name")
         print("    remove <package>: remove a package")
         print("    clear: removes all installed packages")
         print("    update: updates the database")
