@@ -68,6 +68,14 @@ def installdBase(filename, yesMode=False, forceMode=False):
             print("({}/{}) Installing '{}' (dependency of '{}')...".format(currDep, len(deps), dep, ini.get("Program", "package")))
             runCommand(currentUser, "pkm install -d {}".format(dep))
             currDep += 1
+
+        ignoredFolders = []
+        for item in folders:
+            directory = file.evalDir(item, currentUser)
+            if not os.path.isdir(directory):
+                os.mkdir(directory)
+            else:
+                ignoredFolders.append(directory)
         for item in files:
             location = files[item]
             if location.startswith("@"):
@@ -79,14 +87,8 @@ def installdBase(filename, yesMode=False, forceMode=False):
                     with file.open(location, currentUser, "wb") as f:
                         f.write(zff.read())
 
-        ignoredFolders = []
-        for item in folders:
-            directory = file.evalDir(item, currentUser)
-            if not os.path.isdir(directory):
-                os.mkdir(directory)
-            else:
-                ignoredFolders.append(directory)
-
+        if not ini.has_section("Folders"):
+            ini.add_section("Folders")
         ini.set("Folders", "ignored", "; ".join(ignoredFolders))
 
         with file.open("/share/pkm/programs/{}".format(ini.get("Program", "package")), currentUser, "w") as p:
@@ -106,10 +108,7 @@ def installdBase(filename, yesMode=False, forceMode=False):
     return 0
 
 def installd(filename, yesMode=False, forceMode=False):
-    try:
-        return installdBase(filename, yesMode, forceMode)
-    except:
-        return -1
+    return installdBase(filename, yesMode, forceMode)
 
 def main(args):
     if args:

@@ -24,3 +24,4 @@ pythinux/memory.pkl
 *.synctex.gz
 *.toc
 pythinux/share
+pythinux/man

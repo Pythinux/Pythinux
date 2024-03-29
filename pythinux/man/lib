@@ -4,8 +4,6 @@ DESCRIPTION
     Libraries are pieces of code that can be imported and called by programs. This manpage serves as a list of the libraries built into Pythinux.
     Do note that some user-facing programs (such as AREA) may have libraries as well, and are not listed here. To find out if a built-in program can be used as a library, open the manpage and check if there is a LIBRARY section.
 LIST
-    libconfig
-        Create INI configuration files and manage them.
     libsemver
         Deals with semantic version strings.
 EXTERNAL
@@ -22,5 +20,4 @@ EXTERNAL
 SEE ALSO
     import: how to import libaries
     lib.2: list of external but official libraries
-    libargs: docs for libargs
-    libsilent: docs for libsilent
+    libsemver: deals with semantic version strings

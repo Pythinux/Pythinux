@@ -15,11 +15,10 @@ shell = load_program("shell", currentUser, libMode=True)
 global config, version
 
 config = configparser.ConfigParser()
-config.add_section("repos")
-config.set("repos", "core", "https://codeberg.org/Pythinux/Core/raw/branch/main/db.ini")
-
-applications = configparser.ConfigParser()
-# config.set("repos", "community", "https://codeberg.org/Pythinux/Community/raw/branch/main/db.ini")
+if not config.has_section("repos"):
+    config.add_section("repos")
+    config.set("repos", "core", "https://codeberg.org/Pythinux/Core/raw/branch/main/db.ini")
+    # config.set("repos", "community", "https://codeberg.org/Pythinux/Community/raw/branch/main/db.ini")
 
 version = [4, 0, 0]
 
@@ -46,9 +45,20 @@ def sectionToDict(config, section):
         dict_section[option] = config.get(section, option)
     return dict_section
 
-def getPackageData(offline=True, silent=False):
+def getLocalPackageData():
     """
-    This function returns package data as a dict
+    Returns package data as a dict in the format <package name>: <ConfigParser object>
+    """
+    data = {}
+    for package in getPackageList():
+        ini = configparser.ConfigParser()
+        ini.read(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
+        data[package] = ini
+    return data
+
+def getRemotePackageData(offline=True, silent=False):
+    """
+    This function returns package data as a dict in the format <package name>: <ConfigParser object>
     """
     repos = sectionToDict(config, "repos")
     packageData = configparser.ConfigParser()
@@ -69,18 +79,35 @@ def getPackageData(offline=True, silent=False):
     return packageData
 
 def getPackageList():
+    """
+    Returns a list of installed packages.
+    """
     return os.listdir(file.evalDir("/share/pkm/programs/", currentUser))
 
 def saveConfig():
+    """
+    Call this function to ensure the config is saved.
+    """
     with open(file.evalDir("/config/pkm.ini", currentUser), "w") as f:
         config.write(f)
 
 def loadConfig():
+    """
+    Call this function to update `config` by reading the pkm.ini file.
+    """
     config.read(file.evalDir("/config/pkm.ini", currentUser))
 
 def installPackage(package, yesMode=False, depMode=False, forceMode=False):
+    """
+    Install a package.
+    Arguments:
+        package: package name
+        yesMode: passed to installd.installd()
+        depMode: passed to installd.installd()
+        forceMode: passed to installd.installd()
+    """
     clearTemp(currentUser)
-    data = getPackageData()
+    data = getRemotePackageData()
     url = data.get(package, "url", fallback=None)
     if url:
         downloadFile(url, "tmp/program.szip4")
@@ -94,8 +121,19 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
             print("ERROR: To rectify this, run 'pkm remove {}' and try again.".format(package))
         else:
             print("ERROR: Exit code {}".format(result))
+    else:
+        print("ERROR: Package not found.")
+
+# def installPackageFromRepo(package, repo):
+#     repo = config.get("repos", repo, fallback=None)
+#     if not repo:
+#         return 1
+#     return 0
 
 def removePackage(package):
+    """
+    Uninstall a package.
+    """
     ini = configparser.ConfigParser()
     ini.read(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
     if ini.has_section("Files"):
@@ -119,12 +157,20 @@ def removePackage(package):
     print("Successfully removed program.")
 
 def searchForPackages(term):
+    """
+    Returns a list of REMOTE packages where the package name contains term.
+    Returns a list of packages if term == 'ALL'.
+    """
     if term == "ALL":
-        return getPackageData(False,True).sections()
+        return getRemotePackageData(False,True).sections()
     else:
-        return [x for x in getPackageData(False, True) if term in x]
+        return [x for x in getRemotePackageData(False, True) if term in x]
 
 def dispInfo(ini):
+    """
+    Displays package info.
+    ini is a configparser.ConfigParser object.
+    """
     deps = ini.get("Programs", "dependencies", fallback="None")
     conflicts = ini.get("Program", "conflicts", fallback="")
     conflicts = conflicts if conflicts else "None"
@@ -142,7 +188,7 @@ def main(args):
     loadConfig()
     saveConfig()
     if args == ["update"]:
-        getPackageData(False)
+        getRemotePackageData(False)
     elif args in [["version"], ["ver"], ["v"]]:
         div()
         print("PKM {}".format(".".join([str(x) for x in version])))
@@ -180,9 +226,9 @@ def main(args):
         loadConfig()
         config.set("repos", name, url)
         saveConfig()
-        getPackageData(False)
+        getRemotePackageData(False)
     elif args == ["all"]:
-        packages = getPackageData(False, True)
+        packages = getRemotePackageData(False, True)
         for package in packages.sections():
             div()
             print("{} {}".format(package, packages.get(package, "version")))
@@ -207,7 +253,7 @@ def main(args):
         saveConfig()
         print("Successfully removed repository '{}'.".format(name))
     elif args == ["allc"]:
-        packages = getPackageData(False, True)
+        packages = getRemotePackageData(False, True)
         print("\n".join(packages.sections()))
     elif args == ["install"]:
         div()
@@ -262,7 +308,7 @@ def main(args):
     elif "search" in args:
         args.remove("search")
         results = searchForPackages(" ".join(args))
-        data = getPackageData()
+        data = getRemotePackageData()
         div()
         for res in results:
             print("{} {}".format(res, data.get(res, "version")))
@@ -313,8 +359,8 @@ def main(args):
     elif "rinfo" in args and len(args) == 2:
         args.remove("rinfo")
         clearTemp(currentUser)
-        if args[0] in getPackageData(False, True).sections():
-            data = getPackageData()
+        if args[0] in getRemotePackageData(False, True).sections():
+            data = getRemotePackageData()
             downloadFile(data.get(args[0], "url"), "/tmp/program.szip4")
             with zipfile.ZipFile(file.evalDir("/tmp/program.szip4", currentUser)) as f:
                 f.extract("program.ini", file.evalDir("/tmp", currentUser))
@@ -325,7 +371,7 @@ def main(args):
             print("ERROR: Invalid package name.")
     elif args == ["upgrade"]:
         print("Upgrading...")
-        data = getPackageData(False, True)
+        data = getRemotePackageData(False, True)
         packages = getPackageList()
         upgrades = []
         for package in packages:
@@ -337,12 +383,21 @@ def main(args):
                 upgrades.append(package)
         i = 1
         for upgrade in upgrades:
-            print("({}/{}) Upgrading '{}'...".format(i, len(upgrades), upgrades))
+            print("({}/{}) Upgrading '{}'...".format(i, len(upgrade), upgrade))
             installPackage(upgrade, True, False, True)
+            i += 1
         if upgrades:
             print("Upgraded all packages.")
         else:
             print("No packages to upgrade.")
+    elif args == ["from"]:
+        div()
+        print("pkm from <repository> <package>")
+        div()
+        print("Install a package from a specific repository.")
+        div()
+    elif "from" in args and len(args) == 3:
+        args.remove("from")
     else:
         div()
         print("pkm [args]")
