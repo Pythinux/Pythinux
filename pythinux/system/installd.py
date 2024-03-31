@@ -63,20 +63,25 @@ def installdBase(filename, yesMode=False, forceMode=False):
             inst = input("Install? [Y/n] $").lower()
             if inst == "n":
                 return 1 # Action canceled
+        print("(1/5) Installing dependencies...")
         currDep = 1
         for dep in deps:
-            print("({}/{}) Installing '{}' (dependency of '{}')...".format(currDep, len(deps), dep, ini.get("Program", "package")))
+            print("==> ({}/{}) Installing '{}' (dependency of '{}')...".format(currDep, len(deps), dep, ini.get("Program", "package")))
             runCommand(currentUser, "pkm install -d {}".format(dep))
             currDep += 1
-
+        
+        print("(2/5) Creating folders...")
         ignoredFolders = []
         for item in folders:
+            print("==> {}".format(item))
             directory = file.evalDir(item, currentUser)
             if not os.path.isdir(directory):
                 os.mkdir(directory)
             else:
                 ignoredFolders.append(directory)
+        print("(3/5) Copying and parsing files...")
         for item in files:
+            print("==> {}".format(item))
             location = files[item]
             if location.startswith("@"):
                 command = "{} {}".format(location[1:], file.evalDir("/tmp/{}".format(item), currentUser))
@@ -90,19 +95,24 @@ def installdBase(filename, yesMode=False, forceMode=False):
         if not ini.has_section("Folders"):
             ini.add_section("Folders")
         ini.set("Folders", "ignored", "; ".join(ignoredFolders))
+        
+        print("(4/5) Registering program data...")
 
         with file.open("/share/pkm/programs/{}".format(ini.get("Program", "package")), currentUser, "w") as p:
             ini.write(p)
-
+        print("(5/5) Parsing scripts...")
         installScript = ini.get("Scripts", "Install", fallback=None)
         updateScript = ini.get("Scripts", "Update", fallback=None)
         removeScript = ini.get("Scripts", "Remove", fallback=None)
         if installScript:
+            print("==> Running install script...")
             z.extract(installScript, file.evalDir("/tmp", currentUser))
             shell.runScript(currentUser, "/tmp/{}".format(installScript))
         if updateScript:
+            print("==> Saving update script...")
             z.extract(updateScript, file.evalDir("/share/pkm/scripts/update", currentUser))
         if removeScript:
+            print("==> Saving removal script...")
             z.extract(removeScript, file.evalDir("/share/pkm/scripts/remove", currentUser))
             
     return 0

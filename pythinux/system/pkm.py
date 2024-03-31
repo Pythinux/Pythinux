@@ -154,7 +154,7 @@ def removePackage(package):
         shutil.rmtree(folder)
 
     os.remove(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
-    print("Successfully removed program.")
+    print("Successfully removed '{}'.".format(package))
 
 def searchForPackages(term):
     """
@@ -383,7 +383,7 @@ def main(args):
                 upgrades.append(package)
         i = 1
         for upgrade in upgrades:
-            print("({}/{}) Upgrading '{}'...".format(i, len(upgrade), upgrade))
+            print("({}/{}) Upgrading '{}'...".format(i, len(upgrades), upgrade))
             installPackage(upgrade, True, False, True)
             i += 1
         if upgrades:
@@ -409,7 +409,7 @@ def main(args):
         print("    search <package name>: searches for a package by name")
         print("    remove <package>: remove a package")
         print("    clear: removes all installed packages")
-        print("    update: updates the database")
+        print("    update: updates remote package list")
         print("    upgrade: upgrades all installed packages")
         print("    list: lists all installed programs")
         print("    info <package>: prints information about an installed package")
@@ -417,7 +417,7 @@ def main(args):
         print("    all: lists all installable packages")
         print("    allc: lists all installable packages [compact]")
         print("    repo: manages repositories")
-        print("    batch <database>: installs every package in a particular database")
+        print("    batch <repositories>: installs every package in a particular database")
         # print("    from <database> <package>: installs a package from a specific database")
-        print("    version: states the version of PKM")
+        print("    version: displays version information")
         div()
