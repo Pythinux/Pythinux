@@ -15,6 +15,7 @@ import copy as cp
 import asyncio
 from io import StringIO
 from getpass import getpass
+import warnings
 
 try:
     import pty
@@ -230,6 +231,7 @@ def attachDebugger(globals):
 
 
 def giveOutput(command, user, split=False, shell="terminal", ptyMode=False):
+    warnings.warn("giveOutput() will be removed in Pythinux 3.1", DeprecationWarning)
     """
     Returns the output of a command.
     Positional arguments:
@@ -488,7 +490,7 @@ class User(Base):
     See __init__() for how to create User objects properly.
     """
 
-    def __init__(self, group, username, password=hashString(""), hidden=False):
+    def __init__(self, group, username, password=hashString("")):
         """
         Constructor for User class.
         Args:
@@ -503,7 +505,6 @@ class User(Base):
         self.group = group
         self.username = username
         self.password = hashString(password)
-        self.hidden = hidden
 
     def check(self, username, password=hashString("")):
         """

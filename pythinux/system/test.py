@@ -10,6 +10,7 @@ def blank():
     pass
 
 def main(args):
+    giveOutput("help", currentUser)
     for program in help.help():
         try:
             mod = load_program(program, currentUser, libMode=True)

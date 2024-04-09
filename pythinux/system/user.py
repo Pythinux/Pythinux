@@ -2,11 +2,10 @@ User = User
 def main(args):
     if args == ["list"]:
         for item in userList.list():
-            if not item.hidden:
-                div()
-                print(f"Username: {item.username}")
-                print(f"Password: {item.password}")
-                print(f"Group: {item.group.name}")
+            div()
+            print(f"Username: {item.username}")
+            print(f"Password: {item.password}")
+            print(f"Group: {item.group.name}")
         div()
     elif args == ["add"]:
         div()
