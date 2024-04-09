@@ -134,6 +134,9 @@ def removePackage(package):
     """
     Uninstall a package.
     """
+    if not package in getPackageList():
+        print("ERROR: Invalid package.")
+        return 1
     ini = configparser.ConfigParser()
     ini.read(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
     if ini.has_section("Files"):
@@ -155,6 +158,7 @@ def removePackage(package):
 
     os.remove(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
     print("Successfully removed '{}'.".format(package))
+    return 0
 
 def searchForPackages(term):
     """
@@ -398,6 +402,17 @@ def main(args):
         div()
     elif "from" in args and len(args) == 3:
         args.remove("from")
+    elif args == ["reinstall"]:
+        div()
+        print("pkm reinstall <package>")
+        div()
+        print("Uninstall and re-install a package.")
+        div()
+    elif "reinstall" in args and len(args) == 2:
+        args.remove("reinstall")
+        status = removePackage(args[0])
+        if status == 0:
+            installPackage(args[0])
     else:
         div()
         print("pkm [args]")
@@ -408,6 +423,7 @@ def main(args):
         print("    install <package>: installs a package")
         print("    search <package name>: searches for a package by name")
         print("    remove <package>: remove a package")
+        print("    reinstall <package>: uninstall and then install a package")
         print("    clear: removes all installed packages")
         print("    update: updates remote package list")
         print("    upgrade: upgrades all installed packages")
