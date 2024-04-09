@@ -16,6 +16,7 @@ import asyncio
 from io import StringIO
 from getpass import getpass
 import warnings
+import configparser
 
 try:
     import pty
@@ -490,7 +491,7 @@ class User(Base):
     See __init__() for how to create User objects properly.
     """
 
-    def __init__(self, group, username, password=hashString("")):
+    def __init__(self, group, username, password=""):
         """
         Constructor for User class.
         Args:
@@ -504,7 +505,7 @@ class User(Base):
         """
         self.group = group
         self.username = username
-        self.password = hashString(password)
+        self.password = password
 
     def check(self, username, password=hashString("")):
         """
@@ -539,6 +540,13 @@ class User(Base):
         Returns the name of the user's group.
         """
         return self.group.name
+    
+    def serialise(self):
+        return {
+            "username": self.username,
+            "password": self.password,
+            "group": self.group.name,
+        }
 
 
 class UserList(Base):
@@ -584,6 +592,22 @@ class UserList(Base):
 
     def __len__(self):
         return len(self.users)
+
+    def serialise(self):
+        config = configparser.ConfigParser()
+        for user in self.users:
+            config[user.username] = user.serialise()
+        return config
+    def deserialise(self, config):
+        for sect in config.sections():
+            username = config.get(sect, "username")
+            password = config.get(sect, "password")
+            group = loadGroupList().byName(config.get(sect, "group", fallback="user"))
+            user = User(group, username, password)
+            self.users.append(user)
+            
+
+
 
 
 def copy(obj):
@@ -925,8 +949,7 @@ def generateAPI(module, user, sudoMode):
     file.evalDir = copy(evalDir)
     file.root = lambda: os.chdir(ROOTDIR)
     
-    if user.admin() or sudoMode:
-        file.changeDirectory = copy(changeDirectory)
+    file.changeDirectory = copy(changeDirectory)
     file.open = copy(openFile)
 
     ## Attach to module
@@ -1293,8 +1316,9 @@ def saveUserList(userList):
     userlist: a userlist (returned by loadUserlist()).
     """
     if isinstance(userList, UserList):
-        with open("config/users.cfg", "wb") as f:
-            pickle.dump(userList, f)
+        config = userList.serialise()
+        with open(evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser", "")), "w") as f:
+            config.write(f)
     else:
         raise PythinuxError("Cannot save invalid userlist.")
 
@@ -1305,8 +1329,11 @@ def loadUserList():
     Returns the userlist when called.
     """
     try:
-        with open("config/users.cfg", "rb") as f:
-            return pickle.load(f)
+        userList = UserList()
+        config = configparser.ConfigParser()
+        config.read(evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser", "")))
+        userList.deserialise(config)
+        return userList
     except Exception:
         return UserList()
 
@@ -1519,11 +1546,11 @@ def setupWizard():
     groupList = GroupList()
     g = groupList.byName("user")
     rootGroup = groupList.byName("root")
-    user = User(g, username, password)
-    root = User("root")
-    userList = User(rootGroup, "root")
+    user = User(g, username, hashString(password))
+    root = User(rootGroup, "root")
+    userList = loadUserList()
     userList = createUser(userList, user)
-    userList.createUser(userList, root)
+    userList = createUser(userList, root)
     saveUserList(userList)
 
     if input("Set up autologin? [Y/n] $").lower() != "n":
