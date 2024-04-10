@@ -9,6 +9,7 @@ import configparser
 pkm = load_program("pkm", currentUser, libMode=True, shell="installd")
 shell = load_program("shell", currentUser, libMode=True)
 libsemver = load_program("libsemver", currentUser, libMode=True)
+Version = load_program("version", currentUser, libMode=True)
 
 class InstallError(Exception):
     pass
@@ -50,6 +51,14 @@ def installdBase(filename, yesMode=False, forceMode=False):
             files = {}
         folders = ini.get("Folders", "folders", fallback="").split("; ")
         
+        min_version = ini.getfloat("Program", "min_version", fallback=3.0)
+        max_version = ini.getfloat("Program", "max_version", fallback=4.0)
+
+        if Version.getfloat() < min_version:
+            return 3
+        if Version.getfloat() > max_version:
+            return 4
+
         if not yesMode:
             cls()
             div()

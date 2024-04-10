@@ -119,6 +119,11 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
         elif result == 2:
             print("ERROR: Package '{}' is already installed.".format(package))
             print("ERROR: To rectify this, run 'pkm remove {}' and try again.".format(package))
+        elif result == 3:
+            print("ERROR: Your Pythinux version is too old to install this software.")
+            print("ERROR: To fix this, update Pythinux.")
+        elif result == 4:
+            print("ERROR: This package is for an older Pythinux version.")
         else:
             print("ERROR: Exit code {}".format(result))
     else:

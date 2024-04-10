@@ -28,7 +28,6 @@ def getbool(var, fallback=True):
 def set(var, val, fallback=""):
     v = giveVars()
     v[var] = val
-    setVars(v)
 
 
 def list():
@@ -50,7 +49,6 @@ def rm(name):
         removed = True
     except:
         pass
-    setVars(var)
     return removed
 
 def main(args):
