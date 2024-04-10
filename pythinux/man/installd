@@ -11,9 +11,12 @@ LIBRARY
         fileName is a path to an SZIP4 package.
         if yesMode is true, the install confirmation dialogue is skipped.
         NOTE: fileName is not passed into file.evalDir(), you need to do that yourself.
-ERROR CODES
+INSTALLD() RETURN VALUES
     0: Successful exit.
     1: User action canceled.
     2: Package already installed.
+    3: This package demands a newer Pythinux version.
+    4: This package demands an older Pythinux version
 SEE ALSO
     pkm - package manager
+    import - how to import libraries
