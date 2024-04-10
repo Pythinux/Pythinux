@@ -72,20 +72,20 @@ def fixDirectories(returnMode=False):
     because git doesn't count directories as files.
     """
     dirList = [
-            "app",
-            "app_high",
-            "config",
-            "home",
-            "lib",
-            "log",
-            "share",
-            "share/pkm",
-            "share/pkm/programs",
-            "share/pkm/script",
-            "share/pkm/script/remove",
-            "share/pkm/script/update",
-            "tmp",
-            ]
+        "app",
+        "app_high",
+        "config",
+        "home",
+        "lib",
+        "log",
+        "share",
+        "share/pkm",
+        "share/pkm/programs",
+        "share/pkm/script",
+        "share/pkm/script/remove",
+        "share/pkm/script/update",
+        "tmp",
+    ]
     if returnMode:
         return dirList
     for item in dirList:
@@ -112,6 +112,7 @@ def castObject(obj, new_type):
         If `cast_type` is an object, the original object is copied to
         that object and returned.
     """
+    warnings.warn("castObject() will be removed in Pythinux 3.1", DeprecationWarning)
     if isinstance(new_type, type):
         new_obj = new_type()
     else:
@@ -128,6 +129,7 @@ def setVars(var):
     """
     Unused.
     """
+    warnings.warn("setVars() will be removed in Pythinux 3.1", DeprecationWarning)
     var = var
 
 
@@ -147,9 +149,9 @@ def createModule(moduleName):
 
 def silent(function):
     """
-    Runs some code without outputting anything to the terminal
+    Runs some code without outputting anything to the terminal.
     Args:
-    function: a callable object.
+        function: a callable object.
     """
     stdout = sys.stdout
     sys.stdout = None
@@ -159,6 +161,7 @@ def silent(function):
 
 
 def CompileOS():
+    warnings.warn("CompileOS() will be removed in Pythinux 3.1", DeprecationWarning)
     print("Clear begin.")
     """
     Clears your installation of Pythinux.
@@ -205,6 +208,7 @@ def joinIterable(string, iterable):
 
 
 def createService(command, user):
+    warnings.warn("Services will be REMOVED in Pytinux 3.1!", DeprecationWarning)
     """
     Creates a service that can be passed to startService().
     Args:
@@ -215,6 +219,7 @@ def createService(command, user):
 
 
 def startService(thread, name):
+    warnings.warn("Services will be REMOVED in Pytinux 3.1!", DeprecationWarning)
     """
     Starts a service.
     Args:
@@ -288,8 +293,8 @@ def doCalc(text):
             if isinstance(node, ast.Name) and node.id not in allowed_names:
                 raise ValueError("Invalid expression")
             if isinstance(node, ast.BinOp) and not isinstance(
-                    node.op, allowed_operators
-                    ):
+                node.op, allowed_operators
+            ):
                 raise ValueError("Invalid expression: {}".format(text))
         namespace = {}
         exec(compile(module, filename="<ast>", mode="exec"), namespace)
@@ -371,8 +376,9 @@ def hashString(plaintext, salt=None):
 def doNothing(obj):
     """
     Returns obj.
-    Used to prevent linter programs from complaining about "unused" programs.
+    Used to prevent linter programs from complaining about "unused" objects.
     """
+    warnings.warn("doNothing will be removed in Pythinux 3.3", DeprecationWarning)
     return obj
 
 
@@ -382,15 +388,15 @@ class Group(Base):
     """
 
     def __init__(
-            self,
-            name,
-            canApp=False,
-            canAppHigh=False,
-            canSys=False,
-            canSysHigh=False,
-            canSudo=False,
-            locked=False,
-            ):
+        self,
+        name,
+        canApp=False,
+        canAppHigh=False,
+        canSys=False,
+        canSysHigh=False,
+        canSudo=False,
+        locked=False,
+        ):
         """
         Defines nanme and permissions of the Group.
         name: name of group. Set to all-lowercase.
@@ -419,11 +425,10 @@ class GroupList(Base):
 
     def __init__(self):
         self.groups = [
-                Group("guest"),
-                Group("user", True, canSudo=True, locked=True),
-                Group("root", True, True, True, canSudo=True, locked=True),
-                Group("god", True, True, True, True, True),
-                ]
+            Group("guest"),
+            Group("user", True, canSudo=True, locked=True),
+            Group("root", True, True, True, locked=True),
+        ]
 
     def add(self, group):
         """
@@ -458,31 +463,6 @@ class GroupList(Base):
 
     def __len__(self):
         return len(self.groups)
-
-
-class CurrentProgram:
-    def __init__(self, name):
-        self._name = name
-        self._modifiable = True
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        if self._modifiable:
-            self._name = value
-        else:
-            raise AttributeError(
-                    "Cannot modify name after object construction"
-                    )
-
-    def __class__(self):
-        return type
-
-    def lock_class(self):
-        self._modifiable = False
 
 
 class User(Base):
@@ -540,7 +520,7 @@ class User(Base):
         Returns the name of the user's group.
         """
         return self.group.name
-    
+
     def serialise(self):
         return {
             "username": self.username,
@@ -605,15 +585,12 @@ class UserList(Base):
             group = loadGroupList().byName(config.get(sect, "group", fallback="user"))
             user = User(group, username, password)
             self.users.append(user)
-            
-
-
-
 
 def copy(obj):
     """
     Tries copy.deepcopy(), then copy.copy(), then nothing to ensure nothing fails.
     To my knowledge, this is pointless.
+    It's also potentially dangerous; it returns the same object without a copy if both copy.deepcopy() and copy.copy() fail.
     """
     try:
         return cp.deepcopy(obj)
@@ -663,95 +640,6 @@ def sha256(string, salt=None):
     else:
         return
 
-
-class rangedInt:
-    """
-    A floating point number with a specified range
-    that gets automatically adhered to.
-    Currently unused, but will be used soon.
-    """
-
-    def __init__(self, value, min_value, max_value):
-        self.min_value = min_value
-        self.max_value = max_value
-        self._value = None
-        self.set(value)
-
-    def get(self):
-        return self._value
-
-    def set(self, value):
-        if value < self.min_value:
-            self._value = self.min_value
-        elif value > self.max_value:
-            self._value = self.max_value
-        else:
-            self._value = int(value)
-
-    def __str__(self):
-        return str(self._value)
-
-    def __add__(self, other):
-        if isinstance(other, rangedInt):
-            return rangedInt(
-                    self._value + other.get(), self.min_value, self.max_value
-                    )
-        elif isinstance(other, (int, float)):
-            return rangedInt(
-                    self._value + other, self.min_value, self.max_value
-                    )
-        else:
-            return NotImplemented
-
-    def __radd__(self, other):
-        return self.__add__(other)
-
-    def __sub__(self, other):
-        if isinstance(other, rangedInt):
-            return rangedInt(
-                    self._value - other.get(), self.min_value, self.max_value
-                    )
-        elif isinstance(other, (int, float)):
-            return rangedInt(
-                    self._value - other, self.min_value, self.max_value
-                    )
-        else:
-            return NotImplemented
-
-    def __rsub__(self, other):
-        return self.__sub__(other)
-
-    def __mul__(self, other):
-        if isinstance(other, rangedInt):
-            return rangedInt(
-                    self._value * other.get(), self.min_value, self.max_value
-                    )
-        elif isinstance(other, (int, float)):
-            return rangedInt(
-                    self._value * other, self.min_value, self.max_value
-                    )
-        else:
-            return NotImplemented
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __truediv__(self, other):
-        if isinstance(other, rangedInt):
-            return rangedInt(
-                    self._value / other.get(), self.min_value, self.max_value
-                    )
-        elif isinstance(other, (int, float)):
-            return rangedInt(
-                    self._value / other, self.min_value, self.max_value
-                    )
-        else:
-            return NotImplemented
-
-    def __rtruediv__(self, other):
-        return self.__truediv__(other)
-
-
 def div(returnMode=False):
     """
     Prints 20 hyphen/dash symbols.
@@ -762,12 +650,6 @@ def div(returnMode=False):
     else:
         print(s)
 
-
-def div2():
-    """
-    Returns 20 hyphen/dash symbols as a string.
-    """
-    return "--------------------"
 
 
 def br():
@@ -948,7 +830,7 @@ def generateAPI(module, user, sudoMode):
     shell.isUnix = copy(isUnix)
     file.evalDir = copy(evalDir)
     file.root = lambda: os.chdir(ROOTDIR)
-    
+
     file.changeDirectory = copy(changeDirectory)
     file.open = copy(openFile)
 
@@ -962,13 +844,13 @@ def limitedProgramLoad(program, user, libMode=True):
     if program in ["help", "sudo", "alias", "var", "calc", "which", "libargs", "libconfig", "libgrab"]:
         return load_program(program, user, libMode)
 def loadProgramBase(
-        program_name_with_args,
-        user,
-        sudoMode=False,
-        shell="terminal",
-        __name__=None,
-        isolatedMode=False,
-        ):
+    program_name_with_args,
+    user,
+    sudoMode=False,
+    shell="terminal",
+    __name__=None,
+    isolatedMode=False,
+    ):
     def getTerm():
         return shell
 
@@ -1006,81 +888,82 @@ def loadProgramBase(
             if not __name__:
                 __name__ = program_name
             module_spec = importlib.util.spec_from_file_location(
-                    program_name, program_path
-                    )
+                program_name, program_path
+            )
             module = importlib.util.module_from_spec(module_spec)
             sp = copy(sys.path)
             sp.insert(0, "app")
             shared_objects = {
-                    "castObject": copy(castObject),
-                    "Base": copy(Base),
-                    "__name__": copy(__name__),
-                    "currentUser": copy(user),
-                    "div": copy(div),
-                    "div2": copy(div2),
-                    "br": copy(br),
-                    "load_program": copy(load_program),
-                    "list_loadable_programs": copy(list_loadable_programs),
-                    "version": copy(version),
-                    "hashString": copy(hashString),
-                    "verifyHash": copy(verifyHash),
-                    "pprint_dict": copy(pprint_dict),
-                    "pprint": copy(pprint),
-                    "obj_to_dict": copy(obj_to_dict),
-                    "os": copy(os),
-                    "alias": copy(aliases),
-                    "cls": copy(cls),
-                    "doCalc": copy(doCalc),
-                    "mergeDict": copy(mergeDict),
-                    "copy": copy(copy),
-                    "logEvent": copy(logEvent),
-                    "getTerm": copy(getTerm),
-                    "currentProgram": copy(program_name),
-                    "giveOutput": copy(giveOutput),
-                    "osName": copy(osName),
-                    "FileError": copy(FileError),
-                    "startService": copy(startService),
-                    "createModule": copy(createModule),
-                    "silent": copy(silent),
-                    "setVars": copy(setVars),
-                    "giveVars": copy(giveVars),
-                    "createService": copy(createService),
-                    "attachDebugger": copy(attachDebugger),
-                    "PythinuxError": copy(PythinuxError),
-                    "CURRDIR": copy(CURRDIR),
-                    "ROOTDIR": copy(ROOTDIR),
-                    }
+                "castObject": copy(castObject),
+                "Base": copy(Base),
+                "__name__": copy(__name__),
+                "currentUser": copy(user),
+                "div": copy(div),
+                "br": copy(br),
+                "load_program": copy(load_program),
+                "list_loadable_programs": copy(list_loadable_programs),
+                "version": copy(version),
+                "hashString": copy(hashString),
+                "verifyHash": copy(verifyHash),
+                "pprint_dict": copy(pprint_dict),
+                "pprint": copy(pprint),
+                "obj_to_dict": copy(obj_to_dict),
+                "os": copy(os),
+                "alias": copy(aliases),
+                "cls": copy(cls),
+                "doCalc": copy(doCalc),
+                "mergeDict": copy(mergeDict),
+                "copy": copy(copy),
+                "logEvent": copy(logEvent),
+                "getTerm": copy(getTerm),
+                "currentProgram": copy(program_name),
+                "giveOutput": copy(giveOutput),
+                "osName": copy(osName),
+                "FileError": copy(FileError),
+                "startService": copy(startService),
+                "createModule": copy(createModule),
+                "silent": copy(silent),
+                "setVars": copy(setVars),
+                "giveVars": copy(giveVars),
+                "createService": copy(createService),
+                "attachDebugger": copy(attachDebugger),
+                "PythinuxError": copy(PythinuxError),
+                "CURRDIR": copy(CURRDIR),
+                "ROOTDIR": copy(ROOTDIR),
+            }
             if directory in [
-                    system_directory,
-                    hsystem_directory,
-                    lsystem_directory,
-                    happ_directory,
-                    ]:
+                system_directory,
+                hsystem_directory,
+                lsystem_directory,
+                happ_directory,
+            ]:
                 sp.insert(0, "app_high")
                 system_objects = {
-                        "User": copy(User),
-                        "Group": copy(Group),
-                        "GroupList": copy(GroupList),
-                        "UserList": copy(UserList),
-                        "loadGroupList": copy(loadGroupList),
-                        "saveGroupList": copy(saveGroupList),
-                        "currentUser": user,
-                        "aliases": aliases,
-                        "userList": userList,
-                        "groupList": groupList,
-                        "saveAliases": copy(saveAliases),
-                        "createUser": copy(createUser),
-                        "saveUserList": saveUserList,
-                        "runCommand": copy(main),
-                        "saveAL": copy(saveAL),
-                        "clearTemp": copy(clearTemp),
-                        "run_script": copy(run_script),
-                        "removeUser": copy(removeUser),
-                        "loginScreen": copy(loginScreen),
-                        "LOGOFFEVENT": copy(LOGOFFEVENT),
-                        "load_program": copy(load_program),
-                        "parseInput": copy(parseInput),
-                        }
+                    "User": copy(User),
+                    "Group": copy(Group),
+                    "GroupList": copy(GroupList),
+                    "UserList": copy(UserList),
+                    "loadGroupList": copy(loadGroupList),
+                    "saveGroupList": copy(saveGroupList),
+                    "loadUserList": copy(loadUserList),
+                    "saveUserList": copy(saveUserList),
+                    "currentUser": user,
+                    "aliases": aliases,
+                    "userList": userList,
+                    "groupList": groupList,
+                    "saveAliases": copy(saveAliases),
+                    "createUser": copy(createUser),
+                    "saveUserList": saveUserList,
+                    "runCommand": copy(main),
+                    "saveAL": copy(saveAL),
+                    "clearTemp": copy(clearTemp),
+                    "run_script": copy(run_script),
+                    "removeUser": copy(removeUser),
+                    "loginScreen": copy(loginScreen),
+                    "LOGOFFEVENT": copy(LOGOFFEVENT),
+                    "load_program": copy(load_program),
+                    "parseInput": copy(parseInput),
+                }
                 if user.god():
                     system_objects["CompileOS"] = copy(CompileOS)
                     system_objects["setupWizard"] = copy(setupWizard)
@@ -1093,9 +976,9 @@ def loadProgramBase(
             generateAPI(module, user, sudoMode)
             # Add custom sys.path
             d = {
-                    "sys": copy(sys),
-                    "sys.path": copy(sp),
-                    }
+                "sys": copy(sys),
+                "sys.path": copy(sp),
+            }
             exposeObjects(module, d)
             # Set arguments as a custom attribute
             module.arguments = args
@@ -1158,36 +1041,36 @@ def evalDir(directory: str, user: User):
 
 
 def load_program(
-        program_name_with_args,
-        user,
-        sudoMode=False,
-        shell="terminal",
-        debugMode=False,
-        baseMode=False,
-        __name__=None,
-        isolatedMode=False,
-        libMode=False,
-        ):
+    program_name_with_args,
+    user,
+    sudoMode=False,
+    shell="terminal",
+    debugMode=False,
+    baseMode=False,
+    __name__=None,
+    isolatedMode=False,
+    libMode=False,
+    ):
     if program_name_with_args == "":
         return
     if debugMode:
         print(
-                "### Load Arguments:",
-                [program_name_with_args, user, sudoMode, shell, __name__],
-                )
+            "### Load Arguments:",
+            [program_name_with_args, user, sudoMode, shell, __name__],
+        )
 
     program_name = program_name_with_args.split(" ")[0]
     if not isProgramReal(program_name, user):
         return
 
     module, module_spec = loadProgramBase(
-            program_name_with_args,
-            user,
-            sudoMode,
-            shell,
-            __name__,
-            isolatedMode,
-            )
+        program_name_with_args,
+        user,
+        sudoMode,
+        shell,
+        __name__,
+        isolatedMode,
+    )
     if baseMode:
         return module, module_spec
     if module:
@@ -1284,16 +1167,16 @@ def list_loadable_programs(user, sudoMode=False):
     for directory in directories:
         if os.path.exists(directory) and os.path.isdir(directory):
             programs = [
-                    f[:-3] for f in os.listdir(directory) if f.endswith(".py")
-                    ]
+                f[:-3] for f in os.listdir(directory) if f.endswith(".py")
+            ]
             loadable_programs.update(programs)
 
     if os.path.exists(app_directory) and os.path.isdir(app_directory):
         programs = [
-                "*" + f[:-3]
-                for f in os.listdir(app_directory)
-                if f.endswith(".xx")
-                ]
+            "*" + f[:-3]
+            for f in os.listdir(app_directory)
+            if f.endswith(".xx")
+        ]
         loadable_programs.update(programs)
 
     return sorted(loadable_programs)
@@ -1313,7 +1196,7 @@ def init(user):
 def saveUserList(userList):
     """
     Saves a userlist to the file system.
-    userlist: a userlist (returned by loadUserlist()).
+    userlist: a userlist (returned by loadUserList()).
     """
     if isinstance(userList, UserList):
         config = userList.serialise()
@@ -1526,7 +1409,7 @@ def setupWizard():
             print(f.read())
             br()
     cls()
-    print(f"{div2()}\nSetup Wizard\n{div2()}")
+    print(f"{div(True)}\nSetup Wizard\n{div(Truet )}")
     username = ""
     while not username:
         username = input("Enter Your Username $")
@@ -1546,7 +1429,7 @@ def setupWizard():
     groupList = GroupList()
     g = groupList.byName("user")
     rootGroup = groupList.byName("root")
-    user = User(g, username, hashString(password))
+    user = User(rootGroup, username, hashString(password))
     root = User(rootGroup, "root")
     userList = loadUserList()
     userList = createUser(userList, user)

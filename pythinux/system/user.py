@@ -1,4 +1,6 @@
-User = User
+print(dir())
+userList = loadUserList()
+
 def main(args):
     if args == ["list"]:
         for item in userList.list():
