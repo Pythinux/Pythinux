@@ -53,6 +53,12 @@ def installdBase(filename, yesMode=False, forceMode=False):
         
         min_version = ini.getfloat("Program", "min_version", fallback=3.0)
         max_version = ini.getfloat("Program", "max_version", fallback=4.0)
+    
+        conflictingPackages = [x for x in pkm.getPackageList() if x in conflicts]
+        if conflictingPackages:
+            for c in conflictingPackages:
+                print("ERROR: This package conflicts with the installed '{}' package.".format(c))
+            return -1
 
         if Version.getfloat() < min_version:
             return 3

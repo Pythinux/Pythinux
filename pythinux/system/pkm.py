@@ -111,30 +111,25 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
     url = data.get(package, "url", fallback=None)
     if url:
         downloadFile(url, "tmp/program.szip4")
-        result = installd.installd("tmp/program.szip4", yesMode, forceMode)
-        if result == 1:
-            print("ERROR: User action canceled.")
-        elif result == 0:
-            print("Successfully installed '{}'.".format(package))
-        elif result == 2:
-            print("ERROR: Package '{}' is already installed.".format(package))
-            print("ERROR: To rectify this, run 'pkm remove {}' and try again.".format(package))
-        elif result == 3:
-            print("ERROR: Your Pythinux version is too old to install this software.")
-            print("ERROR: To fix this, update Pythinux.")
-        elif result == 4:
-            print("ERROR: This package is for an older Pythinux version.")
-        else:
-            print("ERROR: Exit code {}".format(result))
+        result = dispErrInfo(installd.installd("tmp/program.szip4", yesMode, forceMode), package)
+        if result:
+            print(result)
     else:
         print("ERROR: Package not found.")
 
-# def installPackageFromRepo(package, repo):
-#     repo = config.get("repos", repo, fallback=None)
-#     if not repo:
-#         return 1
-#     return 0
+def installPackageFromRepo(repo, package, yesMode=False, forceMode=False):
+    downloadFile(config.get("repos", repo), file.evalDir("/tmp/pkmdata.ini", currentUser))
+    conf = configparser.ConfigParser()
+    conf.read(file.evalDir("/tmp/pkmdata.ini", currentUser))
+    url = conf.get(package, "url")
+    if url:
+        downloadFile(url, file.evalDir("/tmp/pkg.szip4", currentUser))
+        return installd.installd(file.evalDir("/tmp/pkg.szip4", currentUser), yesMode, forceMode)
+    else:
+        print("ERROR: Invalid URL.")
+        return -1
 
+    
 def removePackage(package):
     """
     Uninstall a package.
@@ -193,6 +188,25 @@ def dispInfo(ini):
     print("Dependencies: {}".format(deps))
     print("Conflicts: {}".format(conflicts))
     div()
+
+def dispErrInfo(result, package):
+    """
+    Turns an error code into something more useful.
+    """
+    if result == 1:
+        return "ERROR: User action canceled."
+    elif result == 0:
+        return "Successfully installed '{}'.".format(package)
+    elif result == 2:
+        return "ERROR: Package '{}' is already installed.\nERROR: To rectify this, run 'pkm remove {}' and try again.".format(package, package)
+    elif result == 3:
+        return "ERROR: Your Pythinux version is too old to install this software.\nERROR: To fix this, update Pythinux."
+    elif result == 4:
+        return "ERROR: This package is for an older Pythinux version."
+    elif result == -1:
+        return
+    else:
+        return "Unknown Exit Code: {}".format(result)
 def main(args):
     loadConfig()
     saveConfig()
@@ -407,6 +421,9 @@ def main(args):
         div()
     elif "from" in args and len(args) == 3:
         args.remove("from")
+        result = dispErrInfo(installPackageFromRepo(args[0], args[1]), args[1])
+        if result:
+            print(result)
     elif args == ["reinstall"]:
         div()
         print("pkm reinstall <package>")

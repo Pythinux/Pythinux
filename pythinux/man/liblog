@@ -1,0 +1,19 @@
+NAME
+    liblog - Create text logs programmatically
+DESCRIPTION
+    Sometimes, you want to log information to a file. This library can help with that.
+LIBRARY
+    liblog.Log(filename, display=True)
+        Basic logging class. See `liblog.2` for the docs.
+        NOTE: Saving and loading of the log file are all handled for you.
+EXAMPLES
+    ```
+    liblog = load_program("liblog", currentUser, libMode=True)
+    log = liblog.Log("/log/test.log")
+    log.log("Hello world")
+    log.log("You should know this", "warn")
+    log.log("Something went wrong", "error")
+    ```
+SEE ALSO
+    import - how to import a library
+    liblog.2 - how to use the Log class

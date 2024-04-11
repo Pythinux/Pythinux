@@ -6,6 +6,8 @@ DESCRIPTION
 LIST
     libsemver
         Deals with semantic version strings.
+    liblog
+        Create basic text logs programatically
 EXTERNAL
     There are loads of external libraries, including some official ones (see `lib.2`). 
     To install an external libary:

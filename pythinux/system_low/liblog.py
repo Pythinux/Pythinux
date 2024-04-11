@@ -1,0 +1,19 @@
+class Log:
+    def __init__(self, filename, display=True):
+        self.filename = filename
+        self.logs = []
+        self.display = display
+        self.load()
+    def log(self, text, log_type="info"):
+        log_text = "[{}] {}".format(log_type, text)
+        self.logs.append(log_text)
+        if self.display:
+            print(self.log_text)
+        self.save()
+    def load(self):
+        with open(file.evalDir(self.filename, currentUser)) as f:
+            self.logs = f.read().split("\n")
+    def save(self):
+        with open(file.evalDir(self.filename, currentUser), "w") as f:
+            f.write("\n".join(self.logs))
+

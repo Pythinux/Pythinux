@@ -6,17 +6,19 @@ SYNTAX
     installd <path/to/program.szip4>
         Installs an SZIP4 package.
 LIBRARY
-    installd.installd(fileName: str, yesMode=False)
+    installd.installd(fileName: str, yesMode=False, forceMode=False)
         Installs an SZIP4 package.
         fileName is a path to an SZIP4 package.
         if yesMode is true, the install confirmation dialogue is skipped.
+        if forceMode is true, the program will still install the package if it is already installed.
         NOTE: fileName is not passed into file.evalDir(), you need to do that yourself.
 INSTALLD() RETURN VALUES
-    0: Successful exit.
-    1: User action canceled.
-    2: Package already installed.
-    3: This package demands a newer Pythinux version.
-    4: This package demands an older Pythinux version
+    0: Successful exit
+    1: User action canceled
+    2: Package already installed
+    3: This package expects a newer Pythinux version
+    4: This package expects an older Pythinux version
+    -1: installd displayed an error and did not install the package
 SEE ALSO
     pkm - package manager
     import - how to import libraries

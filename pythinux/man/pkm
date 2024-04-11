@@ -1,0 +1,87 @@
+NAME
+    pkm - package manager
+DESCRIPTION
+    An operating system is almost useless if you can't install programs. Thankfully, Pythinux has a utility called installd for doing that, which lets you install .szip4 files to your system. 
+    However, that requires finding and downloading a file, and entering a path into your terminal. What if you could just run a simple command and install programs quickly and easily? 
+TERMINOLOGY
+    package
+        A file that defines how to install a program, which includes metadata.
+    SZIPS
+        Standard Zipped Installable Package System. The official Pythinux packaging format. 
+    SZIP4
+        Version 4 of SZIPS.
+    repository
+        A place on the Internet where packages can be downloaded.
+    package manager
+        A program for installing, removing, and updating packages and repositories.
+    remote package
+        A package file located on a repository.
+    local package
+        An installed package.
+SYNTAX
+    pkm install <package>
+        Installs a remote package and registers it as a local package.
+    pkm search <term>
+        Searches for packages to install. The search term searches the package name only.
+    pkm remove <package>
+        Removes a local package.
+    pkm reinstall <package>
+        Removes a local package and installs that same remote package.
+    pkm list
+        Lists all local packages.
+    pkm all
+        Lists the names and descriptions of all remote packages pkm has access to.
+    pkm allc
+        Lists the names of all remote packages pkm has access to.
+    pkm clear
+        Removes all local packages. Must specify "-y" to confirm.
+    pkm update
+        Updates pkm's list of remote packages. This happens automatically.
+    pkm upgrade
+        Installs new versions of remote packages as needed.
+    pkm info <package>
+        Displays info about a local package.
+    pkm rinfo <package>
+        Displays info about a remote package.
+    pkm repo add <name> <url>
+        Adds a repository to pkm's database. You should run `pkm update` immediately after to confirm it works.
+    pkm repo list
+        Lists all repositories pkm has access to.
+    pkm repo rm <name>
+        Removes a repository.
+    pkm batch <db>
+        Installs every package from a repository. Not recommended.
+    pkm from <db> <package>
+        Installs a package from a specific repository.
+    pkm version
+        Displays basic version information.
+LIBRARY
+    pkm.downloadFile(url, filename)
+        Download a remote HTTP resource and save it to a file.
+    pkm.sectionToDict(config, section)
+        Converts a configparser.Section into a dictionary, where config is a configparser.ConfigParser object and section is the name of a section.
+    pkm.getLocalPackageData()
+        Returns a dictionary in the format <name>:<ConfigParser object> that contains package metadata for local packages.
+    pkm.getRemotePackageData()
+        Returns a dictionary in the format <name>:<ConfigParser object> that contains package metadata for remote packages.
+    pkm.getPackageList()
+        Returns a list of packages that are installed.
+    pkm.saveConfig()
+        Used internally. Saves the config.
+    pkm.loadConfig()
+        Used internally. Loads the config. 
+    pkm.installPackage(package, yesMode=False, depMode=False, forceMode=False)
+        Installs a package.
+    pkm.installPackageFromRepo(repo, package, yesMode=False, forceMode=False)
+        Installs a package from a specific repository.
+    pkm.removePackage(package)
+        Removes a local package.
+    pkm.searchForPackages(term)
+        Returns all packages where the package name contains term. If term == "ALL", all packages are returned.
+    pkm.dispInfo(ini)
+        Displays info about a package. ini should be a value from getLocalPackageData() or getRemotePackageData()
+    pkm.dispErrInfo(result)
+        Takes a return code from installd.installd() and returns a text error message.
+SEE ALSO
+    installd - Installation daemon
+    import - How to import libraries
