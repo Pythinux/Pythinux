@@ -111,7 +111,7 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
     url = data.get(package, "url", fallback=None)
     if url:
         downloadFile(url, "tmp/program.szip4")
-        result = dispErrInfo(installd.installd("tmp/program.szip4", yesMode, forceMode), package)
+        result = dispErrInfo(installd.installd(file.evalDir("/tmp/program.szip4", currentUser), yesMode, forceMode), package)
         if result:
             print(result)
     else:
