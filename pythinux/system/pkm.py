@@ -111,7 +111,7 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
     url = data.get(package, "url", fallback=None)
     if url:
         downloadFile(url, "tmp/program.szip4")
-        result = dispErrInfo(installd.installd(file.evalDir("/tmp/program.szip4", currentUser), yesMode, forceMode), package)
+        result = dispErrInfo(installd.installd(file.evalDir("/tmp/program.szip4", currentUser), yesMode, forceMode, depMode), package, depMode)
         if result:
             print(result)
     else:
@@ -189,12 +189,14 @@ def dispInfo(ini):
     print("Conflicts: {}".format(conflicts))
     div()
 
-def dispErrInfo(result, package):
+def dispErrInfo(result, package, depMode=False):
     """
     Turns an error code into something more useful.
     """
     if result == 1:
         return "ERROR: User action canceled."
+    elif result == 0 and depMode:
+        return
     elif result == 0:
         return "Successfully installed '{}'.".format(package)
     elif result == 2:
@@ -298,7 +300,7 @@ def main(args):
         else:
             depMode = False
         for arg in args:
-            installPackage(arg, yesMode, depMode)
+            installPackage(arg, yesMode, depMode=depMode)
     elif args == ["list"]:
         ls = sorted(getPackageList())
         div()
