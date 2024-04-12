@@ -1,3 +1,4 @@
+import os
 class Log:
     def __init__(self, filename, display=True):
         self.filename = filename
@@ -11,8 +12,9 @@ class Log:
             print(self.log_text)
         self.save()
     def load(self):
-        with open(file.evalDir(self.filename, currentUser)) as f:
-            self.logs = f.read().split("\n")
+        if os.path.isfile(file.evalDir(self.filename, currentUser)):
+            with open(file.evalDir(self.filename, currentUser)) as f:
+                self.logs = f.read().split("\n")
     def save(self):
         with open(file.evalDir(self.filename, currentUser), "w") as f:
             f.write("\n".join(self.logs))
