@@ -1,21 +1,21 @@
 def main(args):
     arguments = args
-    if arguments == ["list"]:
+    if arguments in [["list"], ["ls"]]:
         div()
         for item in aliases:
             print(f"{item} --> {aliases[item]}")
         if aliases == {}:
             print("No aliases loaded.")
         div()
-    elif arguments == ["add"]:
+    elif arguments == ["set"]:
         div()
-        print("alias add <alias> <command>")
+        print("alias set <alias> <command>")
         div()
         print("Example:")
-        print("alias add ? help")
+        print("alias set ? help")
         print("[Redirects \"?\" to \"help\"]")
         div()
-    elif "add" in arguments and len(arguments) == 3:
+    elif "set" in arguments and len(arguments) == 3:
         aliases[arguments[1]] = arguments[2]
         saveAliases(aliases)
     elif args == ["clear"]:
@@ -41,7 +41,7 @@ def main(args):
         div()
         print("Arguments:")
         print("    list: lists all aliases")
-        print("    add: adds an alias")
+        print("    set: set the value of an alias")
         print("    remove: removes an alias")
         print("    clear: removes all aliases")
         div()
