@@ -810,6 +810,9 @@ def addPythinuxModule(module, shared_objects, user):
     return module
 
 def generateAPI(module, user, sudoMode):
+    """
+    Internal function to expose Pythinux 3.x API's to a module.
+    """
     def openFile(filename, user, mode="r", **kwargs):
         """
         Custom open() operation.
@@ -818,9 +821,6 @@ def generateAPI(module, user, sudoMode):
 
     def isUnix():
         return unixMode
-    """
-    Internal function to expose Pythinux 3.x API's to a module.
-    """
 
     ## Define API modules
     shell = createModule("shell")

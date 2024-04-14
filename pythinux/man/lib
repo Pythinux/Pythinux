@@ -8,6 +8,10 @@ LIST
         Deals with semantic version strings.
     liblog
         Create basic text logs programatically
+    libconfig
+        Helper library for configparser.
+    libtime
+        Display the time in a standardised format.
 EXTERNAL
     There are loads of external libraries, including some official ones (see `lib.2`). 
     To install an external libary:

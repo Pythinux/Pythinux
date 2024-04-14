@@ -18,7 +18,7 @@ config = configparser.ConfigParser()
 if not config.has_section("repos"):
     config.add_section("repos")
     config.set("repos", "core", "https://codeberg.org/Pythinux/Core/raw/branch/main/db.ini")
-    # config.set("repos", "community", "https://codeberg.org/Pythinux/Community/raw/branch/main/db.ini")
+    config.set("repos", "community", "https://codeberg.org/Pythinux/Community/raw/branch/main/db.ini")
 
 version = [4, 0, 0]
 
