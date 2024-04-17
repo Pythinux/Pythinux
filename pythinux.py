@@ -1409,7 +1409,7 @@ def setupWizard():
             print(f.read())
             br()
     cls()
-    print(f"{div(True)}\nSetup Wizard\n{div(Truet )}")
+    print(f"{div(True)}\nSetup Wizard\n{div(True)}")
     username = ""
     while not username:
         username = input("Enter Your Username $")

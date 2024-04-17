@@ -154,7 +154,8 @@ def removePackage(package):
             os.remove(fn)
     
     for folder in [x for x in folders if x not in ignored]:
-        shutil.rmtree(folder)
+        if os.path.isdir(folder):
+            shutil.rmtree(folder)
 
     os.remove(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
     print("Successfully removed '{}'.".format(package))
