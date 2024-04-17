@@ -1,4 +1,8 @@
 import re
+
+class SemanticVersionError(Exception):
+    pass
+
 def check(version):
     """
     Checks if a string is in the format x.y.z-a, AKA semantic versioning.
@@ -15,7 +19,7 @@ def compare(a, b):
         return [int(x) for x in version.split(".")]
 
     if not check(a) or not check(b):
-        raise TypeError("Strings must be in the format x.y.z-a")
+        raise SemanticVersionError("Strings must be in the format x.y.z-a")
 
     version_a = normalize(a)
     version_b = normalize(b)

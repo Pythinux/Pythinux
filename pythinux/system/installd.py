@@ -32,8 +32,11 @@ def installdBase(filename, yesMode=False, forceMode=False, depMode=False):
 
         name = ini.get("Program", "name", fallback="[No program name]")
         version = ini.get("Program", "version", fallback="1.0.0")
-        if not libsemver.check(version):
-            raise InstallError("Defined version ({}) is not a semantic version (x.y.z)".format(version))
+        try:
+            if not libsemver.check(version):
+                raise InstallError("Defined version ({}) is not a semantic version (x.y.z)".format(version))
+        except libsemver.SemanticVersionError:
+            return 5
 
         author = ini.get("Program", "author", fallback="null")
         maintainer = ini.get("Program", "maintainer", fallback="null")

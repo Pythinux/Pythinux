@@ -206,6 +206,8 @@ def dispErrInfo(result, package, depMode=False):
         return "ERROR: Your Pythinux version is too old to install this software.\nERROR: To fix this, update Pythinux."
     elif result == 4:
         return "ERROR: This package is for an older Pythinux version."
+    elif result == 5:
+        return "ERROR: Invalid semantic version for package '{}'.".format(package)
     elif result == -1:
         return
     else:
@@ -402,11 +404,13 @@ def main(args):
         upgrades = []
         for package in packages:
             remote = data.get(package, "version", fallback="1.0.0")
-            ini = configparser.ConfigParser()
-            ini.read(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
-            local = ini.get("Program", "version", fallback = "1.0.0")
-            if libsemver.compare(local, remote) == -1:
-                upgrades.append(package)
+            ini = getLocalPackageData()[package]
+            local = ini.get("Program", "version", fallback = "1.0.0-1")
+            try:
+                if libsemver.compare(local, remote) == -1:
+                    upgrades.append(package)
+            except libsemver.SemanticVersionError:
+                print("ERROR: `{}` has an invalid semantic version. Cannot check for upgrade.".format(package))
         i = 1
         for upgrade in upgrades:
             print("({}/{}) Upgrading '{}'...".format(i, len(upgrades), upgrade))
