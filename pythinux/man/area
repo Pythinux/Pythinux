@@ -17,8 +17,6 @@ EXAMPLES
     area -t 11 7
         Finds the area of a 11x7 circle and prints the result (38.5).
 LIBRARY
-    This program has built-in functions (see `import`).
-
     area.rect(base, height)
         Finds the area of a rectangle and returns the result (either an int or float).
     area.circle(rad)
