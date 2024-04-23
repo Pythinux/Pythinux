@@ -2,4 +2,11 @@ NAME
     su - Launch a root shell
 DESCRIPTION
     SU allows you to easily elevate to a root shell by entering your password.
-
+    This is useful as it means you do not need to type "sudo" for potentially dozens of commands.
+USAGE
+    su
+        Launches a root shell. Requires group priveleges (see below) as well as password-based authentication.
+GROUP AUTH
+    In order to use `su`, the logged-in user needs to be in a group with the `canSudo` permission enabled. The default groups `user` and `root` have the value enabled, meaning most users can do this. When creating groups, this needs considering.
+SEE ALSO
+    sudo - Run commands as root
