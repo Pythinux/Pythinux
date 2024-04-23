@@ -1,14 +1,20 @@
+import getpass
+shell = load_program("shell", currentUser, libMode=True)
+var = load_program("var", currentUser, libMode=True)
+
 def main(args):
-    if args == ["--help"]:
-        main(currentUser,"man su")
-    else:
-        if currentUser.group.canSudo:
-            if sudo(currentUser):
-                g = groupList.byName("root")
-                u = User(g, currentUser.username,currentUser.password)
-                tty = getTerm()
-                main(u,tty)
+    if currentUser.group.canSudo:
+        passwd = getpass.getpass("Password $")
+        if verifyHash(passwd, currentUser.password):
+            rootUser = loadUserList().byName("root")
+            if rootUser:
+                allow_cls = var.getbool("SHELL_ALLOW_EXIT", False)
+                var.set("SHELL_ALLOW_EXIT", "true")
+                shell.terminal(rootUser)
+                var.set("SHELL_ALLOW_EXIT", allow_cls)
             else:
-                print("ERROR: Failed to authenticate.")
+                print("ERROR: `root` is not a valid user.")
         else:
-            print("ERROR: Insifficient priveleges. Contact your sysadmin.")
+            print("ERROR: Invalid password.")
+    else:
+        print("ERROR: Insufficient priveleges.")
