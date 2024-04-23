@@ -238,6 +238,7 @@ def attachDebugger(globals):
 
 def giveOutput(command, user, split=False, shell="terminal", ptyMode=False):
     warnings.warn("giveOutput() will be removed in Pythinux 3.1", DeprecationWarning)
+    warnings.warn("Instead, use the target program's library", DeprecationWarning)
     """
     Returns the output of a command.
     Positional arguments:
