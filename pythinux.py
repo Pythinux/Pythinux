@@ -865,6 +865,7 @@ def loadProgramBase(
     happ_directory = evalDir("/app_high", user)
     lib_directory = evalDir("/lib", user)
     hlib_directory = evalDir("/lib_high", user)
+    syslib_directory = evalDir("/system_lib", user)
 
     directories = [system_directory, lsystem_directory, app_directory]
     if user.admin() or sudoMode:
