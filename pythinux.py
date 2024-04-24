@@ -859,7 +859,6 @@ def loadProgramBase(
 
     current_directory = evalDir("/", user)
     system_directory = evalDir("/system", user)
-    hsystem_directory = evalDir("/system_high", user)
     lsystem_directory = evalDir("/system_low", user)
     app_directory = evalDir("/app", user)
     happ_directory = evalDir("/app_high", user)
@@ -867,12 +866,10 @@ def loadProgramBase(
     hlib_directory = evalDir("/lib_high", user)
     syslib_directory = evalDir("/system_lib", user)
 
-    directories = [system_directory, lsystem_directory, app_directory]
+    directories = [system_directory, lsystem_directory, app_directory, syslib_directory]
     if user.admin() or sudoMode:
         directories.append(system_directory)
         directories.append(happ_directory)
-    if user.god():
-        directories.append(hsystem_directory)
     
     if libMode:
         directories.append(lib_directory)
@@ -946,9 +943,9 @@ def loadProgramBase(
             }
             if directory in [
                 system_directory,
-                hsystem_directory,
                 lsystem_directory,
                 happ_directory,
+                syslib_directory,
             ]:
                 sp.insert(0, "app_high")
                 system_objects = {
@@ -1162,7 +1159,6 @@ def list_loadable_programs(user, sudoMode=False):
     """
     current_directory = evalDir("/", user)
     system_directory = evalDir("/system", user)
-    hsystem_directory = evalDir("/system_high", user)
     lsystem_directory = evalDir("/system_low", user)
     app_directory = evalDir("/app", user)
     happ_directory = evalDir("/app_high", user)
@@ -1174,8 +1170,6 @@ def list_loadable_programs(user, sudoMode=False):
         directories.append(system_directory)
     if user.group.canAppHigh:
         directories.append(happ_directory)
-    if user.group.canSysHigh:
-        directories.append(hsystem_directory)
     loadable_programs = set()
 
     for directory in directories:
