@@ -852,6 +852,7 @@ def loadProgramBase(
     shell="terminal",
     __name__=None,
     isolatedMode=False,
+    libMode=False,
     ):
     def getTerm():
         return shell
@@ -1081,6 +1082,7 @@ def load_program(
         shell,
         __name__,
         isolatedMode,
+        libMode,
     )
     if baseMode:
         return module, module_spec
