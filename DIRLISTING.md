@@ -20,8 +20,6 @@
 	- This file. Lists all files and what they do.
 * GETTINGSTARTED.md
 	- A basic getting started guide.
-* kate.sh
-	- Script for launching common files in the Kate text editor.
 * LICENSE
 	- License listing.
 * pythinux.py
