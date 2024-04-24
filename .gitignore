@@ -6,7 +6,8 @@ pythinux/config/*
 pythinux/rscript/*
 pythinux/tmp/*
 pythinux/home/*
-pythinux/lib/*
+pythinux/lib
+pythinux/lib_high
 pythinux/log/*
 *.pyc
 *.pyc

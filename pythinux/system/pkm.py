@@ -4,6 +4,7 @@ import configparser
 import urllib.request
 import traceback
 import zipfile
+import warnings
 
 disallowInstalld = getTerm() == "installd"
 
@@ -84,6 +85,11 @@ def getPackageList():
     """
     return os.listdir(file.evalDir("/share/pkm/programs/", currentUser))
 
+def getRemotePackageList():
+    """
+    Returns a list of remote packages.
+    """
+    return [x for x in getRemotePackageData(silent=True).keys() if x != "DEFAULT"]
 def saveConfig():
     """
     Call this function to ensure the config is saved.
