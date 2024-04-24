@@ -12,14 +12,10 @@ To run Pythinux, run the pythinux.py file in a modern version of python (3.9+).
 ``python pythinux.py``
 ## Setting Up
 When you run Pythinux for the first time, the setup wizard will run. The setup wizard will:  
-* Set up a root user for you
+* Set up your user
 * Set up automatic login
 ## Using
-Once the wizard completes, you will enter the main terminal, and it will look something like this:
-
-```root@username $```
-
-This is where you type commands.
+Once the wizard completes, you will enter the main terminal. This is where you type commands.
 ## Useful Commands
 There are a lof of commands in Pythinux, and understanding how to navigate Pythinux can be difficult.
 ### ``help``
@@ -29,9 +25,17 @@ The `man` command is essentially a loader for built-in manuals. To load a manual
 ### `pkm`
 This command is the official package manager for Pythinux. It has its own manpage ("man pkm") which details how to use it.
 ## Useful packages
-There are a lot of packages in Pythinux. There are 2 repositories: `official` and `community`, both of which contain numerous packages you can install. 
+There are a lot of packages in Pythinux. There are 2 repositories: `core` and `community`, both of which contain numerous packages you can install. 
 The following packages may be of interest:  
 * startpkg
 	- Contains several packages from the official repository that may be of interest, such as a window manager and calculator, as well as some command-line utilities.
-* pentools
-	- Another collection of utilities. This collection contains a bunch of penetration testing utilities.
+* fb
+    - Interactive file browser
+* ftp
+    - FTP client
+* devdoc
+    - Collection of manpages for how to write, package, and share Pythinux programs
+* stopwatch
+    - An accurate command-line stopwatch
+* whois
+    - Look up WHOIS data for a domain or IP address
