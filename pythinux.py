@@ -77,6 +77,7 @@ def fixDirectories(returnMode=False):
         "config",
         "home",
         "lib",
+        "lib_high",
         "log",
         "share",
         "share/pkm",
@@ -861,6 +862,8 @@ def loadProgramBase(
     lsystem_directory = evalDir("/system_low", user)
     app_directory = evalDir("/app", user)
     happ_directory = evalDir("/app_high", user)
+    lib_directory = evalDir("/lib", user)
+    hlib_directory = evalDir("/lib_high", user)
 
     directories = [system_directory, lsystem_directory, app_directory]
     if user.admin() or sudoMode:
@@ -868,8 +871,15 @@ def loadProgramBase(
         directories.append(happ_directory)
     if user.god():
         directories.append(hsystem_directory)
+    
+    if libMode:
+        directories.append(lib_directory)
+        if user.admin() or sudoMode:
+            directories.append(hlib_directory)
+
     for directory in directories:
         program_parts = splitString(program_name_with_args)
+        
 
         if len(program_parts) > 0:
             program_name = program_parts[0]
