@@ -43,7 +43,7 @@ def terminal(user, lastCommand=""):
 
 def runScript(user, filename):
     with file.open(filename, user) as f:
-        for cmd in f.read().split("\n"):
+        for cmd in [x for x in f.read().split("\n") if not x.startswith(";")]:
             run(user, cmd, "script")
 def main(args):
     if args:
