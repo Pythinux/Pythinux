@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!usr/bin/env python
 import os
 import pickle
 import sys
@@ -866,13 +866,14 @@ def loadProgramBase(
     hlib_directory = evalDir("/lib_high", user)
     syslib_directory = evalDir("/system_lib", user)
 
-    directories = [system_directory, lsystem_directory, app_directory, syslib_directory]
+    directories = [system_directory, lsystem_directory, app_directory]
     if user.admin() or sudoMode:
         directories.append(system_directory)
         directories.append(happ_directory)
     
     if libMode:
         directories.append(lib_directory)
+        directories.append(syslib_directory)
         if user.admin() or sudoMode:
             directories.append(hlib_directory)
 
@@ -886,7 +887,7 @@ def loadProgramBase(
         else:
             program_name = ""
             args = []
-        if program_name not in list_loadable_programs(user, sudoMode):
+        if program_name not in list_loadable_programs(user, sudoMode, libMode):
             return
         program_path = os.path.join(directory, program_name + ".py")
         script_path = os.path.join(directory, program_name + ".xx")
@@ -998,8 +999,8 @@ def loadProgramBase(
             module = addPythinuxModule(module, shared_objects, user)
             return module, module_spec
 
-def isProgramReal(program_name, user):
-    return program_name in list_loadable_programs(user)
+def isProgramReal(program_name, user, sudoMode, libMode):
+    return program_name in list_loadable_programs(user, sudoMode, libMode)
 
 
 def changeDirectory(directory: str, user: User):
@@ -1070,7 +1071,7 @@ def load_program(
         )
 
     program_name = program_name_with_args.split(" ")[0]
-    if not isProgramReal(program_name, user):
+    if not isProgramReal(program_name, user, sudoMode, libMode):
         return
 
     module, module_spec = loadProgramBase(
@@ -1151,7 +1152,7 @@ def run_script(f, user):
         main(user, item, shell="script")
 
 
-def list_loadable_programs(user, sudoMode=False):
+def list_loadable_programs(user, sudoMode=False, libMode=False):
     """
     Returns a list of all commands that the user is authorised to load.
     Note: if sudoMode is True, the app and system
@@ -1162,6 +1163,9 @@ def list_loadable_programs(user, sudoMode=False):
     lsystem_directory = evalDir("/system_low", user)
     app_directory = evalDir("/app", user)
     happ_directory = evalDir("/app_high", user)
+    lib_directory = evalDir("/lib", user)
+    hlib_directory = evalDir("/lib_high", user)
+    syslib_directory = evalDir("/system_lib", user)
 
     directories = [lsystem_directory]
     if user.group.canApp:
@@ -1171,6 +1175,11 @@ def list_loadable_programs(user, sudoMode=False):
     if user.group.canAppHigh:
         directories.append(happ_directory)
     loadable_programs = set()
+    if libMode:
+        directories.append(lib_directory)
+        directories.append(syslib_directory)
+        if sudoMode or user.group.canSys:
+            directories.append(hlib_directory)
 
     for directory in directories:
         if os.path.exists(directory) and os.path.isdir(directory):
