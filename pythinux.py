@@ -33,7 +33,7 @@ EVALHIST = []
 
 
 DEFAULT_SHELL_SCRIPT = """var set ALLOW_CLS true
-var set SHELL_ALLOW_EXIT false"""
+var set SHELL_ALLOW_EXIT true"""
 
 
 class PythinuxError(Exception):

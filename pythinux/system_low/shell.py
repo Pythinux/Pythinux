@@ -11,7 +11,7 @@ def run(user, cmd, lastCommand="", shell="shell",):
 
     if cmd == "":
         pass
-    elif cmd in ["quit", "exit"] and not var.getbool("SHELL_ALLOW_EXIT", False):
+    elif cmd in ["quit", "exit"] and not var.getbool("SHELL_ALLOW_EXIT", True):
         pass
     elif cmd in ["quit", "exit"]:
         return "EXIT_STATE"
