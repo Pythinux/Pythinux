@@ -94,6 +94,9 @@ def fixDirectories(returnMode=False):
             os.mkdir(item)
 
 
+def verifyUser(user):
+    return id(type(user)) in [id(User), id(CurrentUser)]
+
 def castObject(obj, new_type):
     """
     Create a new object of a specified type or use an existing object,
@@ -970,7 +973,7 @@ def loadProgramBase(
                 "PythinuxError": copy(PythinuxError),
                 "CURRDIR": copy(CURRDIR),
                 "ROOTDIR": copy(ROOTDIR),
-                "isUserValid": copy(isUserValid),
+                "verifyUser": copy(verifyUser),
             }
             if directory in [
                 system_directory,
@@ -1290,10 +1293,11 @@ def loginScreen(username=None, password=None):
         username = input("Username $")
     if not password:
         password = getpass("Password $")
-    for item in userList.list():
+    for item in loadUserList().users:
         if item.check(username, password):
             init(item)
             return
+    cls()
     div()
     print("Incorrect username/password sequence.")
     br()

@@ -10,11 +10,10 @@ def welcome():
     print("* pkm")
     print("    * package manager for pythinux programs.")
     div()
-    print("If you would like someone to help you, go to:")
-    print("https://codeberg.org/Pythinux/Pythinux")
-    print("and make an Issue.")
+    print("If you would like someone to help you, go to https://codeberg.org/Pythinux/Pythinux and make an Issue.")
+    print("Alternatively, connect to #pythinux on Libera.Chat.")
     div()
-    print("Alternatively, the official Pythinux wiki (https://pythinux.codeberg.page/wiki) could also provide helpful material for more technical users.")
+    print("Alternatively, the official Pythinux wiki (https://pythinux-wiki.gordinator.org) and the official website (https://pythinux.gordinator.org) could also provide helpful material for more technical users.")
     div()
 
 def main(args):

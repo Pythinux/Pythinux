@@ -1,7 +1,5 @@
-print(dir())
-userList = loadUserList()
-
 def main(args):
+    userList = loadUserList()
     if args == ["list"]:
         for item in userList.list():
             div()
@@ -20,7 +18,7 @@ def main(args):
         gl = loadGroupList()
         g = gl.byName(args[3])
         if g:
-            u = User(g, args[1],args[2])
+            u = User(g, args[1],hashString(args[2]))
             userList = createUser(userList,u)
             saveUserList(userList)
         else:

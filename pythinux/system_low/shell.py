@@ -2,8 +2,8 @@ import traceback
 
 var = load_program("var", currentUser, libMode=True)
 
-def run(user:pythinux.User, cmd, lastCommand="", shell="shell",):    
-    if id(type(user)) != id(User):
+def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):    
+    if not verifyUser(user):
         raise PythinuxError("User instance provided is not of the expected User class")
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
     if "!!" in cmd:
@@ -17,6 +17,10 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell",):
         pass
     elif cmd in ["quit", "exit"]:
         return "EXIT_STATE"
+    elif cmd in ["logoff", "logout"] and not var.getbool("SHELL_ALLOW_LOGOFF", True):
+        pass
+    elif cmd in ["logoff", "logout"]:
+        loginScreen()
     else:
         try:
             runCommand(user, cmd, shell=shell)
@@ -25,7 +29,7 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell",):
 
 
 def init(user: User):
-    if id(type(user)) != id(User):
+    if not verifyUser(user):
         raise PythinuxError("User instance provided is not of the expected User class")
     fileName = "~/shellrc.xx"
     script = file.evalDir(fileName, user)
@@ -33,7 +37,7 @@ def init(user: User):
     file.changeDirectory("~", user)
 
 def terminal(user: User, lastCommand=""):
-    if id(type(user)) != id(User):
+    if not verifyUser(user):
         raise PythinuxError("User instance provided is not of the expected User class")
     try:
         cmd = input("[{}@{} {}] $".format(user.group.name, user.username, CURRDIR))
@@ -52,7 +56,7 @@ def terminal(user: User, lastCommand=""):
         terminal(user, str(cmd))
 
 def runScript(user: pythinux.User, filename):
-    if id(type(user)) != id(User):
+    if not verifyUser(user):
         raise PythinuxError("User instance provided is not of the expected User class")
     with file.open(filename, user) as f:
         for cmd in [x for x in f.read().split("\n") if not x.startswith(";")]:

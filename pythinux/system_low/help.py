@@ -1,5 +1,5 @@
 def help():
-    return sorted(list_loadable_programs(currentUser))
+    return sorted(list_loadable_programs(currentUser, True))
 def main(args):
     lst = help()
     div()

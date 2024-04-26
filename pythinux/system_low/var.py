@@ -21,7 +21,7 @@ def getint(var, fallback=0):
     """
     vars = giveVars()
     try:
-        return int(giveVars[var])
+        return int(giveVars()[var])
     except ValueError:
         # Not an integer
         return fallback

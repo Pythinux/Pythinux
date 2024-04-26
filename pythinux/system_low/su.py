@@ -1,20 +1,15 @@
 import getpass
 shell = load_program("shell", currentUser, libMode=True)
 var = load_program("var", currentUser, libMode=True)
+sudo = load_program("sudo", currentUser, libMode=True)
 
 def main(args):
     if currentUser.group.canSudo:
-        passwd = getpass.getpass("Password $")
-        if verifyHash(passwd, currentUser.password):
-            rootUser = loadUserList().byName("root")
-            if rootUser:
-                allow_cls = var.getbool("SHELL_ALLOW_EXIT", False)
-                var.set("SHELL_ALLOW_EXIT", "true")
-                shell.terminal(rootUser)
-                var.set("SHELL_ALLOW_EXIT", allow_cls)
-            else:
-                print("ERROR: `root` is not a valid user.")
+        if sudo.confirmPassword(currentUser):
+            rootGroup = groupList.byName("root")
+            rootUser = User(rootGroup, currentUser.username, currentUser.password)
+            shell.terminal(rootUser)
         else:
-            print("ERROR: Invalid password.")
+            print("ERROR: Identity confirmation failed.")
     else:
-        print("ERROR: Insufficient priveleges.")
+        print("ERROR: Your group does not have the permission to run this command.")
