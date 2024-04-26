@@ -2,7 +2,9 @@ import traceback
 
 var = load_program("var", currentUser, libMode=True)
 
-def run(user, cmd, lastCommand="", shell="shell",):    
+def run(user:pythinux.User, cmd, lastCommand="", shell="shell",):    
+    if id(type(user)) != id(User):
+        raise PythinuxError("User instance provided is not of the expected User class")
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
     if "!!" in cmd:
         cmd = cmd.replace("!!", lastCommand)
@@ -22,13 +24,17 @@ def run(user, cmd, lastCommand="", shell="shell",):
             print(traceback.format_exc())
 
 
-def init(user):
+def init(user: User):
+    if id(type(user)) != id(User):
+        raise PythinuxError("User instance provided is not of the expected User class")
     fileName = "~/shellrc.xx"
     script = file.evalDir(fileName, user)
     runScript(user, script)
     file.changeDirectory("~", user)
 
-def terminal(user, lastCommand=""):
+def terminal(user: User, lastCommand=""):
+    if id(type(user)) != id(User):
+        raise PythinuxError("User instance provided is not of the expected User class")
     try:
         cmd = input("[{}@{} {}] $".format(user.group.name, user.username, CURRDIR))
     except KeyboardInterrupt:
@@ -45,7 +51,9 @@ def terminal(user, lastCommand=""):
     else:
         terminal(user, str(cmd))
 
-def runScript(user, filename):
+def runScript(user: pythinux.User, filename):
+    if id(type(user)) != id(User):
+        raise PythinuxError("User instance provided is not of the expected User class")
     with file.open(filename, user) as f:
         for cmd in [x for x in f.read().split("\n") if not x.startswith(";")]:
             run(user, cmd, "script")

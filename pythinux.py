@@ -408,7 +408,7 @@ class Group(Base):
         canSys: Boolean. Defines whether or not the user can access system
             apps in the "system" directory.
         canSysHigh: Boolean. Defines whether or not the user can access system
-            apps in the "system_high" directory.
+            apps in the "system_high" directory. UNUSED.
         canSudo: Boolean. Determines whether or not the user can use `sudo`.
         """
         self.name = name.lower()
@@ -418,6 +418,10 @@ class Group(Base):
         self.canSysHigh = canSysHigh
         self.canSudo = canSudo
         self.locked = locked
+    def __eq__(self, other):
+        if not isinstance(other, Group):
+            return False
+        return self.name == other.name and self.canAppHigh == other.canAppHigh and self.canApp == other.canApp and self.canSys == other.canSys and self.canSysHigh == other.canSysHigh and self.canSudo == other.canSudo and self.locked == other.locked
 
 
 class GroupList(Base):
@@ -529,6 +533,11 @@ class User(Base):
             "password": self.password,
             "group": self.group.name,
         }
+    
+    def __eq__(self, other):
+        if not isinstance(other, User):
+            return False
+        return other.username == self.username and other.password == self.password and other.group == self.group
 
 
 class UserList(Base):
@@ -842,11 +851,6 @@ def generateAPI(module, user, sudoMode):
 
 
 
-def limitedProgramLoad(program, user, libMode=True):
-    if program in ["help", "sudo", "alias", "var", "calc", "which", "libargs", "libconfig", "libgrab"]:
-        return load_program(program, user, libMode)
-
-
 class CurrentGroup(Group):
     def __init__(self, group):
         self.name = copy(group.name)
@@ -862,6 +866,12 @@ class CurrentUser(User):
         self.username = copy(user.username)
         self.password = copy(user.password)
         self.group = CurrentGroup(user.group)
+
+def isUserValid(user):
+    for u in userList:
+        if user == u:
+            return True
+    return False
 
 def loadProgramBase(
     program_name_with_args,
@@ -960,6 +970,7 @@ def loadProgramBase(
                 "PythinuxError": copy(PythinuxError),
                 "CURRDIR": copy(CURRDIR),
                 "ROOTDIR": copy(ROOTDIR),
+                "isUserValid": copy(isUserValid),
             }
             if directory in [
                 system_directory,
