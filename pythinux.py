@@ -845,6 +845,24 @@ def generateAPI(module, user, sudoMode):
 def limitedProgramLoad(program, user, libMode=True):
     if program in ["help", "sudo", "alias", "var", "calc", "which", "libargs", "libconfig", "libgrab"]:
         return load_program(program, user, libMode)
+
+
+class CurrentGroup(Group):
+    def __init__(self, group):
+        self.name = copy(group.name)
+        self.canApp = bool(group.canApp)
+        self.canAppHigh = bool(group.canAppHigh)
+        self.canSys = bool(group.canSys)
+        self.canSysHigh = bool(group.canSysHigh)
+        self.canSudo = bool(group.canSudo)
+        self.locked = bool(group.locked)
+
+class CurrentUser(User):
+    def __init__(self, user):
+        self.username = copy(user.username)
+        self.password = copy(user.password)
+        self.group = CurrentGroup(user.group)
+
 def loadProgramBase(
     program_name_with_args,
     user,
@@ -904,11 +922,12 @@ def loadProgramBase(
             module = importlib.util.module_from_spec(module_spec)
             sp = copy(sys.path)
             sp.insert(0, "app")
+        
             shared_objects = {
                 "castObject": copy(castObject),
                 "Base": copy(Base),
                 "__name__": copy(__name__),
-                "currentUser": copy(user),
+                "currentUser": CurrentUser(user),
                 "div": copy(div),
                 "br": copy(br),
                 "load_program": copy(load_program),
@@ -1231,7 +1250,7 @@ def loadUserList():
     try:
         userList = UserList()
         config = configparser.ConfigParser()
-        config.read(evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser", "")))
+        config.read(evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser")))
         userList.deserialise(config)
         return userList
     except Exception:
