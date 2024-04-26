@@ -11,15 +11,23 @@ disallowInstalld = getTerm() == "installd"
 if not disallowInstalld:
     installd = load_program("installd", currentUser, libMode=True)
 libsemver = load_program("libsemver", currentUser, libMode=True)
+libconfig = load_program("libconfig", currentUser, libMode=True)
 shell = load_program("shell", currentUser, libMode=True)
 
 global config, version
 
-config = configparser.ConfigParser()
-if not config.has_section("repos"):
-    config.add_section("repos")
-    config.set("repos", "core", "https://codeberg.org/Pythinux/Core/raw/branch/main/db.ini")
-    config.set("repos", "community", "https://codeberg.org/Pythinux/Community/raw/branch/main/db.ini")
+config = libconfig.load("/config/pkm.ini", {
+    "repos": {
+        "core": "https://codeberg.org/Pythinux/Core/raw/branch/main/db.ini",
+        "community": "https://codeberg.org/Pythinux/Community/raw/branch/main/db.ini",
+    }
+})
+
+# config = configparser.ConfigParser()
+# if not config.has_section("repos"):
+#     config.add_section("repos")
+#     config.set("repos", "core", "")
+#     config.set("repos", "community", "")
 
 version = [4, 0, 0]
 
@@ -94,8 +102,7 @@ def saveConfig():
     """
     Call this function to ensure the config is saved.
     """
-    with open(file.evalDir("/config/pkm.ini", currentUser), "w") as f:
-        config.write(f)
+    libconfig.save(config, "/config/pkm.ini")
 
 def loadConfig():
     """

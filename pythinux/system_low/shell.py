@@ -13,6 +13,8 @@ def run(user, cmd, lastCommand="", shell="shell",):
         pass
     elif cmd in ["quit", "exit"] and not var.getbool("SHELL_ALLOW_EXIT", False):
         pass
+    elif cmd in ["quit", "exit"]:
+        return "EXIT_STATE"
     else:
         try:
             runCommand(user, cmd, shell=shell)
@@ -33,7 +35,9 @@ def terminal(user, lastCommand=""):
         print()
         terminal(user, lastCommand)
     try:
-        run(user, cmd, lastCommand)
+        output = run(user, cmd, lastCommand)
+        if output == "EXIT_STATE":
+            return
     except KeyboardInterrupt:
         pass
     if ["!"] in cmd.split(" "):

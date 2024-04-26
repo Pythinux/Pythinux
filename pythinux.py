@@ -682,7 +682,7 @@ def parseInput(user, string, shell):
     return string
 
 
-def main(user, prompt, sudoMode=False, shell="terminal", doNotExecute=False):
+def main(user: User, prompt: str, sudoMode=False, shell="terminal", doNotExecute=False):
     """
     Main function. Used to execute commands.
     Args:
