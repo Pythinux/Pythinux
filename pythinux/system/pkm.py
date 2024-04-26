@@ -135,7 +135,20 @@ def installPackageFromRepo(repo, package, yesMode=False, forceMode=False):
         print("ERROR: Invalid URL.")
         return -1
 
-    
+def getDeps(pkg):
+    """
+    Returns a list of dependencies for a local package.
+    """
+    config = configparser.ConfigParser()
+    config.read(file.evalDir("/share/pkm/programs/{}".format(pkg), currentUser))
+    if not config.has_section("Program"):
+        warnings.warn("removePackage(): invalid package file specified")
+        return []
+    deps = config.get("Program", "dependencies", fallback=None)
+    deps = deps.split("; ") if deps else []
+    return deps   
+
+
 def removePackage(package):
     """
     Uninstall a package.
@@ -143,6 +156,15 @@ def removePackage(package):
     if not package in getPackageList():
         print("ERROR: Invalid package.")
         return 1
+    foundDeps = False
+
+    for pkg in getPackageList():
+        if package in getDeps(pkg):
+            print("ERROR: '{}' depends on '{}' and cannot be removed".format(pkg, package))
+            foundDeps = True
+    if foundDeps:
+        return 1
+
     ini = configparser.ConfigParser()
     ini.read(file.evalDir("/share/pkm/programs/{}".format(package), currentUser))
     if ini.has_section("Files"):
@@ -194,6 +216,8 @@ def dispInfo(ini):
     print("Min. Pythinux Version: {}".format(ini.get("Program", "min_version", fallback="3.0")))
     print("Dependencies: {}".format(deps))
     print("Conflicts: {}".format(conflicts))
+    if ini.get("Program", "package", fallback=None) in getPackageList():
+        print(getDeps(ini.get("Program", "package")))
     div()
 
 def dispErrInfo(result, package, depMode=False):
