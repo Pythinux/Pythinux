@@ -37,6 +37,7 @@ EVALHIST = []
 KPARAM_USE_MODULE_WRAPPER = False # Currently seems to cause a RecursionError, needs investigating
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
+KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
 
 
 with open("default.xx") as f:
@@ -110,6 +111,9 @@ def verifyUser(user):
         if KPARAM_DEBUGGING_VERIFYUSER:
             print("DEBUG: Could not find expected group")
         return False
+
+    if KPARAM_DEBUGGING_VERIFYUSER_EXTENDED:
+        print("DEBUG: Detected group '{}'".format(expectedUser.group.name))
 
     if (
         user.group.canApp != expectedUser.group.canApp
