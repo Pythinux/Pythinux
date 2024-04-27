@@ -20,6 +20,7 @@ import configparser
 
 try:
     import pty
+
     unixMode = True
 except:
     unixMode = False
@@ -102,10 +103,17 @@ def verifyUser(user):
     if not expectedUser:
         return False
 
-    if (user.group.canApp != expectedUser.group.canApp) or (user.group.canAppHigh != expectedUser.group.canAppHigh) or (user.group.canSys != expectedUser.group.canSys) or (user.group.canSysHigh != expectedUser.group.canSysHigh) or (user.group.locked != expectedUser.group.locked):
+    if (
+        user.group.canApp != expectedUser.group.canApp
+        or user.group.canAppHigh != expectedUser.group.canAppHigh
+        or user.group.canSys != expectedUser.group.canSys
+        or user.group.canSysHigh != expectedUser.group.canSysHigh
+        or user.group.locked != expectedUser.group.locked
+    ):
         return False
 
     return id(type(user)) in [id(User), id(CurrentUser)]
+
 
 def castObject(obj, new_type):
     """
@@ -266,7 +274,9 @@ def giveOutput(command, user, split=False, shell="terminal", ptyMode=False):
     """
     if ptyMode:
         if not unixMode:
-            raise PythinuxError("This system does not support the `pty` module. Only Unix-based systems support `pty`.")
+            raise PythinuxError(
+                "This system does not support the `pty` module. Only Unix-based systems support `pty`."
+            )
         slave, master = pty.openpty()
         pid = os.fork()
         if pid == 0:
@@ -281,9 +291,7 @@ def giveOutput(command, user, split=False, shell="terminal", ptyMode=False):
 
         main(user, command, shell=shell)
 
-
         output = sys.stdout.getvalue().strip("\n")
-
 
         sys.stdout = stdout_backup
         return output.split("\n") if split else output
@@ -355,12 +363,15 @@ class TrueValue(Base):
     """
     Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
     """
+
     pass
+
 
 class FalseValue(Base):
     """
     Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
     """
+
     pass
 
 
@@ -424,7 +435,7 @@ class Group(Base):
         canSysHigh=False,
         canSudo=False,
         locked=False,
-        ):
+    ):
         """
         Defines nanme and permissions of the Group.
         name: name of group. Set to all-lowercase.
@@ -444,10 +455,19 @@ class Group(Base):
         self.canSysHigh = canSysHigh
         self.canSudo = canSudo
         self.locked = locked
+
     def __eq__(self, other):
         if not isinstance(other, Group):
             return False
-        return self.name == other.name and self.canAppHigh == other.canAppHigh and self.canApp == other.canApp and self.canSys == other.canSys and self.canSysHigh == other.canSysHigh and self.canSudo == other.canSudo and self.locked == other.locked
+        return (
+            self.name == other.name
+            and self.canAppHigh == other.canAppHigh
+            and self.canApp == other.canApp
+            and self.canSys == other.canSys
+            and self.canSysHigh == other.canSysHigh
+            and self.canSudo == other.canSudo
+            and self.locked == other.locked
+        )
 
 
 class GroupList(Base):
@@ -559,11 +579,15 @@ class User(Base):
             "password": self.password,
             "group": self.group.name,
         }
-    
+
     def __eq__(self, other):
         if not isinstance(other, User):
             return False
-        return other.username == self.username and other.password == self.password and other.group == self.group
+        return (
+            other.username == self.username
+            and other.password == self.password
+            and other.group == self.group
+        )
 
 
 class UserList(Base):
@@ -615,6 +639,7 @@ class UserList(Base):
         for user in self.users:
             config[user.username] = user.serialise()
         return config
+
     def deserialise(self, config):
         for sect in config.sections():
             username = config.get(sect, "username")
@@ -622,6 +647,7 @@ class UserList(Base):
             group = loadGroupList().byName(config.get(sect, "group", fallback="user"))
             user = User(group, username, password)
             self.users.append(user)
+
 
 def copy(obj):
     """
@@ -665,6 +691,7 @@ def verifyHash(plaintext, saltedHashString):
     hashed_plaintext = hashString(plaintext, salt)
     return hashed_plaintext == saltedHashString
 
+
 def sha256(string, salt=None):
     """
     Performs a SHA256 og a string.
@@ -677,6 +704,7 @@ def sha256(string, salt=None):
     else:
         return
 
+
 def div(returnMode=False):
     """
     Prints 20 hyphen/dash symbols.
@@ -686,7 +714,6 @@ def div(returnMode=False):
         return s
     else:
         print(s)
-
 
 
 def br():
@@ -846,26 +873,36 @@ def addPythinuxModule(module, shared_objects, user):
     module.pythinux = pythinux
     return module
 
+
 def generateAPI(module, user, sudoMode):
     """
     Internal function to expose Pythinux 3.x API's to a module.
     """
+
     def openFile(filename, user, mode="r", **kwargs):
         """
         Custom open() operation.
         """
         return open(evalDir(filename, user), mode, **kwargs)
-    
+
     def limitedOpenFile(filename, user, mode="4", **kwargs):
         def isDirValid(filename, user):
-            for directory in ["/share", "/tmp", "/config", "~", "/home/{}".format(user.username)]:
+            for directory in [
+                "/share",
+                "/tmp",
+                "/config",
+                "~",
+                "/home/{}".format(user.username),
+            ]:
                 if filename.startswith(directory):
                     return True
+
         if isDirValid(filename, user):
             return open(evalDir(filename, user), mode, **kwargs)
         else:
-            raise PythinuxError("Cannot open file: file in restricted directory: {}".format(filename))
-
+            raise PythinuxError(
+                "Cannot open file: file in restricted directory: {}".format(filename)
+            )
 
     def isUnix():
         return unixMode
@@ -880,7 +917,9 @@ def generateAPI(module, user, sudoMode):
     file.root = lambda: os.chdir(ROOTDIR)
 
     file.changeDirectory = copy(changeDirectory)
-    file.open = copy(openFile) # if module.isRoot == TrueValue() else copy(limitedOpenFile)
+    file.open = copy(
+        openFile
+    )  # if module.isRoot == TrueValue() else copy(limitedOpenFile)
 
     # Enabling this might break stuff (for now, this will be un-commented before Pythinux 3 is released)
     # module.open = file.open
@@ -888,7 +927,6 @@ def generateAPI(module, user, sudoMode):
     ## Attach to module
     module.shell = shell
     module.file = file
-
 
 
 class CurrentGroup(Group):
@@ -901,17 +939,20 @@ class CurrentGroup(Group):
         self.canSudo = bool(group.canSudo)
         self.locked = bool(group.locked)
 
+
 class CurrentUser(User):
     def __init__(self, user):
         self.username = copy(user.username)
         self.password = copy(user.password)
         self.group = CurrentGroup(user.group)
 
+
 def isUserValid(user):
     for u in userList:
         if user == u:
             return True
     return False
+
 
 def loadProgramBase(
     program_name_with_args,
@@ -921,9 +962,12 @@ def loadProgramBase(
     __name__=None,
     isolatedMode=False,
     libMode=False,
-    ):
+):
     def getTerm():
         return shell
+
+    if not verifyUser(user):
+        raise PythinuxError("The User instance provided is corrupt. Refusing to execute.")
 
     current_directory = evalDir("/", user)
     system_directory = evalDir("/system", user)
@@ -938,7 +982,7 @@ def loadProgramBase(
     if user.admin() or sudoMode:
         directories.append(system_directory)
         directories.append(happ_directory)
-    
+
     if libMode:
         directories.append(lib_directory)
         directories.append(syslib_directory)
@@ -947,7 +991,6 @@ def loadProgramBase(
 
     for directory in directories:
         program_parts = splitString(program_name_with_args)
-        
 
         if len(program_parts) > 0:
             program_name = program_parts[0]
@@ -972,7 +1015,7 @@ def loadProgramBase(
             module = importlib.util.module_from_spec(module_spec)
             sp = copy(sys.path)
             sp.insert(0, "app")
-        
+
             shared_objects = {
                 "castObject": copy(castObject),
                 "Base": copy(Base),
@@ -1072,6 +1115,7 @@ def loadProgramBase(
             module = addPythinuxModule(module, shared_objects, user)
             return module, module_spec
 
+
 def isProgramReal(program_name, user, sudoMode, libMode):
     return program_name in list_loadable_programs(user, sudoMode, libMode)
 
@@ -1083,7 +1127,6 @@ def changeDirectory(directory: str, user: User):
     CURRDIR = directory
 
 
-
 def evalDir(directory: str, user: User):
     """
     Evaluates a directory, turning a path like "/home/root" to a full directory.
@@ -1093,7 +1136,7 @@ def evalDir(directory: str, user: User):
         `~` - User's home directory.
         `/` - Evaluates to root directory.
 
-    Also ensures no directory above the root directory is selected, ensuring no 
+    Also ensures no directory above the root directory is selected, ensuring no
     VM escapes occur.
     """
     if directory in EVALHIST:
@@ -1107,7 +1150,7 @@ def evalDir(directory: str, user: User):
         directory = "{}{}".format(CURRDIR, directory)
 
     if directory.startswith("/"):
-        directory = directory.replace("/", ROOTDIR+"/", 1)
+        directory = directory.replace("/", ROOTDIR + "/", 1)
 
     if directory.endswith(".."):
         parts = directory.split("/")
@@ -1123,7 +1166,6 @@ def evalDir(directory: str, user: User):
         return directory
 
 
-
 def load_program(
     program_name_with_args,
     user,
@@ -1134,7 +1176,7 @@ def load_program(
     __name__=None,
     isolatedMode=False,
     libMode=False,
-    ):
+):
     if program_name_with_args == "":
         return
     if debugMode:
@@ -1166,7 +1208,11 @@ def load_program(
             if "main" in dir(module):
                 module.main(module.args)
             else:
-                print("WARNING: '{}' does not have a main() function.".format(program_name))
+                print(
+                    "WARNING: '{}' does not have a main() function.".format(
+                        program_name
+                    )
+                )
         return module
 
 
@@ -1256,16 +1302,12 @@ def list_loadable_programs(user, sudoMode=False, libMode=False):
 
     for directory in directories:
         if os.path.exists(directory) and os.path.isdir(directory):
-            programs = [
-                f[:-3] for f in os.listdir(directory) if f.endswith(".py")
-            ]
+            programs = [f[:-3] for f in os.listdir(directory) if f.endswith(".py")]
             loadable_programs.update(programs)
 
     if os.path.exists(app_directory) and os.path.isdir(app_directory):
         programs = [
-            "*" + f[:-3]
-            for f in os.listdir(app_directory)
-            if f.endswith(".xx")
+            "*" + f[:-3] for f in os.listdir(app_directory) if f.endswith(".xx")
         ]
         loadable_programs.update(programs)
 
@@ -1282,7 +1324,6 @@ def init(user):
     shell.terminal(user)
 
 
-
 def saveUserList(userList):
     """
     Saves a userlist to the file system.
@@ -1290,7 +1331,9 @@ def saveUserList(userList):
     """
     if isinstance(userList, UserList):
         config = userList.serialise()
-        with open(evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser", "")), "w") as f:
+        with open(
+            evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser", "")), "w"
+        ) as f:
             config.write(f)
     else:
         raise PythinuxError("Cannot save invalid userlist.")
