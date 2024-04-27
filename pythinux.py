@@ -38,7 +38,7 @@ var set SHELL_ALLOW_EXIT true"""
 
 class PythinuxError(Exception):
     """
-    Exception thrown by the kernel (and system programs) when an issue occurs.
+    Generic exception raised by the kernel (and system programs) when an issue occurs.
     """
 
     def __init__(self, text):
@@ -95,6 +95,9 @@ def fixDirectories(returnMode=False):
 
 
 def verifyUser(user):
+    """
+    Returns True if the user is not a fake instance of User.
+    """
     return id(type(user)) in [id(User), id(CurrentUser)]
 
 def castObject(obj, new_type):
@@ -974,6 +977,7 @@ def loadProgramBase(
                 "CURRDIR": copy(CURRDIR),
                 "ROOTDIR": copy(ROOTDIR),
                 "verifyUser": copy(verifyUser),
+                "CurrentUser": copy(CurrentUser),
             }
             if directory in [
                 system_directory,
