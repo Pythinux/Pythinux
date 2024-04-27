@@ -344,6 +344,19 @@ class Base:
         return len(dir(self))
 
 
+class TrueValue(Base):
+    """
+    Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
+    """
+    pass
+
+class FalseValue(Base):
+    """
+    Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
+    """
+    pass
+
+
 class SudoError(Exception):
     """
     Generic exception for issues with sudo priveleges.
@@ -835,6 +848,17 @@ def generateAPI(module, user, sudoMode):
         Custom open() operation.
         """
         return open(evalDir(filename, user), mode, **kwargs)
+    
+    def limitedOpenFile(filename, user, mode="4", **kwargs):
+        def isDirValid(filename, user):
+            for directory in ["/share", "/tmp", "/config", "~", "/home/{}".format(user.username)]:
+                if filename.startswith(directory):
+                    return True
+        if isDirValid(filename, user):
+            return open(evalDir(filename, user), mode, **kwargs)
+        else:
+            raise PythinuxError("Cannot open file: file in restricted directory: {}".format(filename))
+
 
     def isUnix():
         return unixMode
@@ -849,7 +873,10 @@ def generateAPI(module, user, sudoMode):
     file.root = lambda: os.chdir(ROOTDIR)
 
     file.changeDirectory = copy(changeDirectory)
-    file.open = copy(openFile)
+    file.open = copy(openFile) # if module.isRoot == TrueValue() else copy(limitedOpenFile)
+
+    # Enabling this might break stuff (for now, this will be un-commented before Pythinux 3 is released)
+    # module.open = file.open
 
     ## Attach to module
     module.shell = shell
@@ -978,6 +1005,7 @@ def loadProgramBase(
                 "ROOTDIR": copy(ROOTDIR),
                 "verifyUser": copy(verifyUser),
                 "CurrentUser": copy(CurrentUser),
+                "isRoot": FalseValue(),
             }
             if directory in [
                 system_directory,
@@ -1011,6 +1039,7 @@ def loadProgramBase(
                     "LOGOFFEVENT": copy(LOGOFFEVENT),
                     "load_program": copy(load_program),
                     "parseInput": copy(parseInput),
+                    "isRoot": TrueValue(),
                 }
                 if user.god():
                     system_objects["CompileOS"] = copy(CompileOS)

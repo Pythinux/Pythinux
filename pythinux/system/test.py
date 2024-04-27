@@ -11,4 +11,4 @@ libsemver = load_program("libsemver", currentUser, libMode=True)
     # print(libsemver.compare(c,b))
 
 def main(args):
-    print(isUserValid(currentUser))
+    print(verifyUser(currentUser))
