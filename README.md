@@ -19,9 +19,9 @@ To install, clone this repository or download the source code of a release (reco
 ### Running
 Run the `pythinux.py` file in Python.
 ### System Requirements
-Python 3.9+ [Tested on 3.10]
+Python 3.10+ [Tested on 3.11]
 
-Any platform that supports Python 3.9 or higher.
+Any platform that supports Python 3.10 or higher.
 
 [Download Python](https://python.org/)
 ## Using
