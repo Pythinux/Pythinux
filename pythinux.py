@@ -98,6 +98,13 @@ def verifyUser(user):
     """
     Returns True if the user is not a fake instance of User.
     """
+    expectedUser = loadUserList().byName(user.username)
+    if not expectedUser:
+        return False
+
+    if (user.group.canApp != expectedUser.group.canApp) or (user.group.canAppHigh != expectedUser.group.canAppHigh) or (user.group.canSys != expectedUser.group.canSys) or (user.group.canSysHigh != expectedUser.group.canSysHigh) or (user.group.locked != expectedUser.group.locked):
+        return False
+
     return id(type(user)) in [id(User), id(CurrentUser)]
 
 def castObject(obj, new_type):

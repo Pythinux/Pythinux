@@ -11,4 +11,5 @@ libsemver = load_program("libsemver", currentUser, libMode=True)
     # print(libsemver.compare(c,b))
 
 def main(args):
+    currentUser.group.canAppHigh = False
     print(verifyUser(currentUser))
