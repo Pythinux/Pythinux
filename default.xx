@@ -1,0 +1,3 @@
+var set SHELL_ALLOW_EXIT true
+var set ALLOW_CLS true
+alias set clear cls

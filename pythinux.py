@@ -32,9 +32,14 @@ var = {}
 aliases = {}
 EVALHIST = []
 
+# Kernel parameters - edit these if you would like
 
-DEFAULT_SHELL_SCRIPT = """var set ALLOW_CLS true
-var set SHELL_ALLOW_EXIT true"""
+KPARAM_USE_MODULE_WRAPPER = False # Currently seems to cause a RecursionError, needs investigating
+KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
+
+
+with open("default.xx") as f:
+    DEFAULT_SHELL_SCRIPT = f.read()
 
 
 class PythinuxError(Exception):
@@ -377,11 +382,11 @@ class FalseValue(Base):
 
 class SudoError(Exception):
     """
-    Generic exception for issues with sudo priveleges.
+    Generic exception for issues with sudo privileges.
     """
 
     def __str__(self):
-        return "Insufficient priveleges to execute action."
+        return "Insufficient privileges to execute action."
 
 
 class LOGOFFEVENT:
@@ -954,6 +959,28 @@ def isUserValid(user):
     return False
 
 
+class ModuleWrapper:
+    """
+    A wrapper for a module instance that makes API injection more difficult by disabling __setattr__ and __delattr__.
+    """
+    def __init__(self, module):
+        self._module = module
+
+    def __getattr__(self, name):
+        return getattr(self._module, name)
+
+    def __setattr__(self, name, value):
+        pass
+
+    def __delattr__(self, name):
+        pass
+
+    def __dir__(self):
+        return dir(self._module)
+
+    def __dict__(self):
+        return self._module.__dict__
+
 def loadProgramBase(
     program_name_with_args,
     user,
@@ -966,7 +993,7 @@ def loadProgramBase(
     def getTerm():
         return shell
 
-    if not verifyUser(user):
+    if not verifyUser(user) and KPARAM_ESCALATION_PROTECTION:
         raise PythinuxError("The User instance provided is corrupt. Refusing to execute.")
 
     current_directory = evalDir("/", user)
@@ -1213,7 +1240,7 @@ def load_program(
                         program_name
                     )
                 )
-        return module
+        return ModuleWrapper(module) if KPARAM_USE_MODULE_WRAPPER else module
 
 
 def clearTemp(user):
