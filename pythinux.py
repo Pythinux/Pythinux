@@ -984,7 +984,7 @@ def loadProgramBase(
                 lsystem_directory,
                 happ_directory,
                 syslib_directory,
-            ]:
+            ] or sudoMode:
                 sp.insert(0, "app_high")
                 system_objects = {
                     "User": copy(User),
