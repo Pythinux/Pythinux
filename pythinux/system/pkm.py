@@ -479,7 +479,7 @@ def main(args):
         args.remove("reinstall")
         status = removePackage(args[0], force=True)
         if status == 0:
-            installPackage(args[0])
+            installPackage(args[0], yesMode=True)
     else:
         div()
         print("pkm [args]")
