@@ -359,8 +359,9 @@ def main(args):
         args.remove("remove")
         removePackage(args[0])
     elif args == ["clear", "-y"]:
-        for program in getPackageList():
-            removePackage(program)
+        while getPackageList():
+            for program in getPackageList():
+                removePackage(program)
     elif args == ["clear"]:
         print("ERROR: This will remove ALL of your packages.")
         print("ERROR: Run `pkm clear -y` to confirm.")
