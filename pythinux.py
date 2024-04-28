@@ -32,7 +32,7 @@ var = {}
 aliases = {}
 EVALHIST = []
 
-# Kernel parameters - edit these if you would like
+# Kernel parameters - designed to be edited with a text editor
 
 KPARAM_USE_MODULE_WRAPPER = False # Currently seems to cause a RecursionError, needs investigating
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation

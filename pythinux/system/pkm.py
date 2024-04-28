@@ -156,7 +156,7 @@ def getDeps(pkg):
     return deps   
 
 
-def removePackage(package):
+def removePackage(package, force=False):
     """
     Uninstall a package.
     """
@@ -166,7 +166,7 @@ def removePackage(package):
     foundDeps = False
 
     for pkg in getPackageList():
-        if package in getDeps(pkg):
+        if package in getDeps(pkg) and not force:
             print("ERROR: '{}' depends on '{}' and cannot be removed".format(pkg, package))
             foundDeps = True
     if foundDeps:
@@ -477,7 +477,7 @@ def main(args):
         div()
     elif "reinstall" in args and len(args) == 2:
         args.remove("reinstall")
-        status = removePackage(args[0])
+        status = removePackage(args[0], force=True)
         if status == 0:
             installPackage(args[0])
     else:
