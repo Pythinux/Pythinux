@@ -1,4 +1,3 @@
-
 *.backup
 pythinux/app/*
 pythinux/app_high/*
@@ -9,6 +8,8 @@ pythinux/home/*
 pythinux/lib
 pythinux/lib_high
 pythinux/log/*
+pythinux/share/*
+pythinux/man/*
 *.pyc
 *.pyc
 pickle
@@ -24,6 +25,3 @@ pythinux/memory.pkl
 *.pdf
 *.synctex.gz
 *.toc
-pythinux/share
-pythinux/man
-pythinux/share
