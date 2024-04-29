@@ -38,6 +38,7 @@ KPARAM_USE_MODULE_WRAPPER = False # Currently seems to cause a RecursionError, n
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
+KPARAM_MODULE_COPY = False # load_program() returns a copy of the module from loadProgramBase()
 
 
 with open("default.xx") as f:
@@ -1249,6 +1250,9 @@ def load_program(
                         program_name
                     )
                 )
+        if KPARAM_MODULE_COPY:
+            return copy(module)
+
         return ModuleWrapper(module) if KPARAM_USE_MODULE_WRAPPER else module
 
 
