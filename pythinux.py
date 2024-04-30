@@ -34,7 +34,7 @@ EVALHIST = []
 
 # Kernel parameters - designed to be edited with a text editor
 
-KPARAM_USE_MODULE_WRAPPER = False # Currently seems to cause a RecursionError, needs investigating
+KPARAM_USE_MODULE_WRAPPER = True # Prevents API modification more difficult
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
@@ -968,27 +968,20 @@ def isUserValid(user):
     return False
 
 
-class ModuleWrapper:
+class ReadOnlyWrapper:
     """
-    A wrapper for a module instance that makes API injection more difficult by disabling __setattr__ and __delattr__.
+    A class that wraps around an object and makes it read-only by hijacking the __setattr__ method.
+    Should be 100% API-compatible (however it doesn't work for standard types like strings and bools).
     """
-    def __init__(self, module):
-        self._module = module
+    def __init__(self, obj):
+        self.__dict__["_obj"] = obj
 
     def __getattr__(self, name):
-        return getattr(self._module, name)
+        return getattr(self._obj, name)
 
     def __setattr__(self, name, value):
-        pass
+        raise AttributeError("Cannot modify this object.")
 
-    def __delattr__(self, name):
-        pass
-
-    def __dir__(self):
-        return dir(self._module)
-
-    def __dict__(self):
-        return self._module.__dict__
 
 def loadProgramBase(
     program_name_with_args,
@@ -1249,7 +1242,7 @@ def load_program(
                         program_name
                     )
                 )
-        return ModuleWrapper(module) if KPARAM_USE_MODULE_WRAPPER else module
+        return ReadOnlyWrapper(module) if KPARAM_USE_MODULE_WRAPPER else module
 
 
 def clearTemp(user):
