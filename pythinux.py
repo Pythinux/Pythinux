@@ -38,6 +38,7 @@ KPARAM_USE_MODULE_WRAPPER = True # Prevents API modification more difficult
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
+KPARAM_MODULE_COPY = False # load_program() returns a copy of the module from loadProgramBase()
 
 
 with open("default.xx") as f:
