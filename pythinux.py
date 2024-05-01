@@ -980,7 +980,7 @@ class ReadOnlyWrapper:
         return getattr(self._obj, name)
 
     def __setattr__(self, name, value):
-        raise AttributeError("Cannot modify this object.")
+        raise AttributeError("Cannot modify unmodifiable object")
     def __dir__(self):
         return self._obj.__dir__()
 
