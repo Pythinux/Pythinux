@@ -933,9 +933,10 @@ def generateAPI(module, user, sudoMode):
     file.root = lambda: os.chdir(ROOTDIR)
 
     file.changeDirectory = copy(changeDirectory)
-    file.open = copy(
-        openFile
-    )  if module.isRoot == TrueValue() and KPARAM_USE_LIMITED_OPEN else copy(limitedOpenFile)
+    if KPARAM_REPLACE_OPEN:
+        file.open = copy(limitedOpenFile) if module.isRoot == TrueValue() else copy(openFile)
+    else:
+        file.open = copy(openFile)
 
     if KPARAM_REPLACE_OPEN:
         module.open = file.open
