@@ -1,6 +1,7 @@
 import traceback
 
 var = load_program("var", currentUser, libMode=True)
+pwd = load_program("pwd", currentUser, libMode=True)
 
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):    
     if not verifyUser(user):
@@ -40,7 +41,7 @@ def terminal(user: User, lastCommand=""):
     if not verifyUser(user):
         raise PythinuxError("User instance provided is not of the expected User class")
     try:
-        cmd = input("[{}@{} {}] $".format(user.group.name, user.username, CURRDIR))
+        cmd = input("[{}@{} {}] $".format(user.group.name, user.username, pwd.pwd()))
     except KeyboardInterrupt:
         print()
         terminal(user, lastCommand)
