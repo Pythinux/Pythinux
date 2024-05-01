@@ -38,6 +38,8 @@ KPARAM_USE_MODULE_WRAPPER = True # Fix for PSA-0004
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
+KPARAM_REPLACE_OPEN = False # replaces open() with the custom file.open()
+KPARAM_USE_LIMITED_OPEN = False # Uses limitedOpenFile() for file.open()
 
 
 with open("default.xx") as f:
@@ -933,10 +935,10 @@ def generateAPI(module, user, sudoMode):
     file.changeDirectory = copy(changeDirectory)
     file.open = copy(
         openFile
-    )  # if module.isRoot == TrueValue() else copy(limitedOpenFile)
+    )  if module.isRoot == TrueValue() and KPARAM_USE_LIMITED_OPEN else copy(limitedOpenFile)
 
-    # Enabling this might break stuff (for now, this will be un-commented before Pythinux 3 is released)
-    # module.open = file.open
+    if KPARAM_REPLACE_OPEN:
+        module.open = file.open
 
     ## Attach to module
     module.shell = shell
@@ -1152,10 +1154,8 @@ def isProgramReal(program_name, user, sudoMode, libMode):
 
 
 def changeDirectory(directory: str, user: User):
-    directory = evalDir(directory, user)
-
-    os.chdir(directory)
     CURRDIR = directory
+    os.chdir(evalDir(directory, user))
 
 
 def evalDir(directory: str, user: User):
