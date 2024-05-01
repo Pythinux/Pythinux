@@ -34,7 +34,7 @@ EVALHIST = []
 
 # Kernel parameters - designed to be edited with a text editor
 
-KPARAM_USE_MODULE_WRAPPER = True # Prevents API modification more difficult
+KPARAM_USE_MODULE_WRAPPER = True # Fix for PSA-0004
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
@@ -981,6 +981,8 @@ class ReadOnlyWrapper:
 
     def __setattr__(self, name, value):
         raise AttributeError("Cannot modify this object.")
+    def __dir__(self):
+        return self._obj.__dir__()
 
 
 def loadProgramBase(
