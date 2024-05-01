@@ -12,6 +12,7 @@ if not disallowInstalld:
     installd = load_program("installd", currentUser, libMode=True)
 libsemver = load_program("libsemver", currentUser, libMode=True)
 libconfig = load_program("libconfig", currentUser, libMode=True)
+libupgrade = load_program("libupgrade", currentUser, libMode=True)
 shell = load_program("shell", currentUser, libMode=True)
 
 global config, version
@@ -480,6 +481,8 @@ def main(args):
         status = removePackage(args[0], force=True)
         if status == 0:
             installPackage(args[0], yesMode=True)
+    elif args == ["dist-upgrade"]:
+        libupgrade.installUpgrades()
     else:
         div()
         print("pkm [args]")
@@ -491,7 +494,8 @@ def main(args):
         print("    allc: lists all installable packages [compact]")
         print("    batch <repositories>: installs every package in a particular database")
         print("    clear: removes all installed packages")
-        # print("    from <database> <package>: installs a package from a specific database")
+        print("    dist-upgrade: upgrades Pythinux version in-placte")
+        print("    from <database> <package>: installs a package from a specific database")
         print("    info <package>: prints information about an installed package")
         print("    install <package>: installs a package")
         print("    list: lists all installed programs")
