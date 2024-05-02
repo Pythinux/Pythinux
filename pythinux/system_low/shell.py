@@ -4,8 +4,6 @@ var = load_program("var", currentUser, libMode=True)
 pwd = load_program("pwd", currentUser, libMode=True)
 
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):    
-    if not verifyUser(user):
-        raise PythinuxError("User instance provided is not of the expected User class")
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
     if "!!" in cmd:
         cmd = cmd.replace("!!", lastCommand)
@@ -30,16 +28,12 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
 
 
 def init(user: User):
-    if not verifyUser(user):
-        raise PythinuxError("User instance provided is not of the expected User class")
     fileName = "~/shellrc.xx"
     script = file.evalDir(fileName, user)
     runScript(user, script)
     file.changeDirectory("~", user)
 
 def terminal(user: User, lastCommand=""):
-    if not verifyUser(user):
-        raise PythinuxError("User instance provided is not of the expected User class")
     try:
         cmd = input("[{}@{} {}] $".format(user.group.name, user.username, pwd.pwd()))
     except KeyboardInterrupt:
