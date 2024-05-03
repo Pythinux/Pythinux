@@ -70,14 +70,7 @@ def installdBase(filename, yesMode=False, forceMode=False, depMode=False):
 
         if not yesMode:
             cls()
-            div()
-            print("Package: {}".format(ini.get("Program", "package")))
-            print("Name: {}".format(name))
-            print("Version: {}".format(version))
-            print("Author: {}".format(author))
-            print("Maintainer: {}".format(maintainer))
-            print("Released: {}".format(date))
-            div()
+            pkm.dispInfo(ini)
             inst = input("Install? [Y/n] $").lower()
             if inst == "n":
                 return 1 # Action canceled
