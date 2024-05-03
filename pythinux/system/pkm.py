@@ -384,10 +384,10 @@ def main(args):
         div()
     elif args == ["batch"]:
         div()
-        print("pkm batch <database>")
+        print("pkm batch <repository>")
         div()
-        print("Install all packages from a database.")
-        print("For testing purposes only.")
+        print("Install all packages in a particular repository.")
+        print("WARNING: This can install a LOT of packages.")
         div()
     elif "batch" in args and len(args) == 2:
         args.remove("batch")
@@ -480,7 +480,7 @@ def main(args):
         print("Positional arguments:")
         print("    all: lists all installable packages")
         print("    allc: lists all installable packages [compact]")
-        print("    batch <repositories>: installs every package in a particular database")
+        print("    batch <repository>: installs every package in a particular repository")
         print("    clear: removes all installed packages")
         print("    dist-upgrade: upgrades Pythinux version in-placte")
         print("    from <database> <package>: installs a package from a specific database")
