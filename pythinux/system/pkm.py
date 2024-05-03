@@ -483,7 +483,7 @@ def main(args):
         print("    batch <repository>: installs every package in a particular repository")
         print("    clear: removes all installed packages")
         print("    dist-upgrade: upgrades Pythinux version in-placte")
-        print("    from <database> <package>: installs a package from a specific database")
+        print("    from <repository> <package>: installs a package from a specific repository")
         print("    info <package>: prints information about an installed package")
         print("    install <package>: installs a package")
         print("    list: lists all installed programs")
