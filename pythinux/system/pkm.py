@@ -224,8 +224,7 @@ def dispInfo(ini):
     print("Min. Pythinux Version: {}".format(ini.get("Program", "min_version", fallback="3.0")))
     print("Dependencies: {}".format(deps))
     print("Conflicts: {}".format(conflicts))
-    if ini.get("Program", "package", fallback=None) in getPackageList():
-        print(getDeps(ini.get("Program", "package")))
+    print("Installed: {}".format("Yes" if ini.get("Program", "package") in getPackageList() else "No"))
     div()
 
 def dispErrInfo(result, package, depMode=False):
@@ -407,7 +406,7 @@ def main(args):
         div()
         print("pkm info <package>")
         div()
-        print("Displays info about an INSTALLED package.")
+        print("Displays info about a package.")
         div()
     elif "info" in args and len(args) == 2:
         args.remove("info")
@@ -415,18 +414,7 @@ def main(args):
             ini = configparser.ConfigParser()
             ini.read(file.evalDir("/share/pkm/programs/{}".format(args[0]), currentUser))
             dispInfo(ini)
-        else:
-            print("ERROR: Package not installed.")
-    elif args == ["rinfo"]:
-        div()
-        print("pkm rifo <package>")
-        div()
-        print("Displays info about an INSTALLABLE package.")
-        div()
-    elif "rinfo" in args and len(args) == 2:
-        args.remove("rinfo")
-        clearTemp(currentUser)
-        if args[0] in getRemotePackageData(False, True).sections():
+        elif args[0] in getRemotePackageData(False, True).sections():
             data = getRemotePackageData()
             downloadFile(data.get(args[0], "url"), "/tmp/program.szip4")
             with zipfile.ZipFile(file.evalDir("/tmp/program.szip4", currentUser)) as f:
@@ -435,7 +423,7 @@ def main(args):
             ini.read(file.evalDir("/tmp/program.ini", currentUser))
             dispInfo(ini)
         else:
-            print("ERROR: Invalid package name.")
+            print("ERROR: Package not installed.")
     elif args == ["upgrade"]:
         print("Upgrading...")
         data = getRemotePackageData(False, True)
@@ -502,7 +490,6 @@ def main(args):
         print("    remove <package>: remove a package")
         print("    repo: manages repositories")
         print("    reinstall <package>: uninstall and then install a package")
-        print("    rinfo <package>: prints information about an installable package")
         print("    search <package name>: searches for a package by name")
         print("    update: updates remote package list")
         print("    upgrade: upgrades all installed packages")
