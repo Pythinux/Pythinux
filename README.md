@@ -1,5 +1,4 @@
 # Pythinux
-[Website](https://pythinux.gordinator.org) [Wiki](https://wiki.pythinux.gordinator.org)
 ### A fully-featured, multi-purpose operating system written entirely in Python.
 No dependencies, no tricks*, no compromises. 
 
@@ -14,6 +13,9 @@ No dependencies, no tricks*, no compromises.
 * Package Manager
 * Documentation
 * Etc.
+## Links
+ * [Website](https://pythinux.gordinator.org)
+ * [Wiki](https://wiki.pythinux.gordinator.org)
 
 ## Install
 To install, clone this repository or download the source code of a release (recommended).
