@@ -25,7 +25,6 @@ try:
 except:
     unixMode = False
 
-global osName, version, CURRDIR, ROOTDIR, DEFAULT_SHELL_SCRIPT, var, aliases, EVALHIST
 osName = "Pythinux"
 version = [3, 0, 0]
 var = {}
