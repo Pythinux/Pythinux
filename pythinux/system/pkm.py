@@ -207,7 +207,7 @@ def searchForPackages(term):
     else:
         return [x for x in getRemotePackageData(False, True) if term in x]
 
-def dispInfo(ini):
+def dispInfo(ini, showInstalledState=False):
     """
     Displays package info.
     ini is a configparser.ConfigParser object.
@@ -224,7 +224,8 @@ def dispInfo(ini):
     print("Min. Pythinux Version: {}".format(ini.get("Program", "min_version", fallback="3.0")))
     print("Dependencies: {}".format(deps))
     print("Conflicts: {}".format(conflicts))
-    print("Installed: {}".format("Yes" if ini.get("Program", "package") in getPackageList() else "No"))
+    if showInstalledState:
+        print("Installed: {}".format("Yes" if ini.get("Program", "package") in getPackageList() else "No"))
     div()
 
 def dispErrInfo(result, package, depMode=False):
@@ -413,7 +414,7 @@ def main(args):
         if args[0] in getPackageList():
             ini = configparser.ConfigParser()
             ini.read(file.evalDir("/share/pkm/programs/{}".format(args[0]), currentUser))
-            dispInfo(ini)
+            dispInfo(ini, True)
         elif args[0] in getRemotePackageData(False, True).sections():
             data = getRemotePackageData()
             downloadFile(data.get(args[0], "url"), "/tmp/program.szip4")
@@ -421,7 +422,7 @@ def main(args):
                 f.extract("program.ini", file.evalDir("/tmp", currentUser))
             ini = configparser.ConfigParser()
             ini.read(file.evalDir("/tmp/program.ini", currentUser))
-            dispInfo(ini)
+            dispInfo(ini, True)
         else:
             print("ERROR: Package not installed.")
     elif args == ["upgrade"]:
