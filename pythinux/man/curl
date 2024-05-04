@@ -1,0 +1,14 @@
+NAME
+    curl - Transfer data using URLs
+DESCRIPTION
+    CURL is a utility for transferring data from a server with URLs. It is not a full curl implementation (in fact, it supports none of its arguments), and is instead a basic utility for viewing the text contents of remote HTTP resources.
+SYNTAX
+    curl <url>
+        Download and view a remote resource.
+LIBRARY
+    curl.curl(url, character_set="utf-8")
+        Uses urllib to grab the contents of `url` and returns the contents as a string.
+    curl.CurlException
+        Exception raised by the curl library.
+SEE ALSO
+    import - How to import libraries
