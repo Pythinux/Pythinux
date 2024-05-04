@@ -1,0 +1,15 @@
+NAME
+    user - Manage users
+DESCRIPTION
+    The USER command allows you to add, remove, and manage users on a Pythinux system.
+SYNTAX
+    user list
+        Lists all users
+    user add <username> <password> <group_name>
+        Add a user.
+    user remove <user>
+        Remove a user.
+    user info <user>
+        View info about a user. NOTE: This information is unformatted and probably not useful to most people, as all the relevant info is in `user list`.
+SEE ALSO
+    group - manage groups

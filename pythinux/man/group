@@ -1,0 +1,26 @@
+NAME
+    group - Manage groups
+DESCRIPTION
+    The USER command adds users to the system. However, each user needs to be inside of a group. The GROUP command manages this.
+PERMISSIONS
+    canApp
+        This permission, if enabled, allows for the group's users to run installed apps.
+    canAppHigh
+        This permission, if enabled, allows for the group's users to run *privileged* installed apps.
+    canSys
+        This permission, if enabled, allows for the group's users to run *privileged* system apps.
+    canSysHigh
+        This permission used to have a purpose. It no longer does. It will be removed in a future release.
+    canSudo
+        This permission, if enabled, allows the user to use the "sudo" or "su" commands to run commands as root or open a root shell.
+SYNTAX
+    group add <name> <canApp> <canAppHigh> <canSys> <canSysHigh> <canSudo>
+        Adds a group. Note that all the permissions must be either be 0 for disabled or 1 for enabled.
+    group list
+        Lists all groups by name.
+    group remove <name>
+        Removes a group.
+    group info <name>
+        Displays permissions associated with a group.
+SEE ALSO
+    user - manage users

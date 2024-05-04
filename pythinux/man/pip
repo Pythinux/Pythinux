@@ -1,0 +1,9 @@
+NAME
+    pip - wrapper for Python package manager
+DESCRIPTION
+    The PIP command is a small wrapper around your system's `pip` command. It allows you to run pip commands to install, remove, or manage Python packages.
+SYNTAX
+    pip <command>
+        Run a command with pip.
+SEE ALSO
+    
