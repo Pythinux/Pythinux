@@ -10,161 +10,53 @@ CLASSES
         SudoError
     builtins.object
         Base
+            FalseValue
             Group
+                CurrentGroup
             GroupList
+            TrueValue
             User
+                CurrentUser
             UserList
-        CurrentProgram
         LOGOFFEVENT
-        Process
-        ProcessManager
-        rangedInt
-    
+        ReadOnlyWrapper
+
     class Base(builtins.object)
      |  Base class used by all classes.
      |  This class is used as a base for other classes exclusively,
      |  and is not called directly.
-     |  
+     |
      |  Methods defined here:
-     |  
+     |
      |  __iter__(self)
      |      Iterating through a Base object iterates through the keys and not the
      |      values.
-     |  
+     |
      |  __len__(self)
      |      Runing len() for a Base object returns the amount of attributes it has.
-     |  
+     |
      |  __str__(self)
      |      Printing an object will return the object passed
      |      through pprint_dict(obj_to_dict()).
-     |  
+     |
      |  ----------------------------------------------------------------------
      |  Data descriptors defined here:
-     |  
+     |
      |  __weakref__
      |      list of weak references to the object
-    
-    class CurrentProgram(builtins.object)
-     |  CurrentProgram(name)
-     |  
-     |  Methods defined here:
-     |  
-     |  __init__(self, name)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  lock_class(self)
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __dict__
-     |      dictionary for instance variables
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-     |  
-     |  name
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data and other attributes defined here:
-     |  
-     |  __class__ = <class 'type'>
-     |      type(object) -> the object's type
-     |      type(name, bases, dict, **kwds) -> a new type
-    
-    class FileError(builtins.Exception)
-     |  FileError(text)
-     |  
-     |  Generic exception for indicating an issue with opening or parsing a file.
-     |  Args:
-     |  text: what to display to the user.
-     |  
+
+    class CurrentGroup(Group)
+     |  CurrentGroup(group)
+     |
      |  Method resolution order:
-     |      FileError
-     |      builtins.Exception
-     |      builtins.BaseException
-     |      builtins.object
-     |  
-     |  Methods defined here:
-     |  
-     |  __init__(self, text)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  write(self, text)
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-     |  
-     |  ----------------------------------------------------------------------
-     |  Static methods inherited from builtins.Exception:
-     |  
-     |  __new__(*args, **kwargs) from builtins.type
-     |      Create and return a new object.  See help(type) for accurate signature.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Methods inherited from builtins.BaseException:
-     |  
-     |  __delattr__(self, name, /)
-     |      Implement delattr(self, name).
-     |  
-     |  __getattribute__(self, name, /)
-     |      Return getattr(self, name).
-     |  
-     |  __reduce__(...)
-     |      Helper for pickle.
-     |  
-     |  __repr__(self, /)
-     |      Return repr(self).
-     |  
-     |  __setattr__(self, name, value, /)
-     |      Implement setattr(self, name, value).
-     |  
-     |  __setstate__(...)
-     |  
-     |  __str__(self, /)
-     |      Return str(self).
-     |  
-     |  add_note(...)
-     |      Exception.add_note(note) --
-     |      add a note to the exception
-     |  
-     |  with_traceback(...)
-     |      Exception.with_traceback(tb) --
-     |      set self.__traceback__ to tb and return self.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors inherited from builtins.BaseException:
-     |  
-     |  __cause__
-     |      exception cause
-     |  
-     |  __context__
-     |      exception context
-     |  
-     |  __dict__
-     |  
-     |  __suppress_context__
-     |  
-     |  __traceback__
-     |  
-     |  args
-    
-    class Group(Base)
-     |  Group(name, canApp=False, canAppHigh=False, canSys=False, canSysHigh=False, canSudo=False, locked=False)
-     |  
-     |  User groups with custom permissions.
-     |  
-     |  Method resolution order:
+     |      CurrentGroup
      |      Group
      |      Base
      |      builtins.object
-     |  
+     |
      |  Methods defined here:
-     |  
-     |  __init__(self, name, canApp=False, canAppHigh=False, canSys=False, canSysHigh=False, canSudo=False, locked=False)
+     |
+     |  __init__(self, group)
      |      Defines nanme and permissions of the Group.
      |      name: name of group. Set to all-lowercase.
      |      canApp: Boolean. Defines whether or not the user can access apps.
@@ -173,311 +65,58 @@ CLASSES
      |      canSys: Boolean. Defines whether or not the user can access system
      |          apps in the "system" directory.
      |      canSysHigh: Boolean. Defines whether or not the user can access system
-     |          apps in the "system_high" directory.
+     |          apps in the "system_high" directory. UNUSED.
      |      canSudo: Boolean. Determines whether or not the user can use `sudo`.
-     |  
+     |
      |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
+     |  Methods inherited from Group:
+     |
+     |  __eq__(self, other)
+     |      Return self==value.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Group:
+     |
      |  __dict__
      |      dictionary for instance variables
-     |  
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from Group:
+     |
+     |  __hash__ = None
+     |
      |  ----------------------------------------------------------------------
      |  Methods inherited from Base:
-     |  
+     |
      |  __iter__(self)
      |      Iterating through a Base object iterates through the keys and not the
      |      values.
-     |  
+     |
      |  __len__(self)
      |      Runing len() for a Base object returns the amount of attributes it has.
-     |  
+     |
      |  __str__(self)
      |      Printing an object will return the object passed
      |      through pprint_dict(obj_to_dict()).
-     |  
+     |
      |  ----------------------------------------------------------------------
      |  Data descriptors inherited from Base:
-     |  
+     |
      |  __weakref__
      |      list of weak references to the object
-    
-    class GroupList(Base)
-     |  GroupList class for use in saveGroupList()/loadGroupList().
-     |  
+
+    class CurrentUser(User)
+     |  CurrentUser(user)
+     |
      |  Method resolution order:
-     |      GroupList
-     |      Base
-     |      builtins.object
-     |  
-     |  Methods defined here:
-     |  
-     |  __init__(self)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  __len__(self)
-     |      Runing len() for a Base object returns the amount of attributes it has.
-     |  
-     |  add(self, group)
-     |      Adds a group to the GroupList.
-     |      Args:
-     |      * group: a Group instance.
-     |  
-     |  byName(self, name)
-     |      Returns the first instance of a group based on its name.
-     |  
-     |  list(self)
-     |      Returns the list of groups.
-     |  
-     |  remove(self, group)
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __dict__
-     |      dictionary for instance variables
-     |  
-     |  ----------------------------------------------------------------------
-     |  Methods inherited from Base:
-     |  
-     |  __iter__(self)
-     |      Iterating through a Base object iterates through the keys and not the
-     |      values.
-     |  
-     |  __str__(self)
-     |      Printing an object will return the object passed
-     |      through pprint_dict(obj_to_dict()).
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors inherited from Base:
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-    
-    class LOGOFFEVENT(builtins.object)
-     |  This class(not an instance of it) is returned by main() when
-     |  the user uses the "logoff" command.
-     |  
-     |  Data descriptors defined here:
-     |  
-     |  __dict__
-     |      dictionary for instance variables
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-    
-    class Process(builtins.object)
-     |  Process(name, pid, function, parent)
-     |  
-     |  Methods defined here:
-     |  
-     |  __init__(self, name, pid, function, parent)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  isSubProcess(self)
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __dict__
-     |      dictionary for instance variables
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-    
-    class ProcessManager(builtins.object)
-     |  Methods defined here:
-     |  
-     |  __init__(self)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  add_process(self, name, function, parent=None)
-     |  
-     |  garbage_collect(self)
-     |  
-     |  list(self)
-     |  
-     |  async run(self)
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __dict__
-     |      dictionary for instance variables
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-    
-    class PythinuxError(builtins.Exception)
-     |  PythinuxError(text)
-     |  
-     |  Exception thrown by the kernel when an issue occurs.
-     |  
-     |  Method resolution order:
-     |      PythinuxError
-     |      builtins.Exception
-     |      builtins.BaseException
-     |      builtins.object
-     |  
-     |  Methods defined here:
-     |  
-     |  __init__(self, text)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  __str__(self)
-     |      Return str(self).
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-     |  
-     |  ----------------------------------------------------------------------
-     |  Static methods inherited from builtins.Exception:
-     |  
-     |  __new__(*args, **kwargs) from builtins.type
-     |      Create and return a new object.  See help(type) for accurate signature.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Methods inherited from builtins.BaseException:
-     |  
-     |  __delattr__(self, name, /)
-     |      Implement delattr(self, name).
-     |  
-     |  __getattribute__(self, name, /)
-     |      Return getattr(self, name).
-     |  
-     |  __reduce__(...)
-     |      Helper for pickle.
-     |  
-     |  __repr__(self, /)
-     |      Return repr(self).
-     |  
-     |  __setattr__(self, name, value, /)
-     |      Implement setattr(self, name, value).
-     |  
-     |  __setstate__(...)
-     |  
-     |  add_note(...)
-     |      Exception.add_note(note) --
-     |      add a note to the exception
-     |  
-     |  with_traceback(...)
-     |      Exception.with_traceback(tb) --
-     |      set self.__traceback__ to tb and return self.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors inherited from builtins.BaseException:
-     |  
-     |  __cause__
-     |      exception cause
-     |  
-     |  __context__
-     |      exception context
-     |  
-     |  __dict__
-     |  
-     |  __suppress_context__
-     |  
-     |  __traceback__
-     |  
-     |  args
-    
-    class SudoError(builtins.Exception)
-     |  Generic exception for issues with sudo priveleges.
-     |  
-     |  Method resolution order:
-     |      SudoError
-     |      builtins.Exception
-     |      builtins.BaseException
-     |      builtins.object
-     |  
-     |  Methods defined here:
-     |  
-     |  __str__(self)
-     |      Return str(self).
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-     |  
-     |  ----------------------------------------------------------------------
-     |  Methods inherited from builtins.Exception:
-     |  
-     |  __init__(self, /, *args, **kwargs)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Static methods inherited from builtins.Exception:
-     |  
-     |  __new__(*args, **kwargs) from builtins.type
-     |      Create and return a new object.  See help(type) for accurate signature.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Methods inherited from builtins.BaseException:
-     |  
-     |  __delattr__(self, name, /)
-     |      Implement delattr(self, name).
-     |  
-     |  __getattribute__(self, name, /)
-     |      Return getattr(self, name).
-     |  
-     |  __reduce__(...)
-     |      Helper for pickle.
-     |  
-     |  __repr__(self, /)
-     |      Return repr(self).
-     |  
-     |  __setattr__(self, name, value, /)
-     |      Implement setattr(self, name, value).
-     |  
-     |  __setstate__(...)
-     |  
-     |  add_note(...)
-     |      Exception.add_note(note) --
-     |      add a note to the exception
-     |  
-     |  with_traceback(...)
-     |      Exception.with_traceback(tb) --
-     |      set self.__traceback__ to tb and return self.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors inherited from builtins.BaseException:
-     |  
-     |  __cause__
-     |      exception cause
-     |  
-     |  __context__
-     |      exception context
-     |  
-     |  __dict__
-     |  
-     |  __suppress_context__
-     |  
-     |  __traceback__
-     |  
-     |  args
-    
-    class User(Base)
-     |  User(group, username, password='16ea2160191ad1cb32759479f0751158b335297f186da011c107a835b23db76762500b1bc9a347c10c3b8beb28863e83', hidden=False)
-     |  
-     |  User class used by Pythinux.
-     |  See __init__() for how to create User objects properly.
-     |  
-     |  Method resolution order:
+     |      CurrentUser
      |      User
      |      Base
      |      builtins.object
-     |  
+     |
      |  Methods defined here:
-     |  
-     |  USERTYPE(self)
-     |      Returns the name of the user's group.
-     |  
-     |  __init__(self, group, username, password='16ea2160191ad1cb32759479f0751158b335297f186da011c107a835b23db76762500b1bc9a347c10c3b8beb28863e83', hidden=False)
+     |
+     |  __init__(self, user)
      |      Constructor for User class.
      |      Args:
      |          group: a Group object.
@@ -487,12 +126,21 @@ CLASSES
      |              If no password is given, the password is blank.
      |              (the hash obviously still exists. pydoc represents the
      |              output of hashString("") as the default password.)
-     |  
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from User:
+     |
+     |  USERTYPE(self)
+     |      Returns the name of the user's group.
+     |
+     |  __eq__(self, other)
+     |      Return self==value.
+     |
      |  admin(self)
      |      Returns whether or not the user's level is 2 or higher,
      |      indicating a root user.
-     |  
-     |  check(self, username, password='5bfb49548812e2c9953e46e2cb21cb5b70ae5a05495f8106dab5c18f286e03fa580c80f9ecb92ccb652a74268a630945')
+     |
+     |  check(self, username, password='1ad3c60d8596ce241f83c8c015ed65ff881df5ee05cf34fb54ba0718d95b0f07c1ef5c85ce226414d4d3baf54f9756d4')
      |      Function for checking whether a User class and passed details match.
      |      Args:
      |          username: string
@@ -500,182 +148,679 @@ CLASSES
      |      Returns:
      |          bool depending on whether or not the supplied details match up
      |          with the User object's properties.
-     |  
+     |
      |  god(self)
      |      Returns whether or not the user's level is 3 or higher,
      |      indicating a god user.
-     |  
+     |
+     |  serialise(self)
+     |
      |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
+     |  Data descriptors inherited from User:
+     |
      |  __dict__
      |      dictionary for instance variables
-     |  
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes inherited from User:
+     |
+     |  __hash__ = None
+     |
      |  ----------------------------------------------------------------------
      |  Methods inherited from Base:
-     |  
+     |
      |  __iter__(self)
      |      Iterating through a Base object iterates through the keys and not the
      |      values.
-     |  
+     |
      |  __len__(self)
      |      Runing len() for a Base object returns the amount of attributes it has.
-     |  
+     |
      |  __str__(self)
      |      Printing an object will return the object passed
      |      through pprint_dict(obj_to_dict()).
-     |  
+     |
      |  ----------------------------------------------------------------------
      |  Data descriptors inherited from Base:
-     |  
+     |
      |  __weakref__
      |      list of weak references to the object
-    
+
+    class FalseValue(Base)
+     |  Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
+     |
+     |  Method resolution order:
+     |      FalseValue
+     |      Base
+     |      builtins.object
+     |
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Base:
+     |
+     |  __iter__(self)
+     |      Iterating through a Base object iterates through the keys and not the
+     |      values.
+     |
+     |  __len__(self)
+     |      Runing len() for a Base object returns the amount of attributes it has.
+     |
+     |  __str__(self)
+     |      Printing an object will return the object passed
+     |      through pprint_dict(obj_to_dict()).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Base:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+    class FileError(builtins.Exception)
+     |  FileError(text)
+     |
+     |  Generic exception for indicating an issue with opening or parsing a file.
+     |  Args:
+     |  text: what to display to the user.
+     |
+     |  Method resolution order:
+     |      FileError
+     |      builtins.Exception
+     |      builtins.BaseException
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __init__(self, text)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  write(self, text)
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from builtins.Exception:
+     |
+     |  __new__(*args, **kwargs) class method of builtins.Exception
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.BaseException:
+     |
+     |  __delattr__(self, name, /)
+     |      Implement delattr(self, name).
+     |
+     |  __getattribute__(self, name, /)
+     |      Return getattr(self, name).
+     |
+     |  __reduce__(...)
+     |      Helper for pickle.
+     |
+     |  __repr__(self, /)
+     |      Return repr(self).
+     |
+     |  __setattr__(self, name, value, /)
+     |      Implement setattr(self, name, value).
+     |
+     |  __setstate__(...)
+     |
+     |  __str__(self, /)
+     |      Return str(self).
+     |
+     |  add_note(...)
+     |      Exception.add_note(note) --
+     |      add a note to the exception
+     |
+     |  with_traceback(...)
+     |      Exception.with_traceback(tb) --
+     |      set self.__traceback__ to tb and return self.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from builtins.BaseException:
+     |
+     |  __cause__
+     |      exception cause
+     |
+     |  __context__
+     |      exception context
+     |
+     |  __dict__
+     |
+     |  __suppress_context__
+     |
+     |  __traceback__
+     |
+     |  args
+
+    class Group(Base)
+     |  Group(name, canApp=False, canAppHigh=False, canSys=False, canSysHigh=False, canSudo=False, locked=False)
+     |
+     |  User groups with custom permissions.
+     |
+     |  Method resolution order:
+     |      Group
+     |      Base
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __eq__(self, other)
+     |      Return self==value.
+     |
+     |  __init__(self, name, canApp=False, canAppHigh=False, canSys=False, canSysHigh=False, canSudo=False, locked=False)
+     |      Defines nanme and permissions of the Group.
+     |      name: name of group. Set to all-lowercase.
+     |      canApp: Boolean. Defines whether or not the user can access apps.
+     |      canAppHigh: Boolean. Defines whether or not the user can access
+     |          high-access apps.
+     |      canSys: Boolean. Defines whether or not the user can access system
+     |          apps in the "system" directory.
+     |      canSysHigh: Boolean. Defines whether or not the user can access system
+     |          apps in the "system_high" directory. UNUSED.
+     |      canSudo: Boolean. Determines whether or not the user can use `sudo`.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  __hash__ = None
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Base:
+     |
+     |  __iter__(self)
+     |      Iterating through a Base object iterates through the keys and not the
+     |      values.
+     |
+     |  __len__(self)
+     |      Runing len() for a Base object returns the amount of attributes it has.
+     |
+     |  __str__(self)
+     |      Printing an object will return the object passed
+     |      through pprint_dict(obj_to_dict()).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Base:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+    class GroupList(Base)
+     |  GroupList class for use in saveGroupList()/loadGroupList().
+     |
+     |  Method resolution order:
+     |      GroupList
+     |      Base
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __init__(self)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  __len__(self)
+     |      Runing len() for a Base object returns the amount of attributes it has.
+     |
+     |  add(self, group)
+     |      Adds a group to the GroupList.
+     |      Args:
+     |      * group: a Group instance.
+     |
+     |  byName(self, name)
+     |      Returns the first instance of a group based on its name.
+     |
+     |  list(self)
+     |      Returns the list of groups.
+     |
+     |  remove(self, group)
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Base:
+     |
+     |  __iter__(self)
+     |      Iterating through a Base object iterates through the keys and not the
+     |      values.
+     |
+     |  __str__(self)
+     |      Printing an object will return the object passed
+     |      through pprint_dict(obj_to_dict()).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Base:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+    class LOGOFFEVENT(builtins.object)
+     |  This class(not an instance of it) is returned by main() when
+     |  the user uses the "logoff" command.
+     |
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+    class PythinuxError(builtins.Exception)
+     |  PythinuxError(text)
+     |
+     |  Generic exception raised by the kernel (and system programs) when an issue occurs.
+     |
+     |  Method resolution order:
+     |      PythinuxError
+     |      builtins.Exception
+     |      builtins.BaseException
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __init__(self, text)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  __str__(self)
+     |      Return str(self).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from builtins.Exception:
+     |
+     |  __new__(*args, **kwargs) class method of builtins.Exception
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.BaseException:
+     |
+     |  __delattr__(self, name, /)
+     |      Implement delattr(self, name).
+     |
+     |  __getattribute__(self, name, /)
+     |      Return getattr(self, name).
+     |
+     |  __reduce__(...)
+     |      Helper for pickle.
+     |
+     |  __repr__(self, /)
+     |      Return repr(self).
+     |
+     |  __setattr__(self, name, value, /)
+     |      Implement setattr(self, name, value).
+     |
+     |  __setstate__(...)
+     |
+     |  add_note(...)
+     |      Exception.add_note(note) --
+     |      add a note to the exception
+     |
+     |  with_traceback(...)
+     |      Exception.with_traceback(tb) --
+     |      set self.__traceback__ to tb and return self.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from builtins.BaseException:
+     |
+     |  __cause__
+     |      exception cause
+     |
+     |  __context__
+     |      exception context
+     |
+     |  __dict__
+     |
+     |  __suppress_context__
+     |
+     |  __traceback__
+     |
+     |  args
+
+    class ReadOnlyWrapper(builtins.object)
+     |  ReadOnlyWrapper(obj)
+     |
+     |  A class that wraps around an object and makes it read-only by hijacking the __setattr__ method.
+     |  Should be 100% API-compatible (however it doesn't work for standard types like strings and bools).
+     |
+     |  Methods defined here:
+     |
+     |  __dir__(self)
+     |      Default dir() implementation.
+     |
+     |  __getattr__(self, name)
+     |
+     |  __init__(self, obj)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  __setattr__(self, name, value)
+     |      Implement setattr(self, name, value).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+    class SudoError(builtins.Exception)
+     |  Generic exception for issues with sudo privileges.
+     |
+     |  Method resolution order:
+     |      SudoError
+     |      builtins.Exception
+     |      builtins.BaseException
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  __str__(self)
+     |      Return str(self).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.Exception:
+     |
+     |  __init__(self, /, *args, **kwargs)
+     |      Initialize self.  See help(type(self)) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Static methods inherited from builtins.Exception:
+     |
+     |  __new__(*args, **kwargs) class method of builtins.Exception
+     |      Create and return a new object.  See help(type) for accurate signature.
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from builtins.BaseException:
+     |
+     |  __delattr__(self, name, /)
+     |      Implement delattr(self, name).
+     |
+     |  __getattribute__(self, name, /)
+     |      Return getattr(self, name).
+     |
+     |  __reduce__(...)
+     |      Helper for pickle.
+     |
+     |  __repr__(self, /)
+     |      Return repr(self).
+     |
+     |  __setattr__(self, name, value, /)
+     |      Implement setattr(self, name, value).
+     |
+     |  __setstate__(...)
+     |
+     |  add_note(...)
+     |      Exception.add_note(note) --
+     |      add a note to the exception
+     |
+     |  with_traceback(...)
+     |      Exception.with_traceback(tb) --
+     |      set self.__traceback__ to tb and return self.
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from builtins.BaseException:
+     |
+     |  __cause__
+     |      exception cause
+     |
+     |  __context__
+     |      exception context
+     |
+     |  __dict__
+     |
+     |  __suppress_context__
+     |
+     |  __traceback__
+     |
+     |  args
+
+    class TrueValue(Base)
+     |  Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
+     |
+     |  Method resolution order:
+     |      TrueValue
+     |      Base
+     |      builtins.object
+     |
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Base:
+     |
+     |  __iter__(self)
+     |      Iterating through a Base object iterates through the keys and not the
+     |      values.
+     |
+     |  __len__(self)
+     |      Runing len() for a Base object returns the amount of attributes it has.
+     |
+     |  __str__(self)
+     |      Printing an object will return the object passed
+     |      through pprint_dict(obj_to_dict()).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Base:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
+    class User(Base)
+     |  User(group, username, password='')
+     |
+     |  User class used by Pythinux.
+     |  See __init__() for how to create User objects properly.
+     |
+     |  Method resolution order:
+     |      User
+     |      Base
+     |      builtins.object
+     |
+     |  Methods defined here:
+     |
+     |  USERTYPE(self)
+     |      Returns the name of the user's group.
+     |
+     |  __eq__(self, other)
+     |      Return self==value.
+     |
+     |  __init__(self, group, username, password='')
+     |      Constructor for User class.
+     |      Args:
+     |          group: a Group object.
+     |          username: string, the username for the user.
+     |          password: string passed through hashString() (Note: you MUST
+     |          pass it through hashString().
+     |              If no password is given, the password is blank.
+     |              (the hash obviously still exists. pydoc represents the
+     |              output of hashString("") as the default password.)
+     |
+     |  admin(self)
+     |      Returns whether or not the user's level is 2 or higher,
+     |      indicating a root user.
+     |
+     |  check(self, username, password='1ad3c60d8596ce241f83c8c015ed65ff881df5ee05cf34fb54ba0718d95b0f07c1ef5c85ce226414d4d3baf54f9756d4')
+     |      Function for checking whether a User class and passed details match.
+     |      Args:
+     |          username: string
+     |          password: string
+     |      Returns:
+     |          bool depending on whether or not the supplied details match up
+     |          with the User object's properties.
+     |
+     |  god(self)
+     |      Returns whether or not the user's level is 3 or higher,
+     |      indicating a god user.
+     |
+     |  serialise(self)
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors defined here:
+     |
+     |  __dict__
+     |      dictionary for instance variables
+     |
+     |  ----------------------------------------------------------------------
+     |  Data and other attributes defined here:
+     |
+     |  __hash__ = None
+     |
+     |  ----------------------------------------------------------------------
+     |  Methods inherited from Base:
+     |
+     |  __iter__(self)
+     |      Iterating through a Base object iterates through the keys and not the
+     |      values.
+     |
+     |  __len__(self)
+     |      Runing len() for a Base object returns the amount of attributes it has.
+     |
+     |  __str__(self)
+     |      Printing an object will return the object passed
+     |      through pprint_dict(obj_to_dict()).
+     |
+     |  ----------------------------------------------------------------------
+     |  Data descriptors inherited from Base:
+     |
+     |  __weakref__
+     |      list of weak references to the object
+
     class UserList(Base)
      |  Method resolution order:
      |      UserList
      |      Base
      |      builtins.object
-     |  
+     |
      |  Methods defined here:
-     |  
+     |
      |  __init__(self)
      |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
+     |
      |  __len__(self)
      |      Runing len() for a Base object returns the amount of attributes it has.
-     |  
+     |
      |  add(self, user)
      |      Adds a user to the user list.
-     |  
+     |
      |  byName(self, name)
      |      Returns the first instance of
      |      a user in the userlist with the same name.
-     |  
+     |
+     |  check(self, user)
+     |
+     |  deserialise(self, config)
+     |
      |  list(self)
-     |  
+     |
      |  remove(self, user)
-     |  
+     |
      |  removeByName(self, name)
-     |  
+     |
+     |  serialise(self)
+     |
      |  ----------------------------------------------------------------------
      |  Data descriptors defined here:
-     |  
+     |
      |  __dict__
      |      dictionary for instance variables
-     |  
+     |
      |  ----------------------------------------------------------------------
      |  Methods inherited from Base:
-     |  
+     |
      |  __iter__(self)
      |      Iterating through a Base object iterates through the keys and not the
      |      values.
-     |  
+     |
      |  __str__(self)
      |      Printing an object will return the object passed
      |      through pprint_dict(obj_to_dict()).
-     |  
+     |
      |  ----------------------------------------------------------------------
      |  Data descriptors inherited from Base:
-     |  
-     |  __weakref__
-     |      list of weak references to the object
-    
-    class rangedInt(builtins.object)
-     |  rangedInt(value, min_value, max_value)
-     |  
-     |  A floating point number with a specified range
-     |  that gets automatically adhered to.
-     |  Currently unused, but will be used soon.
-     |  
-     |  Methods defined here:
-     |  
-     |  __add__(self, other)
-     |  
-     |  __init__(self, value, min_value, max_value)
-     |      Initialize self.  See help(type(self)) for accurate signature.
-     |  
-     |  __mul__(self, other)
-     |  
-     |  __radd__(self, other)
-     |  
-     |  __rmul__(self, other)
-     |  
-     |  __rsub__(self, other)
-     |  
-     |  __rtruediv__(self, other)
-     |  
-     |  __str__(self)
-     |      Return str(self).
-     |  
-     |  __sub__(self, other)
-     |  
-     |  __truediv__(self, other)
-     |  
-     |  get(self)
-     |  
-     |  set(self, value)
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  __dict__
-     |      dictionary for instance variables
-     |  
+     |
      |  __weakref__
      |      list of weak references to the object
 
 FUNCTIONS
     CompileOS()
-    
+
     addPythinuxModule(module, shared_objects, user)
         Adds the Pythinux module to a module.
         Internal function only, please ignore.
-    
+
     attachDebugger(globals)
-    
+
     br()
         Displays a "Press ENTER To continue" screen when called.
-    
+
     castObject(obj, new_type)
         Create a new object of a specified type or use an existing object,
         copying all attributes (excluding methods) of the
         original object to the new one.
-        
+
         Args:
             obj: The original object to cast
             cast_type: The type or object to cast the original object to.
             If `cast_type` is a type, a new object of that type is created.
             If `cast_type` is an object, the original object is
             copied to that object.
-        
+
         Returns:
             A new object of the specified type, with all attributes
             (excluding methods) of the original object copied over.
             If `cast_type` is an object, the original object is copied to
             that object and returned.
-    
-    clearTemp()
+
+    changeDirectory(directory: str, user: pythinux.User)
+
+    clearTemp(user)
         Clears the contents of the tmp/ directory in the
         Pythinux install directory.
-    
+
     cls()
         Clears the terminal screen.
         Works for both Windows and Unix-like systems, so basically everything.
-    
+
     copy(obj)
         Tries copy.deepcopy(), then copy.copy(), then nothing to ensure nothing fails.
         To my knowledge, this is pointless.
-    
+        It's also potentially dangerous; it returns the same object without a copy if both copy.deepcopy() and copy.copy() fail.
+
     createModule(moduleName)
         Creates a module object, which not normally creatable.
-    
+
     createService(command, user)
-        Creates a service that can be passed to startService().
-        Args:
-            command: command to be executed.
-            user: user that executes the command.
-    
+
     createUser(userlist, user)
         Adds a User to a userlist.
         Args:
@@ -683,51 +828,50 @@ FUNCTIONS
             user: a User instance.
         Returns:
             userlist: a userlist that can be passed to saveUserList().
-    
-    div()
+
+    div(returnMode=False)
         Prints 20 hyphen/dash symbols.
-    
-    div2()
-        Returns 20 hyphen/dash symbols as a string.
-    
+
     doCalc(text)
         A fully safe (but very restricted) version of eval().
         Undergoes HEAVY sanitisation before execution.
-    
+
     doNothing(obj)
         Returns obj.
-        Used to prevent linter programs from complaining about "unused" programs.
-    
+        Used to prevent linter programs from complaining about "unused" objects.
+
+    evalDir(directory: str, user: pythinux.User)
+        Evaluates a directory, turning a path like "/home/root" to a full directory.
+        Supports:
+            `.` - Resolves to current directory.
+            `..` - Resolves to previous directory.
+            `~` - User's home directory.
+            `/` - Evaluates to root directory.
+
+        Also ensures no directory above the root directory is selected, ensuring no
+        VM escapes occur.
+
     exposeAllVar(module)
         This function is unused.
         Adds the contents of globals() to a module.
-    
+
     exposeObjects(module, objects)
         Internal function that adds a dictionary containing objects to a module.
         The dictionary is in the format {name:object}.
         Returns the module with the objects exposed.
-    
+
     fixDirectories(returnMode=False)
         Reconstructs the blank directories if they do not exist,
         because git doesn't count directories as files.
-    
+
     generateAPI(module, user, sudoMode)
-    
+        Internal function to expose Pythinux 3.x API's to a module.
+
     giveOutput(command, user, split=False, shell='terminal', ptyMode=False)
-           Returns the output of a command.
-           Positional arguments:
-               (str) command: the command to execute
-               (User) user: the user executing the command. Pass currentUser.
-               (bool) split: if true, returns output split into a list with 
-        as a
-               separator. This is ignored if `ptyMode=True` is passed.
-               (str) shell: Passed to main().
-               (bool) ptyMode: If True, will return pty.openpty()'s slave and master.
-               ONLY WORKS ON UNIX SYSTEMS! IF ON WINDOWS, AN ERROR IS RAISED!
-    
+
     giveVars()
         Returns the list of variables loaded by the program.
-    
+
     hashString(plaintext, salt=None)
         Hashing algorithm used by Pythinux.
         Args:
@@ -738,10 +882,14 @@ FUNCTIONS
             salted_hash: The final hash. The last 16 characters is the salt,
             required to verify the hash.
         The verifyHash function is used to authenticate hashes.
-    
-    init(user, x)
-        Init function. Runs the  'initd --init' command.
-    
+
+    init(user)
+        Init function.
+
+    isProgramReal(program_name, user, sudoMode, libMode)
+
+    isUserValid(user)
+
     joinIterable(string, iterable)
         Joins a string and an iterable together.
         Args:
@@ -749,34 +897,34 @@ FUNCTIONS
         iterable: an iterable object to join
         Returns:
         string + every item in iterable
-    
-    list_loadable_programs(user, sudoMode=False)
+
+    list_loadable_programs(user, sudoMode=False, libMode=False)
         Returns a list of all commands that the user is authorised to load.
         Note: if sudoMode is True, the app and system
         directories are always authorised.
-    
+
     loadAL()
         Returns the autologin username as a string, or None of there isn't one set.
-    
+
     loadAliases()
         Returns the list of aliases, or {} if there isn't one.
-    
+
     loadGroupList()
-    
-    loadProgramBase(program_name_with_args, user, sudoMode=False, shell='terminal', __name__=None, isolatedMode=False)
-    
+
+    loadProgramBase(program_name_with_args, user, sudoMode=False, shell='terminal', __name__=None, isolatedMode=False, libMode=False)
+
     loadUserList()
         Handles loading the userlist from the file system.
         Returns the userlist when called.
-    
-    load_program(program_name_with_args, user, sudoMode=False, shell='terminal', debugMode=False, baseMode=False, __name__=None, isolatedMode=False)
-    
+
+    load_program(program_name_with_args, user, sudoMode=False, shell='terminal', debugMode=False, baseMode=False, __name__=None, isolatedMode=False, libMode=False)
+
     logEvent(text, log='base_log')
         Creates or appends to a log.
         Arguments:
             (str) text: the text that gets logged.
             (str) log: the name of the log file. Default is "base_log".
-    
+
     loginScreen(username=None, password=None)
         Login screen.
         Args:
@@ -785,26 +933,26 @@ FUNCTIONS
             (optional) (str) password: the password passed to the login screen.
             Passing both the username and password bypasses the input.
         Once you enter your details, init() is called.
-    
-    main(user, prompt, sudoMode=False, shell='terminal', doNotExecute=False)
+
+    main(user: pythinux.User, prompt: str, sudoMode=False, shell='terminal', doNotExecute=False)
         Main function. Used to execute commands.
         Args:
             (User) user: the User object.
             (str) prompt: the command that gets exexuted.
             (bool) sudoMode: Passed to load_program().
             (str) shell: the name of the terminal that executes the command.
-    
+
     makeDir()
         Don't remember what this one does. Internal function. Ignore.
-    
+
     makeDirDict()
         Returns a dictionary containing
         every single item in dir() in the format {itemname:item}.
         Mostly unused.
-    
+
     maxEscape()
         Internal function.
-    
+
     mergeDict(a, b)
         Merges a with b.
         Args:
@@ -812,19 +960,19 @@ FUNCTIONS
             b: dictionary.
         Returns:
             a with the contents of b appended to it.
-    
+
     obj_to_dict(obj, addItemType=True)
         Recursively convert an object and all its attributes to a dictionary.
-    
+
     parseInput(user, string, shell)
         Function for parsing aliases. Internal only.
-    
+
     pprint(obj)
         Prints an object's attributes as a formatted dictionary.
-    
+
     pprint_dict(dic)
         Takes a dictionary and returns it as a string with indentation
-    
+
     removeUser(userlist, user)
         Removes a user from the userlist.
         Args:
@@ -832,64 +980,60 @@ FUNCTIONS
             user: a User instance.
         Returns:
             userlist: a userlist that can be passed to saveUserList().
-    
+
     run_script(f, user)
         Runs a script.
         Args:
             f: a file-type object to be read. Must be in 'r' mode.
             user: a User object, the actual user to execute the script.
-    
+
     saveAL(username)
         Makes username the autologin username
         Autologin allows for only the password to be entered.
-    
+
     saveAliases(aliases)
         Saves an alias list.
         Args:
             aliases: a list grabbed from loadAliases().
-    
+
     saveGroupList(groupList)
-    
+
     saveUserList(userList)
         Saves a userlist to the file system.
-        userlist: a userlist (returned by loadUserlist()).
-    
+        userlist: a userlist (returned by loadUserList()).
+
     setVars(var)
         Unused.
-    
+
     setupWizard()
         Setup wizard.
         * Sets up a user account, complete with username,
           password, init script, etc.
         * Sets up autologin, depending on user choice.
-    
+
     sha256(string, salt=None)
         Performs a SHA256 og a string.
         Arguments:
             (str) string: string to be parsed
             (bytes-like) salt: optional salt, should be output of os.urandom().
-    
+
     silent(function)
-        Runs some code without outputting anything to the terminal
+        Runs some code without outputting anything to the terminal.
         Args:
-        function: a callable object.
-    
+            function: a callable object.
+
     splitString(string)
         Used by main() for turning a string into a list of arguments.
-    
+
     startService(thread, name)
-        Starts a service.
-        Args:
-        thread: a service generated using createService()
-        name: name of the service.
-    
+
     sudo(user, maxAttempts=10, incorrectAttempts=0)
         Password authentication.
         Args:
             user: the user getting authenticated.
         Returns True if the user types their password,
         and False if they fail after 10 tries.
-    
+
     verifyHash(plaintext, saltedHashString)
         Verifies a hash.
         Args:
@@ -897,7 +1041,20 @@ FUNCTIONS
             saltedHashString: a hash generated using hashString()
         Returns a boolean depending on whether or not the two match.
 
+    verifyUser(user)
+        Returns True if the user is not a fake instance of User.
+
 DATA
+    DEFAULT_SHELL_SCRIPT = 'var set SHELL_ALLOW_EXIT true\nvar set ALLOW_C...
+    EVALHIST = []
+    KPARAM_DEBUGGING_VERIFYUSER = False
+    KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False
+    KPARAM_ESCALATION_PROTECTION = True
+    KPARAM_REPLACE_OPEN = False
+    KPARAM_USE_LIMITED_OPEN = False
+    KPARAM_USE_MODULE_WRAPPER = True
+    aliases = {}
+    f = <_io.TextIOWrapper name='default.xx' mode='r' encoding='UTF-8'>
     osName = 'Pythinux'
     unixMode = True
     var = {}
