@@ -380,16 +380,16 @@ class TrueValue(Base):
     """
     Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
     """
-
-    pass
+    def __bool__(self):
+        return True
 
 
 class FalseValue(Base):
     """
     Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
     """
-
-    pass
+    def __init__(self):
+        return False
 
 
 class SudoError(Exception):
