@@ -121,7 +121,8 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
         forceMode: passed to installd.installd()
     """
     clearTemp(currentUser)
-    data = getRemotePackageData()
+    isData = bool(getRemotePackageData().sections())
+    data = getRemotePackageData(isData)
     url = data.get(package, "url", fallback=None)
     if url:
         downloadFile(url, "tmp/program.szip4")

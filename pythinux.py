@@ -680,6 +680,7 @@ def copy(obj):
 
 
 def logEvent(text, log="base_log"):
+    warnings.warn("logEvent() will be reprecated in Pythinux 3.1", DeprecationWarning)
     """
     Creates or appends to a log.
     Arguments:
