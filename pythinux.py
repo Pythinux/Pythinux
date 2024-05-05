@@ -190,6 +190,8 @@ def silent(function):
     Args:
         function: a callable object.
     """
+    if not callable(function):
+        raise PythinuxError("silent(): function is not callable")
     stdout = sys.stdout
     sys.stdout = None
     x = function()
