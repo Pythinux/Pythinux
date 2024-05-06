@@ -388,7 +388,7 @@ class FalseValue(Base):
     """
     Serves the same purpose as bool, but because True and False are different classes, they cannot be edited.
     """
-    def __init__(self):
+    def __bool__(self):
         return False
 
 
