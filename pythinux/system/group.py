@@ -1,4 +1,10 @@
 def main(args):
+    if "-v" in args:
+        args.remove("-v")
+        verbose = True
+    else:
+        verbose = False
+
     if args == ["add"]:
         div()
         print("group add <name> <canApp> <canAppHigh> <canSys> <canSudo>")
@@ -72,11 +78,16 @@ def main(args):
         args.remove("set")
         groupname, perm, value = args[0], args[1], True if args[2].lower() == "true" else False
         gr = groupList.byName(groupname)
+        if not gr:
+            print("ERROR: Invalid group.")
+            return
         if perm not in ["canApp", "canAppHigh", "canSys", "canSudo"]:
             print("ERROR: Invalid permission.")
             return
 
         setattr(gr, perm, value)
+        if verbose:
+            print("Set {} to {} for group {}.".format(perm, str(value).lower(), groupname))
 
         saveGroupList(groupList)
         saveUserList(userList)
