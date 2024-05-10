@@ -1003,14 +1003,14 @@ def loadProgramBase(
     syslib_directory = evalDir("/system_lib", user)
 
     directories = [system_directory, lsystem_directory, app_directory]
-    if user.admin() or sudoMode:
+    if user.group.canAppHigh or sudoMode:
         directories.append(system_directory)
         directories.append(happ_directory)
 
     if libMode:
         directories.append(lib_directory)
         directories.append(syslib_directory)
-        if user.admin() or sudoMode:
+        if user.group.canAppHigh or sudoMode:
             directories.append(hlib_directory)
 
     for directory in directories:
