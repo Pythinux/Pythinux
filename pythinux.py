@@ -449,7 +449,6 @@ class Group(Base):
         canApp=False,
         canAppHigh=False,
         canSys=False,
-        canSysHigh=False,
         canSudo=False,
         locked=False,
     ):
@@ -469,7 +468,6 @@ class Group(Base):
         self.canApp = canApp
         self.canAppHigh = canAppHigh
         self.canSys = canSys
-        self.canSysHigh = canSysHigh
         self.canSudo = canSudo
         self.locked = locked
 
@@ -571,18 +569,8 @@ class User(Base):
         return False
 
     def admin(self):
-        """
-        Returns whether or not the user's level is 2 or higher,
-        indicating a root user.
-        """
+        warnings.warn("user.admin() is deprecated, use user.group.canAppHigh instead", DeprecationWarning)
         return self.group.canAppHigh
-
-    def god(self):
-        """
-        Returns whether or not the user's level is 3 or higher,
-        indicating a god user.
-        """
-        return self.group.canSysHigh
 
     def USERTYPE(self):
         """
