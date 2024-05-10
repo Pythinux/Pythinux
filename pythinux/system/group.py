@@ -64,6 +64,24 @@ def main(args):
         for item in groupList.list():
             print(item.name)
         div()
+    elif args == ["set"]:
+        div()
+        print("group set <group name> <permisison> <true|false>")
+        div()
+        print("Edits permissions for groups.")
+        div()
+    elif "set" in args and len(args) == 4:
+        args.remove("set")
+        groupname, perm, value = args[0], args[1], True if args[2].lower() == "true" else False
+        gr = groupList.byName(groupname)
+        if perm not in ["canApp", "canAppHigh", "canSys", "canSysHigh", "canSudo"]:
+            print("ERROR: Invalid permission.")
+            return
+
+        setattr(gr, perm, value)
+
+        saveGroupList(groupList)
+        saveUserList(userList)
     else:
         div()
         print("group [args]")
@@ -75,4 +93,5 @@ def main(args):
         print("    remove: remove a group (potentially dangerous)")
         print("    info: info about a group")
         print("    list: list of groups")
+        print("    set: edit permissions for groups")
         div()
