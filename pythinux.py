@@ -1115,9 +1115,6 @@ def loadProgramBase(
                     "parseInput": copy(parseInput),
                     "isRoot": TrueValue(),
                 }
-                if user.god():
-                    system_objects["CompileOS"] = copy(CompileOS)
-                    system_objects["setupWizard"] = copy(setupWizard)
 
                 shared_objects.update(system_objects)
             # Expose the objects to the loaded program
