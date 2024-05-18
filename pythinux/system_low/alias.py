@@ -35,6 +35,11 @@ def main(args):
             saveAliases(aliases)
         except:
             print(f"No alias found: {arguments[1]}")
+    elif args == ["add"]:
+        main(["set"])
+    elif "add" in args and len(args) == 3:
+        args.remove("add")
+        main(["set"] + args)
     else:
         div()
         print("alias [args]")

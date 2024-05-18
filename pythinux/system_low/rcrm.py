@@ -1,5 +1,5 @@
-def remove(command, user):
-    with file.open("~/shellrc.xx", user) as f:
+def remove(command, user=None):
+    with file.open("~/shellrc.xx", user if user else currentUser) as f:
         contents = f.read().replace(command, "")
         old = f.read()
     with file.open("~/shellrc.xx", user, "w") as f:
