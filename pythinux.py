@@ -926,7 +926,7 @@ def generateAPI(module, user, sudoMode):
     # if KPARAM_REPLACE_OPEN:
     #     file.open = copy(limitedOpenFile) if module.isRoot == TrueValue() else copy(openFile)
     # else:
-    t#     file.open = copy(openFile)
+    #     file.open = copy(openFile)
 
     # if KPARAM_REPLACE_OPEN:
     #     module.open = file.open
