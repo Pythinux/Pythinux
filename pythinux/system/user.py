@@ -61,6 +61,7 @@ def main(args):
         args.remove("disable")
         user = userList.byName(args[0])
         user.disabled = True
+        user.password = ""
         saveUserList(userList)
     elif args == ["enable"]:
         div()
@@ -72,6 +73,7 @@ def main(args):
         args.remove("enable")
         user = userList.byName(args[0])
         user.disabled = False
+        runCommand(user, "passwd")
         saveUserList(userList)
     else:
         div()
