@@ -37,7 +37,7 @@ KPARAM_USE_MODULE_WRAPPER = True # Fix for PSA-0004
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
-# KPARAM_REPLACE_OPEN = False # replaces open() with the custom file.open()
+KPARAM_REPLACE_OPEN = False # replaces open() with the custom file.open()
 KPARAM_USE_LIMITED_OPEN = False # Uses limitedOpenFile() for file.open()
 
 
@@ -923,13 +923,13 @@ def generateAPI(module, user, sudoMode):
     file.root = lambda: os.chdir(ROOTDIR)
 
     file.changeDirectory = copy(changeDirectory)
-    # if KPARAM_REPLACE_OPEN:
-    #     file.open = copy(limitedOpenFile) if module.isRoot == TrueValue() else copy(openFile)
-    # else:
-    #     file.open = copy(openFile)
+    if KPARAM_REPLACE_OPEN:
+        file.open = copy(limitedOpenFile) if module.isRoot == TrueValue() else copy(openFile)
+    else:
+        file.open = copy(openFile)
 
-    # if KPARAM_REPLACE_OPEN:
-    #     module.open = file.open
+    if KPARAM_REPLACE_OPEN:
+        module.open = file.open
 
     ## Attach to module
     module.shell = shell
