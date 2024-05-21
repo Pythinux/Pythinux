@@ -624,13 +624,15 @@ class UserList(Base):
         raise PythinuxError("Invalid user by name.")
 
     def remove(self, user):
+        if user.locked:
+            raise PythinuxError("Cannot remove locked user")
         self.users.remove(user)
 
     def removeByName(self, name):
         did = False
         for item in self.users:
             if item.username == name:
-                self.users.remove(item)
+                self.remove(item)
                 did = True
         return did
 
