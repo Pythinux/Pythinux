@@ -1591,7 +1591,7 @@ def setupWizard():
     g = groupList.byName("user")
     rootGroup = groupList.byName("root")
     user = User(rootGroup, username, hashString(password))
-    root = User(rootGroup, "root")
+    root = User(rootGroup, "root", disabled=True, locked=True)
     userList = loadUserList()
     userList = createUser(userList, user)
     userList = createUser(userList, root)
