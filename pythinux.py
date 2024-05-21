@@ -538,7 +538,7 @@ class User(Base):
     See __init__() for how to create User objects properly.
     """
 
-    def __init__(self, group, username, password=""):
+    def __init__(self, group, username, password="", locked=False, disabled=False):
         """
         Constructor for User class.
         Args:
@@ -553,6 +553,8 @@ class User(Base):
         self.group = group
         self.username = username
         self.password = password
+        self.locked = locked
+        self.disabled = disabled
 
     def check(self, username, password=hashString("")):
         """
@@ -583,6 +585,8 @@ class User(Base):
             "username": self.username,
             "password": self.password,
             "group": self.group.name,
+            "disabled": self.disabled,
+            "locked": self.locked,
         }
 
     def __eq__(self, other):
@@ -649,8 +653,10 @@ class UserList(Base):
         for sect in config.sections():
             username = config.get(sect, "username")
             password = config.get(sect, "password")
+            locked = config.getboolean(sect, "locked", fallback=False)
+            disabled = config.getboolean(sect, "disabled", fallback=False)
             group = loadGroupList().byName(config.get(sect, "group", fallback="user"))
-            user = User(group, username, password)
+            user = User(group, username, password, disabled=disabled, locked=locked)
             self.users.append(user)
 
 
@@ -1396,7 +1402,7 @@ def loginScreen(username=None, password=None):
     if not password:
         password = getpass("Password $")
     for item in loadUserList().users:
-        if item.check(username, password):
+        if item.check(username, password) and not item.disabled:
             init(item)
             return
     cls()

@@ -3,7 +3,7 @@ def main(args):
     if args == ["list"]:
         for item in userList.list():
             div()
-            print(f"Username: {item.username}")
+            print(f"Username: {item.username} {'(Disabled)' if item.disabled else ''}")
             print(f"Password: {item.password}")
             print(f"Group: {item.group.name}")
         div()
@@ -22,8 +22,7 @@ def main(args):
             userList = createUser(userList,u)
             saveUserList(userList)
         else:
-            print("ERROR: Invalid group name.")
-            print("       For a list, run `group list`.")
+            print("ERROR: Invalid group name. For a list, run `group list`.")
     elif args == ["remove"]:
         div()
         print("user remove <user>")
@@ -31,10 +30,18 @@ def main(args):
         print("Removes <user> from system.")
         div()
     elif "remove" in args and len(args) == 2:
-        if userList.removeByName(args[1]):
-            print("Successfully removed {}.".format(args[1]))
-        else:
-            print("Invalid User:  {}".format(args[1]))
+        args.remove("remove")
+        try:
+            user = userList.byName(args[0])
+        except PythinuxError:
+            print("ERROR: Invalid user.")
+            return
+        if user.locked:
+            print("ERROR: User is locked.")
+            return
+        userList.removeByName(user.username)
+        saveUserList(userList)
+        print("Successfully removed user.")
     elif args == ["info"]:
         div()
         print("user info <username>")
@@ -44,6 +51,28 @@ def main(args):
     elif "info" in args and len(args) == 2:
         u = userList.byName(args[1])
         pprint(u)
+    elif args == ["disable"]:
+        div()
+        print("user disable <username>")
+        div()
+        print("Disable a user.")
+        div()
+    elif "disable" in args and len(args) == 2:
+        args.remove("disable")
+        user = userList.byName(args[0])
+        user.disabled = True
+        saveUserList(userList)
+    elif args == ["enable"]:
+        div()
+        print("user enable <username>")
+        div()
+        print("Enable a user.")
+        div()
+    elif "enable" in args and len(args) == 2:
+        args.remove("enable")
+        user = userList.byName(args[0])
+        user.disabled = False
+        saveUserList(userList)
     else:
         div()
         print("user [args]")
@@ -53,4 +82,6 @@ def main(args):
         print("    add: adds a user")
         print("    list: lists all users")
         print("    remove: removes a user")
+        print("    disable: disable a user")
+        print("    enable: enable a user")
         div()
