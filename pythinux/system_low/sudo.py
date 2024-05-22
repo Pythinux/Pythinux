@@ -18,12 +18,36 @@ def confirmPassword(user, max=10, attempt=1):
         return confirmPassword(user, max, attempt+1)
 
 def sudo(user, command, max=10):
+    """
+    Run a command as root, provided the user in question has sufficient privileges.
+    """
+    def createRootUser():
+        """
+        This function is inside main() to hide it from API access.
+        """
+        def createRootGroup():
+            rootGroup = Group("root", True, True, True, locked=True)
+            groupList.add(rootGroup)
+        rootGroup = groupList.byName("root")
+        if not rootGroup:
+            if input("ERROR: No root group exists. Would you like me to create one for you? [y/N] $").lower() == "y":
+                createRootGroup()
+            else:
+                print("ERROR: No root user was created.")
+            return
+        rootUser = User(rootGroup, "root", locked=True, disabled=True)
+        createUser(userList, rootUser)
+
     if not verifyUser(user):
         raise PythinuxError("User is not an instance of User")
     if user.group.canSudo:
         if confirmPassword(user, max):
-            group = groupList.byName("root")
-            runCommand(User(group, "root", ""), command)
+            rootUser = userList.byName("root")
+            if not rootUser:
+                if input("ERROR: No root user exists. Would you like me to create one for you? [y/N]").lower() == "y":
+                    createRootUser()
+                return
+            runCommand(rootUser, command)
         else:
             print("ERROR: Identity confirmation failed.")
     else:

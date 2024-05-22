@@ -38,7 +38,7 @@ KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
 KPARAM_REPLACE_OPEN = False # replaces open() with the custom file.open()
-KPARAM_USE_LIMITED_OPEN = False # Uses limitedOpenFile() for file.open()
+KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
 
 
 with open("default.xx") as f:
@@ -890,7 +890,7 @@ def addPythinuxModule(module, shared_objects, user):
 
 def generateAPI(module, user, sudoMode):
     """
-    Internal function to expose Pythinux 3.x API's to a module.
+    Exposes Pythinux 3.x API calls to a module.
     """
 
     def openFile(filename, user, mode="r", **kwargs):

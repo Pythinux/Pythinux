@@ -1,5 +1,8 @@
 import os
 def cmd(cmd):
+    """
+    Runs a command on the host shell.
+    """
     os.system(cmd)
 def main(args):    
     if args:
