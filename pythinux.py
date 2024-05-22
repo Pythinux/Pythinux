@@ -120,7 +120,6 @@ def verifyUser(user):
         user.group.canApp != expectedUser.group.canApp
         or user.group.canAppHigh != expectedUser.group.canAppHigh
         or user.group.canSys != expectedUser.group.canSys
-        or user.group.canSysHigh != expectedUser.group.canSysHigh
         or user.group.locked != expectedUser.group.locked
     ):
         if KPARAM_DEBUGGING_VERIFYUSER:
@@ -460,8 +459,6 @@ class Group(Base):
             high-access apps.
         canSys: Boolean. Defines whether or not the user can access system
             apps in the "system" directory.
-        canSysHigh: Boolean. Defines whether or not the user can access system
-            apps in the "system_high" directory. UNUSED.
         canSudo: Boolean. Determines whether or not the user can use `sudo`.
         """
         self.name = name.lower()
