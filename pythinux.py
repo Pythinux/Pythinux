@@ -245,29 +245,6 @@ def joinIterable(string, iterable):
     return string.join([str(x) for x in iterable])
 
 
-def createService(command, user):
-    warnings.warn("Services will be REMOVED in Pytinux 3.1!", DeprecationWarning)
-    """
-    Creates a service that can be passed to startService().
-    Args:
-        command: command to be executed.
-        user: user that executes the command.
-    """
-    return threading.Thread(target=main, args=(command, user))
-
-
-def startService(thread, name):
-    warnings.warn("Services will be REMOVED in Pytinux 3.1!", DeprecationWarning)
-    """
-    Starts a service.
-    Args:
-    thread: a service generated using createService()
-    name: name of the service.
-    """
-    thread.name = name
-    thread.start()
-
-
 def attachDebugger(globals):
     import code
 
