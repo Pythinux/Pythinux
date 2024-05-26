@@ -1,4 +1,4 @@
-#!usr/bin/env python
+#usr/bin/env python
 import os
 import pickle
 import sys
@@ -38,6 +38,7 @@ KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
+KPARAM_DEPRECATE_OPEN = False # If True, open() raises a DeprecationWarning
 
 
 with open("default.xx") as f:
@@ -955,6 +956,10 @@ class ReadOnlyWrapper:
     def __dir__(self):
         return self._obj.__dir__()
 
+def deprecatedOpen(*args, **kwargs):
+    warnings.warn("open() is deprecated, use file.open() instead", DeprecationWarning)
+    return open(*args, **kwargs)
+
 def loadProgramBase(
     program_name_with_args,
     user,
@@ -1056,6 +1061,7 @@ def loadProgramBase(
                 "CurrentUser": copy(CurrentUser),
                 "isRoot": FalseValue(),
             }
+            
             if directory in [
                 system_directory,
                 lsystem_directory,
@@ -1092,6 +1098,10 @@ def loadProgramBase(
                 }
 
                 shared_objects.update(system_objects)
+
+            if KPARAM_DEPRECATE_OPEN:
+                shared_objects.update({"open": deprecatedOpen})
+
             # Expose the objects to the loaded program
             if isolatedMode:
                 shared_objects = {}
