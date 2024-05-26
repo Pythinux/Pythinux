@@ -37,7 +37,6 @@ KPARAM_USE_MODULE_WRAPPER = True # Fix for PSA-0004
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
-KPARAM_REPLACE_OPEN = False # replaces open() with the custom file.open()
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
 
 
@@ -910,9 +909,6 @@ def generateAPI(module, user, sudoMode):
     else:
         file.open = copy(openFile)
 
-    if KPARAM_REPLACE_OPEN:
-        module.open = file.open
-
     ## Attach to module
     module.shell = shell
     module.file = file
@@ -958,7 +954,6 @@ class ReadOnlyWrapper:
         raise AttributeError("Cannot modify unmodifiable object")
     def __dir__(self):
         return self._obj.__dir__()
-
 
 def loadProgramBase(
     program_name_with_args,
@@ -1049,12 +1044,10 @@ def loadProgramBase(
                 "giveOutput": copy(giveOutput),
                 "osName": copy(osName),
                 "FileError": copy(FileError),
-                "startService": copy(startService),
                 "createModule": copy(createModule),
                 "silent": copy(silent),
                 "setVars": copy(setVars),
                 "giveVars": copy(giveVars),
-                "createService": copy(createService),
                 "attachDebugger": copy(attachDebugger),
                 "PythinuxError": copy(PythinuxError),
                 "CURRDIR": copy(CURRDIR),
