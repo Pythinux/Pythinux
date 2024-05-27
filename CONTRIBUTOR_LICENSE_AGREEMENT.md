@@ -12,6 +12,9 @@ By submitting a Contribution to the Project, the Contributor hereby grants the P
 ## License
 When the Contributor makes a Contribution, the Contributor agrees to is license that Contribution under the GNU General Public License, Version 2 (`GPL-2.0-only`). 
 
+## Disallowed Contributions
+If the Contributor wishes to make a Contribution solely as a tool to build a rapport for use in a resume or otherwise, and not to improve the Project, that Contrubution is not welcome. 
+
 ## Future Modifications
 In the event that the Project decides to distribute the software under a different license for a future version, the Contributor agrees that their Contribution may be included in such versions under the new license.
 
