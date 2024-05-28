@@ -1,28 +1,62 @@
+class UserError(PythinuxError):
+    pass
+
+
+def listUsers():
+    for user in userList.list():
+        div()
+        print("Username: {} {}".format(user.username, "(Disabled)" if user.disabled else ""))
+        print("Password: {}".format(user.password))
+        print("Group: {}".format(user.group.name))
+    div()
+
+
+def addUser(username, group_name):
+    group = groupList.byName(group_name)
+    if not group:
+        raise UserError("Invalid group.")
+    user = User(group, username)
+    userList = createUser(loadUserList(), user)
+    saveUserList(userList)
+
+
+def removeUser(username):
+    user = userList.byName(username)
+    if not user:
+        raise UserError("Invalid user")
+    if user.locked:
+        raise UserError("Cannot remove locked user")
+    userList.remove(user)
+    saveUserList(userList)
+
+
+def disableUser(username):
+    user = userList.byName(username)
+    user.disabled = True
+    user.password = ""
+    saveUserList(userList)
+
+
+def enableUser(username):
+    user = userList.byName(username)
+    user.disabled = False
+    saveUserList(userList)
+    runCommand(user, "passwd")
+    saveUserList(userList)
+
 def main(args):
     userList = loadUserList()
     if args == ["list"]:
-        for item in userList.list():
-            div()
-            print(f"Username: {item.username} {'(Disabled)' if item.disabled else ''}")
-            print(f"Password: {item.password}")
-            print(f"Group: {item.group.name}")
-        div()
+        listUsers()
     elif args == ["add"]:
         div()
-        print("user add <username> <password> <group_name>")
+        print("user add <username> <group_name>")
         div()
-        print("For a list of groups:")
-        print("group list")
+        print("Creates a user with no password.")
         div()
-    elif "add" in args and len(args) == 4:
-        gl = loadGroupList()
-        g = gl.byName(args[3])
-        if g:
-            u = User(g, args[1],hashString(args[2]))
-            userList = createUser(userList,u)
-            saveUserList(userList)
-        else:
-            print("ERROR: Invalid group name. For a list, run `group list`.")
+    elif "add" in args and len(args) == 3:
+        args.remove("add")
+        addUser(args[0], args[1])
     elif args == ["remove"]:
         div()
         print("user remove <user>")
@@ -31,26 +65,7 @@ def main(args):
         div()
     elif "remove" in args and len(args) == 2:
         args.remove("remove")
-        try:
-            user = userList.byName(args[0])
-        except PythinuxError:
-            print("ERROR: Invalid user.")
-            return
-        if user.locked:
-            print("ERROR: User is locked.")
-            return
-        userList.removeByName(user.username)
-        saveUserList(userList)
-        print("Successfully removed user.")
-    elif args == ["info"]:
-        div()
-        print("user info <username>")
-        div()
-        print("Lists info about a user.")
-        div()
-    elif "info" in args and len(args) == 2:
-        u = userList.byName(args[1])
-        pprint(u)
+        removeUser(args[0])
     elif args == ["disable"]:
         div()
         print("user disable <username>")
@@ -59,10 +74,7 @@ def main(args):
         div()
     elif "disable" in args and len(args) == 2:
         args.remove("disable")
-        user = userList.byName(args[0])
-        user.disabled = True
-        user.password = ""
-        saveUserList(userList)
+        disableUser(args[0])
     elif args == ["enable"]:
         div()
         print("user enable <username>")
@@ -71,10 +83,7 @@ def main(args):
         div()
     elif "enable" in args and len(args) == 2:
         args.remove("enable")
-        user = userList.byName(args[0])
-        user.disabled = False
-        runCommand(user, "passwd")
-        saveUserList(userList)
+        enableUser(args[0])
     else:
         div()
         print("user [args]")
