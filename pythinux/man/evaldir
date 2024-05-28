@@ -1,0 +1,15 @@
+NAME
+    evaldir - Evaluate directories into full paths
+DESCRIPTION
+    The EVALDIR command is for debugging purposes only, and is designed to test the evalDir() function. It converts a relative path (such as ~) into a full one.
+SYNTAX
+    evaldir [list of paths]
+        Turn a relative path into a full path.
+EXAMPLES
+    evaldir /
+        Shows the path to the root directory.
+    evaldir ~
+        Shows the path to the home directory.
+    evaldir .
+        Shows the path to the current directory.
+SEE ALSO
