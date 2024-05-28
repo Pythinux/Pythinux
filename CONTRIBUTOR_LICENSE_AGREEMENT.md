@@ -1,5 +1,5 @@
 # Contributor License Agreement (CLA)
-This is the CLA for Pythinux (https://codeberg.org/Pythinux/Pythinux)
+This is the CLA for [Pythinux](https://codeberg.org/Pythinux/Pythinux).
 ## Definitions
 * **Project**: The open-source project maintained by the Contributors.
 * **Contributor**: An individual or legal entity making a Contribution to the Project.
