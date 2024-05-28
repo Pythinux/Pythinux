@@ -1,0 +1,11 @@
+NAME
+    autologin - Configure automatic login
+DESCRIPTION
+    The AUTOLOGIN command is used to choose which user to select automatic login for. This is useful for single login systems, such as home users, as it means you don't have to type your username every time you log in.
+SYNTAX
+    autologin <username>
+        Sets <username> as the autologin user.
+    autologin --reset
+        Disales autologin.
+SEE ALSO
+    user: Manages users
