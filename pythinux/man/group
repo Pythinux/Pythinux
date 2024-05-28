@@ -22,5 +22,14 @@ SYNTAX
         Displays permissions associated with a group.
     group set <name> <permission> <true|false>
         Edits permissions for an existing group.
+LIBRARY
+    group.GroupError
+        An Exception raised when something goes wrong. Subclass of PythinuxError, which is a subclass of Exception.
+    group.listGroups()
+        Lists all groups.
+    group.showGroupInfo(group_name)
+        Shows info about a group.
+    group.setPermission(group_name, permission, value)
+        Sets permissions for a group (see PERMISSIONS).
 SEE ALSO
     user - manage users

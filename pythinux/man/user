@@ -4,16 +4,27 @@ DESCRIPTION
     The USER command allows you to add, remove, and manage users on a Pythinux system.
 SYNTAX
     user list
-        Lists all users
+        Lists all users and their info.
     user add <username> <group_name>
         Add a user.
     user remove <user>
         Remove a user.
-    user info <user>
-        View info about a user. 
     user disable <username>
         Disables a user. Clears the password for that user.
     user enable <username>
         Opposite of `user disable`. Forces you to set a password for that user.
+LIBRARY
+    user.UserError
+        An Exception raised when something goes wrong. Subclass of PythinuxError, which is a subclass of Exception.
+    user.listUsers()
+        Lists all users and their info.
+    user.addUser(username, group_name)
+        Adds a user with a blank password.
+    user.removeUser(username)
+        Removes a user.
+    user.disableUser(username)
+        Disables a user.
+    user.enableUser(username)
+        Un-disables a user.
 SEE ALSO
     group - manage groups
