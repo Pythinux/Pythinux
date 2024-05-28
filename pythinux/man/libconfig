@@ -1,0 +1,14 @@
+NAME
+    libconfig - Save and load config files easily
+DESCRIPTION
+    The LIBCONFIG library makes saving and loading INI config files easier, as it does some things for you.
+LIBRARY
+    libconfig.load(filename, defaults={}, saveFile=True)
+        Loads a config file and returns a configparser.ConfigParser object.
+        The defaults dictionary is in the format {<section>: {<option>: <value>}, {<option>: <value>}}, where all three are strings. 
+        See the source code for PKM for a good demo.
+    libconfig.save(config, filename)
+        Saves a configparser.ConfigParser object.
+SEE ALSO
+    lib: library list
+    import: how to import libraries

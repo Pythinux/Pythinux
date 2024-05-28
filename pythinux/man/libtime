@@ -1,0 +1,14 @@
+NAME
+    libtime - Display time in a standard format
+DESCRIPTION
+    The LIBTIME library displays the time in a nice and standardised manner.
+LIBRARY
+    libtime.date()
+        Returns the date.
+    libtime.time()
+        Returns the time.
+    libtime.datetime()
+        Returns the date and time.
+SEE ALSO
+    lib: library list
+    import: how to import libraries
