@@ -453,7 +453,6 @@ class Group(Base):
             and self.canAppHigh == other.canAppHigh
             and self.canApp == other.canApp
             and self.canSys == other.canSys
-            and self.canSysHigh == other.canSysHigh
             and self.canSudo == other.canSudo
             and self.locked == other.locked
         )
@@ -921,7 +920,6 @@ class CurrentGroup(Group):
         self.canApp = bool(group.canApp)
         self.canAppHigh = bool(group.canAppHigh)
         self.canSys = bool(group.canSys)
-        self.canSysHigh = bool(group.canSysHigh)
         self.canSudo = bool(group.canSudo)
         self.locked = bool(group.locked)
 
