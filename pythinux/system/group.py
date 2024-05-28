@@ -1,3 +1,42 @@
+class GroupError(PythinuxError):
+    pass
+
+def listGroups():
+    div()
+    for group in groupList.list():
+        print(group.name)
+    div()
+
+def showGroupInfo(group_name):
+    group = groupList.byName(group_name)
+    if not group:
+        raise GroupError("Invalid group")
+    div()
+    print("BASIC INFO")
+    div()
+    print("Name:       {}".format(group.name))
+    print("Locked:     {}".format(group.locked))
+    div()
+    print("PERMISSIONS")
+    div()
+    print("canApp:     {}".format(group.canApp))
+    print("canAppHigh: {}".format(group.canAppHigh))
+    print("canSys:     {}".format(group.canSys))
+    print("canSudo:    {}".format(group.canSudo))
+    div()
+
+def setPermission(group_name, permission, value):
+    if permission not in ["canApp", "canAppHigh", "canSys", "canSudo"]:
+        raise GroupError("Invalid permission name")
+    if not isinstance(value, bool):
+        raise GroupError("Value is not boolean")
+    group = groupList.byName(group_name)
+    if not group:
+        raise GroupError("Invalid group")
+
+    setattr(group, permission, value)
+    saveGroupList(groupList)
+
 def main(args):
     if "-v" in args:
         args.remove("-v")
@@ -46,28 +85,10 @@ def main(args):
         print("Prints info about a group.")
         div()
     elif "info" in args and len(args) == 2:
-        group = groupList.byName(args[1])
-        if group:
-            div()
-            print("BASIC INFO")
-            div()
-            print("Name:       {}".format(group.name))
-            print("Locked:     {}".format(group.locked))
-            div()
-            print("PERMISSIONS")
-            div()
-            print("CanApp:     {}".format(group.canApp))
-            print("CanAppHigh: {}".format(group.canAppHigh))
-            print("CanSys:     {}".format(group.canSys))
-            print("CanSudo:    {}".format(group.canSudo))
-            div()
-        else:
-            print("ERROR: Invalid group.")
+        args.remove("info")
+        showGroupInfo(args[0])
     elif args == ["list"]:
-        div()
-        for item in groupList.list():
-            print(item.name)
-        div()
+        listGroups()
     elif args == ["set"]:
         div()
         print("group set <group name> <permisison> <true|false>")
@@ -76,21 +97,8 @@ def main(args):
         div()
     elif "set" in args and len(args) == 4:
         args.remove("set")
-        groupname, perm, value = args[0], args[1], True if args[2].lower() == "true" else False
-        gr = groupList.byName(groupname)
-        if not gr:
-            print("ERROR: Invalid group.")
-            return
-        if perm not in ["canApp", "canAppHigh", "canSys", "canSudo"]:
-            print("ERROR: Invalid permission.")
-            return
-
-        setattr(gr, perm, value)
-        if verbose:
-            print("Set {} to {} for group {}.".format(perm, str(value).lower(), groupname))
-
-        saveGroupList(groupList)
-        saveUserList(userList)
+        group_name, permission, value = args[0], args[1], True if args[2] in ["True", "true", "1"] else False
+        setPermission(group_name, permission, value)
     else:
         div()
         print("group [args]")
