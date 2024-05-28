@@ -9,6 +9,7 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
         cmd = cmd.replace("!!", lastCommand)
     if "!" in cmd:
         cmd = cmd.replace("!", lastCommandArgs)
+
     if cmd == "":
         pass
     elif cmd in ["quit", "exit"] and not var.getbool("SHELL_ALLOW_EXIT", True):

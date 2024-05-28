@@ -58,18 +58,19 @@ class PythinuxError(Exception):
 
 
 def loadGroupList():
-    ini = configparser.ConfigParser()
-    ini.read("config/groups.ini")
+    try:
+        with open("config/usergroups.cfg", "rb") as f:
+            return pickle.load(f)
+    except Exception:
+        g = GroupList()
+        saveGroupList(g)
+        return g
 
-    gl = GroupList()
-    gl.deserialise(ini)
-    return gl
 
 def saveGroupList(groupList):
     if isinstance(groupList, GroupList):
-        ini = groupList.serialise()
-        with open("config/groups.ini", "w") as f:
-            ini.write(f)
+        with open("config/usergroups.cfg", "wb") as f:
+            pickle.dump(groupList, f)
     else:
         raise PythinuxError("Invalid grouplist to save.")
 
@@ -222,7 +223,7 @@ class FileError(Exception):
     """
     Generic exception for indicating an issue with opening or parsing a file.
     Args:
-        text: What to display to the user.
+    text: what to display to the user.
     """
 
     def __init__(self, text):
@@ -236,10 +237,10 @@ def joinIterable(string, iterable):
     """
     Joins a string and an iterable together.
     Args:
-        string: The initial string to join to
-        iterable: an iterable object to join
+    string: The initial string to join to
+    iterable: an iterable object to join
     Returns:
-        string + every item in iterable
+    string + every item in iterable
     """
     return string.join([str(x) for x in iterable])
 
@@ -443,15 +444,7 @@ class Group(Base):
         self.canSys = canSys
         self.canSudo = canSudo
         self.locked = locked
-    
-    def serialise(self):
-        return {
-            "canApp": self.canApp,
-            "canAppHigh": self.canAppHigh,
-            "canSys": self.canSys,
-            "canSudo": self.canSudo,
-            "locked": self.locked,
-        }
+
     def __eq__(self, other):
         if not isinstance(other, Group):
             return False
@@ -472,7 +465,11 @@ class GroupList(Base):
     """
 
     def __init__(self):
-        self.groups = []
+        self.groups = [
+            Group("guest"),
+            Group("user", True, canSudo=True, locked=True),
+            Group("root", True, True, True, locked=True),
+        ]
 
     def add(self, group):
         """
@@ -482,7 +479,6 @@ class GroupList(Base):
         """
         if isinstance(group, Group):
             self.groups.append(group)
-            return group
         else:
             raise PythinuxError("Cannot add a non-Group object a GroupList.")
 
@@ -508,24 +504,6 @@ class GroupList(Base):
 
     def __len__(self):
         return len(self.groups)
-    
-    def serialise(self):
-        ini = configparser.ConfigParser()
-        for group in self.groups:
-            ini[group.name] = group.serialise()
-        return ini
-    def deserialise(self, ini):
-        for sect in ini.sections():
-            g = Group(
-                sect,
-                ini.getboolean(sect, "canApp", fallback=False),
-                ini.getboolean(sect, "canAppHigh", fallback=False),
-                ini.getboolean(sect, "canSys", fallback=False),
-                ini.getboolean(sect, "canSudo", fallback=False),
-                ini.getboolean(sect, "locked", fallback=False),
-            )
-            self.add(g)
-        return self
 
 
 class User(Base):
@@ -786,7 +764,8 @@ def saveAliases(aliases):
     Args:
         aliases: a list grabbed from loadAliases().
     """
-    warnings.warn("saveAliases() is no longer functional", DeprecationWarning)
+    with open("config/alias.cfg", "wb") as f:
+        pickle.dump(aliases, f)
 
 
 def loadAliases():
@@ -942,6 +921,7 @@ class CurrentGroup(Group):
         self.canApp = bool(group.canApp)
         self.canAppHigh = bool(group.canAppHigh)
         self.canSys = bool(group.canSys)
+        self.canSysHigh = bool(group.canSysHigh)
         self.canSudo = bool(group.canSudo)
         self.locked = bool(group.locked)
 
@@ -1355,7 +1335,9 @@ def saveUserList(userList):
     """
     if isinstance(userList, UserList):
         config = userList.serialise()
-        with open("config/users.ini", "w") as f:
+        with open(
+            evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser", "")), "w"
+        ) as f:
             config.write(f)
     else:
         raise PythinuxError("Cannot save invalid userlist.")
@@ -1369,7 +1351,7 @@ def loadUserList():
     try:
         userList = UserList()
         config = configparser.ConfigParser()
-        config.read("config/users.ini")
+        config.read(evalDir("/config/users.ini", User(Group("tempgroup"), "tempuser")))
         userList.deserialise(config)
         return userList
     except Exception:
@@ -1583,15 +1565,10 @@ def setupWizard():
         password = None
 
     groupList = GroupList()
-
-    guestGroup = groupList.add(Group("guest"))
-    userGroup  = groupList.add(Group("user", True, canSudo=True, locked=True))
-    rootGroup  = groupList.add(Group("root", True, True, True, locked=True))
-    saveGroupList(groupList)
-
+    g = groupList.byName("user")
+    rootGroup = groupList.byName("root")
     user = User(rootGroup, username, hashString(password))
     root = User(rootGroup, "root", disabled=True, locked=True)
-
     userList = loadUserList()
     userList = createUser(userList, user)
     userList = createUser(userList, root)
@@ -1599,7 +1576,6 @@ def setupWizard():
 
     if input("Set up autologin? [Y/n] $").lower() != "n":
         saveAL(username)
-
     cls()
     div()
     print("You have successfully set up Pythinux.")
