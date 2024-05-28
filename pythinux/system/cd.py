@@ -9,5 +9,4 @@ def main(args):
         print("cd <directory>")
         div()
         print("Change working directory.")
-
-
+        div()
