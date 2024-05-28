@@ -1,3 +1,5 @@
+import warnings
+
 class UserError(PythinuxError):
     pass
 
@@ -18,6 +20,7 @@ def addUser(username, group_name):
     user = User(group, username)
     userList = createUser(loadUserList(), user)
     saveUserList(userList)
+    warnings.warn("Changes will only apply after restarting Pythinux")
 
 
 def removeUser(username):
@@ -28,6 +31,7 @@ def removeUser(username):
         raise UserError("Cannot remove locked user")
     userList.remove(user)
     saveUserList(userList)
+    warnings.warn("Changes will only apply after restarting Pythinux")
 
 
 def disableUser(username):
