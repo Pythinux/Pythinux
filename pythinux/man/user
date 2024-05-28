@@ -5,11 +5,15 @@ DESCRIPTION
 SYNTAX
     user list
         Lists all users
-    user add <username> <password> <group_name>
+    user add <username> <group_name>
         Add a user.
     user remove <user>
         Remove a user.
     user info <user>
-        View info about a user. NOTE: This information is unformatted and probably not useful to most people, as all the relevant info is in `user list`.
+        View info about a user. 
+    user disable <username>
+        Disables a user. Clears the password for that user.
+    user enable <username>
+        Opposite of `user disable`. Forces you to set a password for that user.
 SEE ALSO
     group - manage groups
