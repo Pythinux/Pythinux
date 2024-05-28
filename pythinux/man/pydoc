@@ -1,7 +1,7 @@
 Help on module pythinux:
 
 NAME
-    pythinux
+    pythinux - #usr/bin/env python
 
 CLASSES
     builtins.Exception(builtins.BaseException)
@@ -64,8 +64,6 @@ CLASSES
      |          high-access apps.
      |      canSys: Boolean. Defines whether or not the user can access system
      |          apps in the "system" directory.
-     |      canSysHigh: Boolean. Defines whether or not the user can access system
-     |          apps in the "system_high" directory. UNUSED.
      |      canSudo: Boolean. Determines whether or not the user can use `sudo`.
      |
      |  ----------------------------------------------------------------------
@@ -137,10 +135,8 @@ CLASSES
      |      Return self==value.
      |
      |  admin(self)
-     |      Returns whether or not the user's level is 2 or higher,
-     |      indicating a root user.
      |
-     |  check(self, username, password='1ad3c60d8596ce241f83c8c015ed65ff881df5ee05cf34fb54ba0718d95b0f07c1ef5c85ce226414d4d3baf54f9756d4')
+     |  check(self, username, password='910d34ee6225370d37bff0e60f07da7261fe5c3c2b3447776913e140cee6478785447710b2b2344dabeb019e28aec6bf')
      |      Function for checking whether a User class and passed details match.
      |      Args:
      |          username: string
@@ -148,10 +144,6 @@ CLASSES
      |      Returns:
      |          bool depending on whether or not the supplied details match up
      |          with the User object's properties.
-     |
-     |  god(self)
-     |      Returns whether or not the user's level is 3 or higher,
-     |      indicating a god user.
      |
      |  serialise(self)
      |
@@ -194,6 +186,11 @@ CLASSES
      |      Base
      |      builtins.object
      |
+     |  Methods defined here:
+     |
+     |  __bool__(self)
+     |
+     |  ----------------------------------------------------------------------
      |  Data descriptors defined here:
      |
      |  __dict__
@@ -300,7 +297,7 @@ CLASSES
      |  args
 
     class Group(Base)
-     |  Group(name, canApp=False, canAppHigh=False, canSys=False, canSysHigh=False, canSudo=False, locked=False)
+     |  Group(name, canApp=False, canAppHigh=False, canSys=False, canSudo=False, locked=False)
      |
      |  User groups with custom permissions.
      |
@@ -314,7 +311,7 @@ CLASSES
      |  __eq__(self, other)
      |      Return self==value.
      |
-     |  __init__(self, name, canApp=False, canAppHigh=False, canSys=False, canSysHigh=False, canSudo=False, locked=False)
+     |  __init__(self, name, canApp=False, canAppHigh=False, canSys=False, canSudo=False, locked=False)
      |      Defines nanme and permissions of the Group.
      |      name: name of group. Set to all-lowercase.
      |      canApp: Boolean. Defines whether or not the user can access apps.
@@ -322,8 +319,6 @@ CLASSES
      |          high-access apps.
      |      canSys: Boolean. Defines whether or not the user can access system
      |          apps in the "system" directory.
-     |      canSysHigh: Boolean. Defines whether or not the user can access system
-     |          apps in the "system_high" directory. UNUSED.
      |      canSudo: Boolean. Determines whether or not the user can use `sudo`.
      |
      |  ----------------------------------------------------------------------
@@ -610,6 +605,11 @@ CLASSES
      |      Base
      |      builtins.object
      |
+     |  Methods defined here:
+     |
+     |  __bool__(self)
+     |
+     |  ----------------------------------------------------------------------
      |  Data descriptors defined here:
      |
      |  __dict__
@@ -636,7 +636,7 @@ CLASSES
      |      list of weak references to the object
 
     class User(Base)
-     |  User(group, username, password='')
+     |  User(group, username, password='', locked=False, disabled=False)
      |
      |  User class used by Pythinux.
      |  See __init__() for how to create User objects properly.
@@ -654,7 +654,7 @@ CLASSES
      |  __eq__(self, other)
      |      Return self==value.
      |
-     |  __init__(self, group, username, password='')
+     |  __init__(self, group, username, password='', locked=False, disabled=False)
      |      Constructor for User class.
      |      Args:
      |          group: a Group object.
@@ -666,10 +666,8 @@ CLASSES
      |              output of hashString("") as the default password.)
      |
      |  admin(self)
-     |      Returns whether or not the user's level is 2 or higher,
-     |      indicating a root user.
      |
-     |  check(self, username, password='1ad3c60d8596ce241f83c8c015ed65ff881df5ee05cf34fb54ba0718d95b0f07c1ef5c85ce226414d4d3baf54f9756d4')
+     |  check(self, username, password='910d34ee6225370d37bff0e60f07da7261fe5c3c2b3447776913e140cee6478785447710b2b2344dabeb019e28aec6bf')
      |      Function for checking whether a User class and passed details match.
      |      Args:
      |          username: string
@@ -677,10 +675,6 @@ CLASSES
      |      Returns:
      |          bool depending on whether or not the supplied details match up
      |          with the User object's properties.
-     |
-     |  god(self)
-     |      Returns whether or not the user's level is 3 or higher,
-     |      indicating a god user.
      |
      |  serialise(self)
      |
@@ -819,8 +813,6 @@ FUNCTIONS
     createModule(moduleName)
         Creates a module object, which not normally creatable.
 
-    createService(command, user)
-
     createUser(userlist, user)
         Adds a User to a userlist.
         Args:
@@ -828,6 +820,8 @@ FUNCTIONS
             user: a User instance.
         Returns:
             userlist: a userlist that can be passed to saveUserList().
+
+    deprecatedOpen(*args, **kwargs)
 
     div(returnMode=False)
         Prints 20 hyphen/dash symbols.
@@ -865,7 +859,7 @@ FUNCTIONS
         because git doesn't count directories as files.
 
     generateAPI(module, user, sudoMode)
-        Internal function to expose Pythinux 3.x API's to a module.
+        Exposes Pythinux 3.x API calls to a module.
 
     giveOutput(command, user, split=False, shell='terminal', ptyMode=False)
 
@@ -920,10 +914,6 @@ FUNCTIONS
     load_program(program_name_with_args, user, sudoMode=False, shell='terminal', debugMode=False, baseMode=False, __name__=None, isolatedMode=False, libMode=False)
 
     logEvent(text, log='base_log')
-        Creates or appends to a log.
-        Arguments:
-            (str) text: the text that gets logged.
-            (str) log: the name of the log file. Default is "base_log".
 
     loginScreen(username=None, password=None)
         Login screen.
@@ -1025,8 +1015,6 @@ FUNCTIONS
     splitString(string)
         Used by main() for turning a string into a list of arguments.
 
-    startService(thread, name)
-
     sudo(user, maxAttempts=10, incorrectAttempts=0)
         Password authentication.
         Args:
@@ -1049,9 +1037,9 @@ DATA
     EVALHIST = []
     KPARAM_DEBUGGING_VERIFYUSER = False
     KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False
+    KPARAM_DEPRECATE_OPEN = False
     KPARAM_ESCALATION_PROTECTION = True
-    KPARAM_REPLACE_OPEN = False
-    KPARAM_USE_LIMITED_OPEN = False
+    KPARAM_USE_LIMITED_OPEN = True
     KPARAM_USE_MODULE_WRAPPER = True
     aliases = {}
     f = <_io.TextIOWrapper name='default.xx' mode='r' encoding='UTF-8'>
