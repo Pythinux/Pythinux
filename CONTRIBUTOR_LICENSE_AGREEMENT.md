@@ -15,9 +15,6 @@ When the Contributor makes a Contribution, the Contributor agrees to is license 
 ## Disallowed Contributions
 If the Contributor wishes to make a Contribution solely as a tool to build a rapport for use in a resume or otherwise, and not to improve the Project, that Contrubution is not welcome. 
 
-## Future Modifications
-In the event that the Project decides to distribute the software under a different license for a future version, the Contributor agrees that their Contribution may be included in such versions under the new license.
-
 ## Representations
 The Contributor represents that they have the legal authority to enter into this Agreement and that their Contribution is their original work.
 
