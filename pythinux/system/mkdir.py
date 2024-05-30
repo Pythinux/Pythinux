@@ -5,7 +5,7 @@ def main(args):
         os.mkdir(args)
     else:
         div()
-        print("md [directory]")
+        print("mkdir [directory]")
         div()
         print("Creates [directory] if it does not exist.")
         div()
