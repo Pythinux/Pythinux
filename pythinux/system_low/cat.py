@@ -1,5 +1,5 @@
-def cat(filename):
-    with open(file.evalDir(filename, currentUser)) as f:
+def cat(filename, user=None):
+    with file.open(filename, user if user else currentUser) as f:
         print(f.read())
 def main(args):
     if args:

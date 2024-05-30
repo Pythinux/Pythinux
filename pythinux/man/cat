@@ -1,15 +1,10 @@
 NAME
     cat - view the contents of files
 DESCRIPTION
-    Sometimes you need to view the contents of a file. This tool is for that.
-EXAMPLES
-    NOTE: The files in these examples do not exist!
-
-    cat file1
-        View a file
-    cat file1 file2 file3
-        View the contents of multiple files, one after the other.
-    out 'cat file1 file2 file3' files
-        Use out (see `out`) to merge file1, file2 and file3 into a new file 'files'
-SEE ALSO
-    out: output the contents of a command into a file
+    CAT is a tool used to view the contents of a file, or multiple files sequentially.
+SYNTAX
+    cat [list of files]
+        Prints the contents of one or more files (one file per argument).
+LIBRARY
+    cat.cat(filename, user=None)
+        Opens a file and prints its contents. If user is not specified, the current user is used.
