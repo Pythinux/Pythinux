@@ -1,0 +1,9 @@
+NAME
+    python - Live Python interpreter
+DESCRIPTION
+    The PYTHON utility allows you to start up a Python interpreter and execute Python code directly from the command line.
+SYNTAX
+    python
+        Opens a basic Python interpreter.
+    python --global
+        Opens a Python interpreter that includes Pythinux API calls.
