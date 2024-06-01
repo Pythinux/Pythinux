@@ -1,3 +1,3 @@
 import code
 def main(args):
-    code.interact(local=locals(),banner="Python Interpreter: press Ctrl+D to exit",exitmsg="Exit Python interpreter.")
+    code.interact(local=globals() if "--global" in args else locals(),banner="Python Interpreter: press Ctrl+D to exit",exitmsg="Exit Python interpreter.")
