@@ -1,20 +1,6 @@
-def welcome():
-    div()
-    print("Thank you for downloading Pythinux.")
-    div()
-    print("Here are some common commands which might interest you:")
-    print("* help")
-    print("    * Provides a list of commands.")
-    print("* man")
-    print("    * Manual display system.")
-    print("* pkm")
-    print("    * package manager for pythinux programs.")
-    div()
-    print("If you would like someone to help you, go to https://codeberg.org/Pythinux/Pythinux and make an Issue.")
-    print("Alternatively, connect to #pythinux on Libera.Chat.")
-    div()
-    print("Alternatively, the official Pythinux wiki (https://wiki.pythinux.gordinator.org) and the official website (https://pythinux.gordinator.org) could also provide helpful material for more technical users.")
-    div()
+curl = load_program("curl", currentUser, libMode=True)
 
+def welcome():
+    curl.curl("https://codeberg.org/Pythinux/Pythinux/raw/branch/main/welcome.txt")
 def main(args):
     welcome()

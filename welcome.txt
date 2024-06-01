@@ -1,0 +1,48 @@
+Welcome to Pythinux. Pythinux is an operating system written in Python.
+
+GETTING STARTED
+
+First things first, you'll probably want to run some programs. Try this:
+
+$ echo Hello, World!
+
+Of course, that's not particularly useful, so perhaps you'd like a list of installed programs:
+
+$ help
+
+But the installed programs are boring, so perhaps you'd like a list of programs you can install:
+
+$ pkm all
+
+If a program looks interesting:
+
+$ pkm install <name of program>
+
+That's the package name, the all-lowercase one without spaces, NOT the full name.
+
+SUPPORT CHANNELS
+
+There are plenty of places to get help:
+
+* The HELP command
+    * This program lists all installed programs. It's useful for playing around.
+* The MAN command
+    * Pythinux has manpages! Run `man /` for a list of them, and `man <manpage>` to view help for something. Chances are, a program has a manpage to go with it as well.
+* The wiki
+    * https://wiki.pythinux.gordinator.org
+    * It's a useful resource for both users and developers, and is kept constantly up-to-date.
+* The IRC channel
+    * If you have an IRC client, connect to irc.gordinator.org (port 6667 or 6697) and join #pythinux. You should find someone who can help you.
+* The Git repository
+    * https://codeberg.org/Pythinux/Pythinux
+    * It's a good last resort.
+
+SYSTEM MAINTENANCE
+
+Every so often, you should run these commands:
+
+$ pkm update
+$ pkm upgrade
+$ pkm dist-upgrade
+
+This makes sure your packages and OS are up-to-date.
