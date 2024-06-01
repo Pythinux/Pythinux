@@ -33,8 +33,6 @@ The following packages may be of interest:
     - Interactive file browser
 * ftp
     - FTP client
-* devdoc
-    - Collection of manpages for how to write, package, and share Pythinux programs
 * stopwatch
     - An accurate command-line stopwatch
 * whois
