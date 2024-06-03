@@ -1206,10 +1206,11 @@ def load_program(
         if debugMode:
             print("### Arguments:", module.args)
         module_spec.loader.exec_module(module)
-        if not "main" in dir(module):
-            print("warning: {} has no main(), in future this will throw a PythinuxError".format(program_name))
         if not libMode:
-            module.main(module.args)
+            if not "main" in dir(module):
+                print("warning: {} has no main(), in future this will throw a PythinuxError".format(program_name))
+            else:
+                module.main(module.args)
         return ReadOnlyWrapper(module) if KPARAM_USE_MODULE_WRAPPER else module
 
 
