@@ -38,7 +38,7 @@ KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
-KPARAM_DEPRECATE_OPEN = False # If True, open() raises a DeprecationWarning
+KPARAM_DEPRECATE_OPEN = True # If True, open() raises a DeprecationWarning
 
 
 with open("default.xx") as f:
