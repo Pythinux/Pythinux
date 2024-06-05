@@ -26,7 +26,7 @@ except:
     unixMode = False
 
 osName = "Pythinux"
-version = [3, 0, 0]
+version = [3, 1, 0]
 var = {}
 aliases = {}
 EVALHIST = []
@@ -129,46 +129,6 @@ def verifyUser(user):
     return id(type(user)) in [id(User), id(CurrentUser)]
 
 
-def castObject(obj, new_type):
-    """
-    Create a new object of a specified type or use an existing object,
-    copying all attributes (excluding methods) of the
-    original object to the new one.
-
-    Args:
-        obj: The original object to cast
-        cast_type: The type or object to cast the original object to.
-        If `cast_type` is a type, a new object of that type is created.
-        If `cast_type` is an object, the original object is
-        copied to that object.
-
-    Returns:
-        A new object of the specified type, with all attributes
-        (excluding methods) of the original object copied over.
-        If `cast_type` is an object, the original object is copied to
-        that object and returned.
-    """
-    warnings.warn("castObject() will be removed in Pythinux 3.1", DeprecationWarning)
-    if isinstance(new_type, type):
-        new_obj = new_type()
-    else:
-        new_obj = new_type
-
-    for key, value in obj.__dict__.items():
-        if not callable(value):
-            setattr(new_obj, key, value)
-
-    return new_obj
-
-
-def setVars(var):
-    """
-    Unused.
-    """
-    warnings.warn("setVars() will be removed in Pythinux 3.1", DeprecationWarning)
-    var = var
-
-
 def giveVars():
     """
     Returns the list of variables loaded by the program.
@@ -196,27 +156,6 @@ def silent(function):
     x = function()
     sys.stdout = stdout
     return x
-
-
-def CompileOS():
-    warnings.warn("CompileOS() will be removed in Pythinux 3.1", DeprecationWarning)
-    print("Clear begin.")
-    """
-    Clears your installation of Pythinux.
-    """
-    # clear directories
-    for item in fixDirectories(True):
-        if os.path.isdir(item):
-            shutil.rmtree(item)
-            os.mkdir(item)
-
-    for path, dirs, files in os.walk(os.getcwd()):
-        for item in dirs:
-            try:
-                shutil.rmtree("__pycache__")
-            except Exception:
-                pass
-    print("Cleared Pythinux install.")
 
 
 class FileError(Exception):
@@ -249,45 +188,6 @@ def attachDebugger(globals):
     import code
 
     code.InteractiveConsole(locals=globals)
-
-
-def giveOutput(command, user, split=False, shell="terminal", ptyMode=False):
-    warnings.warn("giveOutput() will be removed in Pythinux 3.1", DeprecationWarning)
-    warnings.warn("Instead, use the target program's library", DeprecationWarning)
-    """
-    Returns the output of a command.
-    Positional arguments:
-        (str) command: the command to execute
-        (User) user: the user executing the command. Pass currentUser.
-        (bool) split: if true, returns output split into a list with \n as a
-        separator. This is ignored if `ptyMode=True` is passed.
-        (str) shell: Passed to main().
-        (bool) ptyMode: If True, will return pty.openpty()'s slave and master.
-        ONLY WORKS ON UNIX SYSTEMS! IF ON WINDOWS, AN ERROR IS RAISED!
-    """
-    if ptyMode:
-        if not unixMode:
-            raise PythinuxError(
-                "This system does not support the `pty` module. Only Unix-based systems support `pty`."
-            )
-        slave, master = pty.openpty()
-        pid = os.fork()
-        if pid == 0:
-            os.dup2(slave, 1)
-            os.close(master)
-            main(user, command, shell=shell)
-        else:
-            pass
-    else:
-        stdout_backup = sys.stdout
-        sys.stdout = StringIO()
-
-        main(user, command, shell=shell)
-
-        output = sys.stdout.getvalue().strip("\n")
-
-        sys.stdout = stdout_backup
-        return output.split("\n") if split else output
 
 
 def doCalc(text):
@@ -650,22 +550,6 @@ def copy(obj):
             return obj
 
 
-def logEvent(text, log="base_log"):
-    warnings.warn("logEvent() will be reprecated in Pythinux 3.1", DeprecationWarning)
-    """
-    Creates or appends to a log.
-    Arguments:
-        (str) text: the text that gets logged.
-        (str) log: the name of the log file. Default is "base_log".
-    """
-    try:
-        with open(f"log/{log}.log", "a") as f:
-            f.write(text + "\n")
-    except Exception:
-        with open(f"log/{log}.log", "w") as f:
-            f.write(text + "\n")
-
-
 def verifyHash(plaintext, saltedHashString):
     """
     Verifies a hash.
@@ -955,7 +839,7 @@ class ReadOnlyWrapper:
         return self._obj.__dir__()
 
 def deprecatedOpen(*args, **kwargs):
-    warnings.warn("open() is deprecated, use file.open() instead", DeprecationWarning)
+    warnings.warn("open() is deprecated and will be removed in Pythinux 3.3, use file.open() instead", DeprecationWarning)
     return open(*args, **kwargs)
 
 def loadProgramBase(
@@ -1021,7 +905,6 @@ def loadProgramBase(
             sp.insert(0, "app")
 
             shared_objects = {
-                "castObject": copy(castObject),
                 "Base": copy(Base),
                 "__name__": copy(__name__),
                 "currentUser": CurrentUser(user),
@@ -1041,15 +924,12 @@ def loadProgramBase(
                 "doCalc": copy(doCalc),
                 "mergeDict": copy(mergeDict),
                 "copy": copy(copy),
-                "logEvent": copy(logEvent),
                 "getTerm": copy(getTerm),
                 "currentProgram": copy(program_name),
-                "giveOutput": copy(giveOutput),
                 "osName": copy(osName),
                 "FileError": copy(FileError),
                 "createModule": copy(createModule),
                 "silent": copy(silent),
-                "setVars": copy(setVars),
                 "giveVars": copy(giveVars),
                 "attachDebugger": copy(attachDebugger),
                 "PythinuxError": copy(PythinuxError),
