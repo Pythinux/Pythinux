@@ -1054,7 +1054,6 @@ def load_program(
     sudoMode=False,
     shell="terminal",
     debugMode=False,
-    baseMode=False,
     __name__=None,
     isolatedMode=False,
     libMode=False,
@@ -1080,8 +1079,6 @@ def load_program(
         isolatedMode,
         libMode,
     )
-    if baseMode:
-        return module, module_spec
     if module:
         if debugMode:
             print("### Arguments:", module.args)
