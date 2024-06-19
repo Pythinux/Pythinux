@@ -82,7 +82,7 @@ def getRemotePackageData(offline=True, silent=False):
                 print("Downloading '{}'...".format(repo))
             downloadFile(repos[repo], "/tmp/repo")
             packageData.read("tmp/repo")
-    with open(file.evalDir("/config/pkmdata.ini", currentUser), "w") as f:
+    with file.open("/config/pkmdata.ini", currentUser, "w") as f:
         packageData.write(f)
     if not silent and not offline:
         print("Successfully updated database.")
