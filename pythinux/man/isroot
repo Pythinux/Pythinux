@@ -1,0 +1,7 @@
+NAME
+    isroot - Display if you have root privileges
+DESCRIPTION
+    This program is a simple user-facing tool that displays "True" if you can run privileged applications and "False" if you cannot. 
+    It's that simple. So simple that this manpage is significantly larger than the program's code.
+SEE ALSO
+    user - Control user accounts
