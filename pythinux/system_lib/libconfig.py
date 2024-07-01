@@ -10,5 +10,5 @@ def load(filename, defaults={}, saveFile=True):
     return config
 
 def save(config, filename):
-    with open(file.evalDir(filename, currentUser), "w") as f:
+    with file.open(filename, currentUser, "w") as f:
         config.write(f)
