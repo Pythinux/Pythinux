@@ -45,7 +45,7 @@ KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
 KPARAM_DEBUGGING_VERIFYHASH = False # Display a message every time verifyHash() is called
 KPARAM_DISABLE_CLS = True # If true, the cls() function is disabled system-wide
-KPARAM_DEBUGGING_LIMITED_OPEN = True # If true, limitedOpenFile() will print values of all files passed to it
+KPARAM_DEBUGGING_LIMITED_OPEN = False # If true, limitedOpenFile() will print values of all files passed to it
 
 ## Feature testing
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
