@@ -44,9 +44,20 @@ def installdBase(filename, yesMode=False, forceMode=False, depMode=False):
         deps = [x for x in ini.get("Program", "dependencies", fallback="").split("; ") if x]
         deps = [x for x in deps if x not in pkm.getPackageList()]
         conflicts = ini.get("Program", "conflicts", fallback="").split("; ")
+        replaces = ini.get("Program", "replaces", fallback=None)
         
         if ini.get("Program", "package") in pkm.getPackageList() and not forceMode:
             return 2 # Package already exists
+
+        if replaces and replaces in pkm.getPackageList():
+            if forceMode or yesMode or depMode:
+                choice = "y"
+            else:
+                choice = input("This package replaces the installed '{}'. Do you want to remove it and install this one? [Y/n]").lower()
+            if choice == "y":
+                pkm.removePackage(replaces)
+            else:
+                return 1 # Action canceled
 
         if ini.has_section("Files"):
             files = dict(ini["Files"])
