@@ -819,7 +819,7 @@ def generateAPI(module, user, sudoMode):
 
     file.changeDirectory = copy(changeDirectory)
     if KPARAM_USE_LIMITED_OPEN:
-        file.open = copy(limitedOpenFile) if not user.group.canSys == TrueValue() else copy(openFile)
+        file.open = copy(limitedOpenFile) if not user.group.canSys else copy(openFile)
     else:
         file.open = copy(openFile)
 
