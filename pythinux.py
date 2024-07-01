@@ -773,6 +773,13 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
         ]:
             if filename.startswith(directory):
                 return True
+        for file in [
+            "/config/users.ini",
+            "/config/groups.ini",
+            "/config/pkmdata.ini",
+        ]:
+            if file in filename:
+                return False
 
     if isDirValid(filename, user):
         return open(evalDir(filename, user), mode, **kwargs)
