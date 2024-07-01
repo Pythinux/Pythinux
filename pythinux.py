@@ -759,6 +759,28 @@ def addPythinuxModule(module, shared_objects, user):
     module.pythinux = pythinux
     return module
 
+def limitedOpenFile(filename, user, mode="r", **kwargs):
+    """
+    A restricted variant of file.open() that resticts access to certain files and folders.
+    """
+    def isDirValid(filename, user):
+        for directory in [
+            "/share",
+            "/tmp",
+            "/config",
+            "~",
+            "/home/{}".format(user.username),
+        ]:
+            if filename.startswith(directory):
+                return True
+
+    if isDirValid(filename, user):
+        return open(evalDir(filename, user), mode, **kwargs)
+    else:
+        raise PythinuxError(
+            "Cannot open file: file in restricted directory: {}".format(filename)
+        )
+
 
 def generateAPI(module, user, sudoMode):
     """
@@ -771,24 +793,7 @@ def generateAPI(module, user, sudoMode):
         """
         return open(evalDir(filename, user), mode, **kwargs)
 
-    def limitedOpenFile(filename, user, mode="r", **kwargs):
-        def isDirValid(filename, user):
-            for directory in [
-                "/share",
-                "/tmp",
-                "/config",
-                "~",
-                "/home/{}".format(user.username),
-            ]:
-                if filename.startswith(directory):
-                    return True
 
-        if isDirValid(filename, user):
-            return open(evalDir(filename, user), mode, **kwargs)
-        else:
-            raise PythinuxError(
-                "Cannot open file: file in restricted directory: {}".format(filename)
-            )
 
     def isUnix():
         return unixMode
