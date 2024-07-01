@@ -50,7 +50,6 @@ KPARAM_DISABLE_CLS = False # If true, the cls() function is disabled system-wide
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
 KPARAM_DEPRECATE_OPEN = True # If True, open() raises a DeprecationWarning
 
-
 with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
 
@@ -772,7 +771,7 @@ def generateAPI(module, user, sudoMode):
         """
         return open(evalDir(filename, user), mode, **kwargs)
 
-    def limitedOpenFile(filename, user, mode="4", **kwargs):
+    def limitedOpenFile(filename, user, mode="r", **kwargs):
         def isDirValid(filename, user):
             for directory in [
                 "/share",
