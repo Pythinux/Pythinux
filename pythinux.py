@@ -44,7 +44,8 @@ KPARAM_INT_ARTIFICIAL_DECRYPT_TIME = 0.5 # The amount of time KPARAM_ARTIFICIAL_
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
 KPARAM_DEBUGGING_VERIFYHASH = False # Display a message every time verifyHash() is called
-KPARAM_DISABLE_CLS = False # If true, the cls() function is disabled system-wide
+KPARAM_DISABLE_CLS = True # If true, the cls() function is disabled system-wide
+KPARAM_DEBUGGING_LIMITED_OPEN = True # If true, limitedOpenFile() will print values of all files passed to it
 
 ## Feature testing
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
@@ -760,6 +761,8 @@ def addPythinuxModule(module, shared_objects, user):
     return module
 
 def limitedOpenFile(filename, user, mode="r", **kwargs):
+    if KPARAM_DEBUGGING_LIMITED_OPEN:
+        print(filename)
     """
     A restricted variant of file.open() that resticts access to certain files and folders.
     """
@@ -785,7 +788,7 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
         return open(evalDir(filename, user), mode, **kwargs)
     else:
         raise PythinuxError(
-            "Cannot open file: file in restricted directory: {}".format(filename)
+            "Cannot open file in restricted directory: {}".format(filename)
         )
 
 
@@ -816,7 +819,7 @@ def generateAPI(module, user, sudoMode):
 
     file.changeDirectory = copy(changeDirectory)
     if KPARAM_USE_LIMITED_OPEN:
-        file.open = copy(limitedOpenFile) if module.isRoot == TrueValue() else copy(openFile)
+        file.open = copy(limitedOpenFile) if not user.group.canSys == TrueValue() else copy(openFile)
     else:
         file.open = copy(openFile)
 
@@ -892,7 +895,7 @@ def loadProgramBase(
     hlib_directory = evalDir("/lib_high", user)
     syslib_directory = evalDir("/system_lib", user)
 
-    directories = [system_directory, lsystem_directory, app_directory]
+    directories = [lsystem_directory, app_directory]
     if user.group.canAppHigh or sudoMode:
         directories.append(system_directory)
         directories.append(happ_directory)

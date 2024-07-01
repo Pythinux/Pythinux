@@ -29,8 +29,7 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
 
 def init(user: User):
     fileName = "~/shellrc.xx"
-    script = file.evalDir(fileName, user)
-    runScript(user, script)
+    runScript(user, fileName)
     file.changeDirectory("~", user)
 
 def terminal(user: User, lastCommand=""):
