@@ -17,6 +17,7 @@ from io import StringIO
 from getpass import getpass
 import warnings
 import configparser
+import time
 
 try:
     import pty
@@ -33,10 +34,19 @@ EVALHIST = []
 
 # Kernel parameters - designed to be edited with a text editor
 
+## Security
 KPARAM_USE_MODULE_WRAPPER = True # Fix for PSA-0004
 KPARAM_ESCALATION_PROTECTION = True # Protects against privilege escalation
+KPARAM_ARTIFICIAL_DECRYPT_TIME = False # If True, verifyHash() will wait a set amount of seconds before trying to decrypt
+KPARAM_INT_ARTIFICIAL_DECRYPT_TIME = 0.5 # The amount of time KPARAM_ARTIFICIAL_DECRYPT_TIME waits for
+
+## Debugging
 KPARAM_DEBUGGING_VERIFYUSER = False # Shows debugging info for verifyUser()
 KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() expects (very messy output)
+KPARAM_DEBUGGING_VERIFYHASH = False # Display a message every time verifyHash() is called
+KPARAM_DISABLE_CLS = False # If true, the cls() function is disabled system-wide
+
+## Feature testing
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
 KPARAM_DEPRECATE_OPEN = True # If True, open() raises a DeprecationWarning
 
@@ -107,6 +117,10 @@ def verifyUser(user):
     """
     Returns True if the user is not a fake instance of User.
     """
+    
+    if KPARAM_ARTIFICIAL_DECRYPT_TIME:
+        time.sleep(KPARAM_INT_ARTIFICIAL_DECRYPT_TIME)
+
     expectedUser = loadUserList().byName(user.username)
     if not expectedUser:
         if KPARAM_DEBUGGING_VERIFYUSER:
@@ -558,6 +572,8 @@ def verifyHash(plaintext, saltedHashString):
         saltedHashString: a hash generated using hashString()
     Returns a boolean depending on whether or not the two match.
     """
+    if KPARAM_DEBUGGING_VERIFYHASH:
+        print("[debug] Called verifyHash()")
     salt = saltedHashString[-32:]
     hashed_plaintext = hashString(plaintext, salt)
     return hashed_plaintext == saltedHashString
@@ -749,7 +765,7 @@ def generateAPI(module, user, sudoMode):
     """
     Exposes Pythinux 3.x API calls to a module.
     """
-
+    
     def openFile(filename, user, mode="r", **kwargs):
         """
         Custom open() operation.
@@ -796,7 +812,6 @@ def generateAPI(module, user, sudoMode):
     ## Attach to module
     module.shell = shell
     module.file = file
-
 
 class CurrentGroup(Group):
     def __init__(self, group):
@@ -1131,6 +1146,8 @@ def cls():
     Clears the terminal screen.
     Works for both Windows and Unix-like systems, so basically everything.
     """
+    if KPARAM_DISABLE_CLS:
+        return
     res = platform.uname()
     os.system("cls" if res[0] == "Windows" else "clear")
 
