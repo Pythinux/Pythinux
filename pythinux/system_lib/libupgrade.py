@@ -23,6 +23,7 @@ def checkForNewVersions():
     return [x for x in ini.sections() if libsemver.compare(VERSION, x) == -1], ini
 
 def installUpgrades():
+    print("Checking for updates...")
     upgrades, ini = checkForNewVersions()
     if not upgrades:
         print("Your system is up-to-date.")
@@ -30,9 +31,11 @@ def installUpgrades():
     i = 1
     clearTemp(currentUser)
     for upgrade in upgrades:
+        print("Installing {}...".format(upgrade))
         url = ini.get(upgrade, "url")
         downloadFile(url, "/tmp/update.puf4")
         with zipfile.ZipFile(file.evalDir("/tmp/update.puf4", currentUser)) as zf:
             os.chdir(file.evalDir("/", currentUser))
             os.chdir("..")
             zf.extractall()
+    print("Success! Restart Pythinux for all changes to take effect.")
