@@ -118,8 +118,6 @@ def verifyUser(user):
     Returns True if the user is not a fake instance of User.
     """
     
-    if KPARAM_ARTIFICIAL_DECRYPT_TIME:
-        time.sleep(KPARAM_INT_ARTIFICIAL_DECRYPT_TIME)
 
     expectedUser = loadUserList().byName(user.username)
     if not expectedUser:
@@ -572,6 +570,10 @@ def verifyHash(plaintext, saltedHashString):
         saltedHashString: a hash generated using hashString()
     Returns a boolean depending on whether or not the two match.
     """
+    if KPARAM_ARTIFICIAL_DECRYPT_TIME:
+        time.sleep(KPARAM_INT_ARTIFICIAL_DECRYPT_TIME)
+
+
     if KPARAM_DEBUGGING_VERIFYHASH:
         print("[debug] Called verifyHash()")
     salt = saltedHashString[-32:]
