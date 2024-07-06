@@ -581,19 +581,6 @@ def verifyHash(plaintext, saltedHashString):
     return hashed_plaintext == saltedHashString
 
 
-def sha256(string, salt=None):
-    """
-    Performs a SHA256 og a string.
-    Arguments:
-        (str) string: string to be parsed
-        (bytes-like) salt: optional salt, should be output of os.urandom().
-    """
-    if string:
-        return hashString(string, salt)
-    else:
-        return
-
-
 def div(returnMode=False):
     """
     Prints 20 hyphen/dash symbols.
