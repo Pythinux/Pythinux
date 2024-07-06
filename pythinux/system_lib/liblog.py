@@ -13,9 +13,9 @@ class Log:
         self.save()
     def load(self):
         if os.path.isfile(file.evalDir(self.filename, currentUser)):
-            with open(file.evalDir(self.filename, currentUser)) as f:
+            with file.open(self.filename, currentUser) as f:
                 self.logs = f.read().split("\n")
     def save(self):
-        with open(file.evalDir(self.filename, currentUser), "w") as f:
+        with file.open(self.filename, currentUser, "w") as f:
             f.write("\n".join(self.logs))
 

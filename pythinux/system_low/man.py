@@ -15,12 +15,12 @@ def main(args):
             manual = "man/" + " ".join(args)
         else:
             manual = "man/man"
-        if os.path.isfile(manual):
-            with open(manual) as f:
+        try:
+            with file.open(manual) as f:
                 cls()
                 div()
                 print(f.read())
                 br()
                 cls()
-        else:
+        except FileNotFoundError:
             print("ERROR: Manual `{}` is not valid.".format(manual))
