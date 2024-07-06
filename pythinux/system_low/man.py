@@ -16,7 +16,7 @@ def main(args):
         else:
             manual = "man/man"
         try:
-            with file.open(manual) as f:
+            with file.open(manual, currentUser) as f:
                 cls()
                 div()
                 print(f.read())
