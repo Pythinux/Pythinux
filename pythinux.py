@@ -21,7 +21,6 @@ import time
 
 try:
     import pty
-
     unixMode = True
 except:
     unixMode = False
@@ -117,8 +116,7 @@ def verifyUser(user):
     """
     Returns True if the user is not a fake instance of User.
     """
-    
-
+    # 'Equal To' Check 
     expectedUser = loadUserList().byName(user.username)
     if not expectedUser:
         if KPARAM_DEBUGGING_VERIFYUSER:
@@ -128,6 +126,8 @@ def verifyUser(user):
     if KPARAM_DEBUGGING_VERIFYUSER_EXTENDED:
         print("DEBUG: Detected group '{}'".format(expectedUser.group.name))
 
+    
+    # Permissions Check
     if (
         user.group.canApp != expectedUser.group.canApp
         or user.group.canAppHigh != expectedUser.group.canAppHigh
@@ -137,7 +137,7 @@ def verifyUser(user):
         if KPARAM_DEBUGGING_VERIFYUSER:
             print("DEBUG: Group check failed")
         return False
-
+    # Memory address check
     return id(type(user)) in [id(User), id(CurrentUser)]
 
 
