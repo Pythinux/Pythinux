@@ -3,7 +3,11 @@ import traceback
 var = load_program("var", currentUser, libMode=True)
 pwd = load_program("pwd", currentUser, libMode=True)
 
-def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):    
+def fixDir():
+    return
+    os.chdir(pwd.pwd())
+
+def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
     if "!!" in cmd:
         cmd = cmd.replace("!!", lastCommand)
@@ -23,6 +27,8 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     else:
         try:
             runCommand(user, cmd, shell=shell)
+        except SystemExit:
+            pass
         except Exception as e:
             print(traceback.format_exc())
 
@@ -39,7 +45,9 @@ def terminal(user: User, lastCommand=""):
         print()
         terminal(user, lastCommand)
     try:
+        fixDir()
         output = run(user, cmd, lastCommand)
+        fixDir()
         if output == "EXIT_STATE":
             return
     except KeyboardInterrupt:
