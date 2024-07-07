@@ -1,6 +1,6 @@
 import os
 
-DIRS = ["system", "system_low", "app", "app_high", "system_high"]
+DIRS = ["system", "system_low", "app", "app_high", "system_high", "lib", "system_lib", "lib_high"]
 
 def which(args):
     foundFiles = []
