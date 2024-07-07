@@ -3,9 +3,8 @@ import traceback
 var = load_program("var", currentUser, libMode=True)
 pwd = load_program("pwd", currentUser, libMode=True)
 
-def fixDir():
-    return
-    os.chdir(pwd.pwd())
+def fixDir(user):
+    os.chdir(file.evalDir(pwd.pwd(), user))
 
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
@@ -45,9 +44,9 @@ def terminal(user: User, lastCommand=""):
         print()
         terminal(user, lastCommand)
     try:
-        fixDir()
+        fixDir(user)
         output = run(user, cmd, lastCommand)
-        fixDir()
+        fixDir(user)
         if output == "EXIT_STATE":
             return
     except KeyboardInterrupt:

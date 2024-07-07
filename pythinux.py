@@ -49,6 +49,7 @@ KPARAM_DEBUGGING_LIMITED_OPEN = False # If true, limitedOpenFile() will print va
 ## Feature testing
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
 KPARAM_DEPRECATE_OPEN = True # If True, open() raises a DeprecationWarning
+KPARAM_REAL_DIRECTORY = False # If enabled, Real Directory Support is enabled
 
 with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
@@ -1023,6 +1024,8 @@ def isProgramReal(program_name, user, sudoMode, libMode):
 
 
 def changeDirectory(directory: str, user: User):
+    if not KPARAM_REAL_DIRECTORY:
+        return
     CURRDIR = directory
     os.chdir(evalDir(directory, user))
 
