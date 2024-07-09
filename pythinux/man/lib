@@ -4,19 +4,21 @@ DESCRIPTION
     Libraries are pieces of code that can be imported and called by programs. This manpage serves as a list of the libraries built into Pythinux.
     Do note that some user-facing programs (such as AREA) may have libraries as well, and are not listed here. To find out if a built-in program can be used as a library, open the manpage and check if there is a LIBRARY section.
 LIST
-    libsemver
-        Deals with semantic version strings.
-    liblog
-        Create basic text logs programatically
+    libargs
+        Makes using argparse much easier.
     libconfig
         Helper library for configparser.
+    liblog
+        Create basic text logs programatically
+    libsemver
+        Deals with semantic version strings.
     libtime
         Display the time in a standardised format.
 EXTERNAL
-    There are loads of external libraries, including some official ones (see `lib.2`). 
+    There are plenty of external libraries you can use, including some official ones. 
     To install an external libary:
 
-    $ pkm install <libary>
+    $ pkm install <library>
 
     Generally, package names for libraries start with 'lib', and can be searched for like so:
 
@@ -25,5 +27,3 @@ EXTERNAL
     These libraries generally do not have documentation, but a simple look at the source code (using `viewsrc`) can help.
 SEE ALSO
     import: how to import libaries
-    lib.2: list of external but official libraries
-    libsemver: deals with semantic version strings
