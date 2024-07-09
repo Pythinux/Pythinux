@@ -49,7 +49,7 @@ KPARAM_DEBUGGING_LIMITED_OPEN = False # If true, limitedOpenFile() will print va
 ## Feature testing
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
 KPARAM_DEPRECATE_OPEN = True # If True, open() raises a DeprecationWarning
-KPARAM_REAL_DIRECTORY = False # If enabled, Real Directory Support is enabled
+KPARAM_REAL_DIRECTORY = True # If enabled, Real Directory Support is enabled
 
 with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
@@ -805,9 +805,9 @@ def generateAPI(module, user, sudoMode):
     ## Add functions to modules
     shell.isUnix = copy(isUnix)
     file.evalDir = copy(evalDir)
-    file.root = lambda: os.chdir(ROOTDIR)
-
+    file.root = lambda: changeDirectory("/", user)
     file.changeDirectory = copy(changeDirectory)
+
     if KPARAM_USE_LIMITED_OPEN:
         file.open = copy(limitedOpenFile) if not user.group.canSys else copy(openFile)
     else:
