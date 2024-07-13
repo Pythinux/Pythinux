@@ -45,6 +45,7 @@ KPARAM_DEBUGGING_VERIFYUSER_EXTENDED = False # Shows what group verifyUser() exp
 KPARAM_DEBUGGING_VERIFYHASH = False # Display a message every time verifyHash() is called
 KPARAM_DISABLE_CLS = False # If true, the cls() function is disabled system-wide
 KPARAM_DEBUGGING_LIMITED_OPEN = False # If true, limitedOpenFile() will print values of all files passed to it
+KPARAM_DEBUGGING_LOAD_PROGRAM = False # If True, debug info will show every time loadProgramBasBasee() is called
 
 ## Feature testing
 KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
@@ -929,6 +930,10 @@ def loadProgramBase(
     assertTrue(isinstance(isolatedMode, bool), "Not a boolean")
     assertTrue(isinstance(libMode, bool), "Not a boolean")
     assertTrue(isinstance(shell, str), "Not a string")
+
+    if KPARAM_DEBUGGING_LOAD_PROGRAM:
+        print("load_program(prog='{}', user='{}', sudoMode={}, shell='{}', isolatedMode={}, libMode={})".format(
+            program_name_with_args, user.username, sudoMode, sudoMode, shell, isolatedMode, libMode))
 
     current_directory = evalDir("/", user)
     system_directory = evalDir("/system", user)
