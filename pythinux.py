@@ -55,6 +55,13 @@ with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
 
 
+def assertTrue(condition, message, error=AssertionError):
+    """
+    Checks if `condition` is True. If it isn't, it raises an AssertionError.
+    """
+    if not condition:
+        raise error(message)
+
 class PythinuxError(Exception):
     """
     Generic exception raised by the kernel (and system programs) when an issue occurs.
@@ -117,6 +124,7 @@ def verifyUser(user):
     """
     Returns True if the user is not a fake instance of User.
     """
+    assertTrue(isinstance(user, User), "Did not specify an instance of User", PythinuxError)
     # 'Equal To' Check 
     expectedUser = loadUserList().byName(user.username)
     if not expectedUser:
@@ -162,8 +170,7 @@ def silent(function):
     Args:
         function: a callable object.
     """
-    if not callable(function):
-        raise PythinuxError("silent(): function is not callable")
+    assertTrue(callable(function), "silent(): Function is not callable")
     stdout = sys.stdout
     sys.stdout = None
     x = function()
@@ -198,8 +205,8 @@ def joinIterable(string, iterable):
 
 
 def attachDebugger(globals):
+    assertTrue(isinstance(globals, dict), "Globals is not a dictionary")
     import code
-
     code.InteractiveConsole(locals=globals)
 
 
@@ -208,6 +215,7 @@ def doCalc(text):
     A fully safe (but very restricted) version of eval().
     Undergoes HEAVY sanitisation before execution.
     """
+    assertTrue(isinstance(text, str), "Cannot perform calculations on a non-integer")
     allowed_nodes = (ast.BinOp, ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Num)
     allowed_operators = (ast.Add, ast.Sub, ast.Mult, ast.Div)
     allowed_names = {"math"}
@@ -298,6 +306,7 @@ class LOGOFFEVENT:
 
 
 def hashString(plaintext, salt=None):
+    assertTrue(isinstance(plaintext, str), "Cannot hash a non-string")
     """
     Hashing algorithm used by Pythinux.
     Args:
@@ -351,6 +360,12 @@ class Group(Base):
             apps in the "system" directory.
         canSudo: Boolean. Determines whether or not the user can use `sudo`.
         """
+        assertTrue(isinstance(name, str), "Group name must be a string")
+        assertTrue(isinstance(canApp, bool), "Group attributes must be boolean")
+        assertTrue(isinstance(canAppHigh, bool), "Group attributes must be boolean")
+        assertTrue(isinstance(canSys, bool), "Group attributes must be boolean")
+        assertTrue(isinstance(canSudo, bool), "Group attributes must be boolean")
+        assertTrue(isinstance(locked, bool), "Group attributes must be boolean")
         self.name = name.lower()
         self.canApp = canApp
         self.canAppHigh = canAppHigh
@@ -389,10 +404,8 @@ class GroupList(Base):
         Args:
         * group: a Group instance.
         """
-        if isinstance(group, Group):
-            self.groups.append(group)
-        else:
-            raise PythinuxError("Cannot add a non-Group object a GroupList.")
+        assertTrue(isinstance(group, Group), "Can only add a Group object to the group list")
+        self.groups.append(group)
 
     def remove(self, group):
         if group.locked:
@@ -410,6 +423,7 @@ class GroupList(Base):
         """
         Returns the first instance of a group based on its name.
         """
+        assertTrue(isinstance(name, str), "Group names can only be strings")
         for item in self.groups:
             if item.name == name:
                 return item
@@ -436,6 +450,11 @@ class User(Base):
                 (the hash obviously still exists. pydoc represents the
                 output of hashString("") as the default password.)
         """
+        assertTrue(isinstance(group, Group), "User's group must be a Group object")
+        assertTrue(isinstance(username, str), "User's username must be a string")
+        assertTrue(isinstance(password, str), "User's password must be a string")
+        assertTrue(isinstance(locked, bool), "User attributes must be boolean")
+        assertTrue(isinstance(disabled, bool), "User attributes must be boolean")
         self.group = group
         self.username = username
         self.password = password
@@ -494,28 +513,29 @@ class UserList(Base):
         """
         Adds a user to the user list.
         """
-        if isinstance(user, User):
-            self.users.append(user)
-        else:
-            raise PythinuxError("Invalid User to add to userlist.")
+        assertTrue(isinstance(user, User), "Can only add User objects to the user list")
+        self.users.append(user)
 
     def byName(self, name):
         """
         Returns the first instance of
         a user in the userlist with the same name.
         """
+        assertTrue(isinstance(name, str), "Usernames can only be strings")
         for item in self.users:
             if name == item.username:
                 return item
         raise PythinuxError("Invalid user by name.")
 
     def remove(self, user):
+        assertTrue(isinstance(user, User), "Can only remove User objects from the user list")
         if user.locked:
             raise PythinuxError("Cannot remove locked user")
         self.users.remove(user)
 
     def removeByName(self, name):
         did = False
+        assertTrue(isinstance(name, str), "Usernames can only be strings")
         for item in self.users:
             if item.username == name:
                 self.remove(item)
@@ -571,12 +591,14 @@ def verifyHash(plaintext, saltedHashString):
         saltedHashString: a hash generated using hashString()
     Returns a boolean depending on whether or not the two match.
     """
+    assertTrue(isinstance(plaintext, str), "Can only encode and decode strings")
+    assertTrue(isinstance(saltedHashString, str), "Can only encode and decode strings")
     if KPARAM_ARTIFICIAL_DECRYPT_TIME:
         time.sleep(KPARAM_INT_ARTIFICIAL_DECRYPT_TIME)
 
-
     if KPARAM_DEBUGGING_VERIFYHASH:
         print("[debug] Called verifyHash()")
+
     salt = saltedHashString[-32:]
     hashed_plaintext = hashString(plaintext, salt)
     return hashed_plaintext == saltedHashString
@@ -621,7 +643,7 @@ def parseInput(user, string, shell):
     return string
 
 
-def main(user: User, prompt: str, sudoMode=False, shell="terminal", doNotExecute=False):
+def main(user: User, prompt: str, sudoMode=False, shell="shell", doNotExecute=False):
     """
     Main function. Used to execute commands.
     Args:
@@ -630,6 +652,11 @@ def main(user: User, prompt: str, sudoMode=False, shell="terminal", doNotExecute
         (bool) sudoMode: Passed to load_program().
         (str) shell: the name of the terminal that executes the command.
     """
+    assertTrue(isinstance(user, User), "Can only call commands as a user")
+    assertTrue(isinstance(prompt, str), "Commands must be strings")
+    assertTrue(isinstance(sudoMode, bool), "sudoMode must be a boolean value")
+    assertTrue(isinstance(shell, str), "Shell name must be a string")
+    assertTrue(isinstance(doNotExecute, bool), "doNotExecute must be a boolean value")
     try:
         if prompt == "":
             return
@@ -653,6 +680,7 @@ def saveAliases(aliases):
     Args:
         aliases: a list grabbed from loadAliases().
     """
+    assertTrue(isinstance(aliases, dict), "Aliases can only be a dict of strings")
     with open("config/alias.cfg", "wb") as f:
         pickle.dump(aliases, f)
 
@@ -682,6 +710,9 @@ def sudo(user, maxAttempts=10, incorrectAttempts=0):
     Returns True if the user types their password,
     and False if they fail after 10 tries.
     """
+    assertTrue(isinstance(user, User), "Not a User object")
+    assertTrue(isinstance(maxAttempts, int), "Not an integer")
+    assertTrue(isinstance(incorrectAttempts, int), "Not an integer")
     if incorrectAttempts >= maxAttempts:
         return False
     p = getpass(f"[sudo] password for {user.username}: ")
@@ -696,6 +727,7 @@ def splitString(string):
     Used by main() for turning a string into a list of arguments.
     """
     # Find substrings enclosed in single quotes
+    assertTrue(isinstance(string, str), "Not a string")
     pattern = r"'([^']*)'"
     matches = re.findall(pattern, string)
 
@@ -730,6 +762,7 @@ def exposeAllVar(module):
     This function is unused.
     Adds the contents of globals() to a module.
     """
+    assertTrue(isinstance(module, type(__builtins__)), "Not a module")
     # Get the global namespace of the current program
     program_globals = globals()
 
@@ -745,6 +778,9 @@ def addPythinuxModule(module, shared_objects, user):
     Adds the Pythinux module to a module.
     Internal function only, please ignore.
     """
+    assertTrue(isinstance(module, type(__builtins__)), "Not a module")
+    assertTrue(isinstance(shared_objects, dict), "Not a dict")
+    assertTrue(isinstance(user, User), "Not a user object")
     pythinux = createModule("pythinux")
     exposeObjects(pythinux, shared_objects)
     module.pythinux = pythinux
@@ -756,6 +792,9 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
     """
     A restricted variant of file.open() that resticts access to certain files and folders.
     """
+    assertTrue(isinstance(filename, str), "Filename must be a string")
+    assertTrue(isinstance(user, User), "User object must be specified for user")
+    assertTrue(isinstance(mode, str), "Mode must be a string")
     def isDirValid(filename, user):
         for directory in [
             "/share",
@@ -787,10 +826,16 @@ def generateAPI(module, user, sudoMode):
     Exposes Pythinux 3.x API calls to a module.
     """
     
+    assertTrue(isinstance(module, type(__builtins__)), "Not a module")
+    assertTrue(isinstance(user, User), "Not a user")
+    assertTrue(isinstance(sudoMode, bool), "Not a boolean")
     def openFile(filename, user, mode="r", **kwargs):
         """
         Custom open() operation.
         """
+        assertTrue(isinstance(filename, str), "Not a string")
+        assertTrue(isinstance(user, User), "Not a user")
+        assertTrue(isinstance(mode, str), "Not a string")
         return open(evalDir(filename, user), mode, **kwargs)
 
 
@@ -819,6 +864,7 @@ def generateAPI(module, user, sudoMode):
 
 class CurrentGroup(Group):
     def __init__(self, group):
+        assertTrue(isinstance(group, Group), "Not a group")
         self.name = copy(group.name)
         self.canApp = bool(group.canApp)
         self.canAppHigh = bool(group.canAppHigh)
@@ -829,12 +875,14 @@ class CurrentGroup(Group):
 
 class CurrentUser(User):
     def __init__(self, user):
+        assertTrue(isinstance(user, User), "Not a user")
         self.username = copy(user.username)
         self.password = copy(user.password)
         self.group = CurrentGroup(user.group)
 
 
 def isUserValid(user):
+    assertTrue(isinstance(user, User), "Not a user")
     for u in userList:
         if user == u:
             return True
@@ -875,6 +923,12 @@ def loadProgramBase(
 
     if not verifyUser(user) and KPARAM_ESCALATION_PROTECTION:
         raise PythinuxError("The User instance provided is corrupt. Refusing to execute.")
+    
+    assertTrue(isinstance(user, User), "Not a user object")
+    assertTrue(isinstance(sudoMode, bool), "Not a boolean")
+    assertTrue(isinstance(isolatedMode, bool), "Not a boolean")
+    assertTrue(isinstance(libMode, bool), "Not a boolean")
+    assertTrue(isinstance(shell, str), "Not a string")
 
     current_directory = evalDir("/", user)
     system_directory = evalDir("/system", user)
@@ -1020,10 +1074,17 @@ def loadProgramBase(
 
 
 def isProgramReal(program_name, user, sudoMode, libMode):
+    assertTrue(isinstance(program_name, str), "Not a string")
+    assertTrue(isinstance(user, User), "Not a user object")
+    assertTrue(isinstance(sudoMode, bool), "Not a boolean")
+    assertTrue(isinstance(libMode, bool), "Not a boolean")
+
     return program_name in list_loadable_programs(user, sudoMode, libMode)
 
 
 def changeDirectory(directory: str, user: User):
+    assertTrue(isinstance(directory, str), "Not a string")
+    assertTrue(isinstance(user, User), "Not a user object")
     if not KPARAM_REAL_DIRECTORY:
         return
     CURRDIR = directory
@@ -1042,6 +1103,8 @@ def evalDir(directory: str, user: User):
     Also ensures no directory above the root directory is selected, ensuring no
     VM escapes occur.
     """
+    assertTrue(isinstance(directory, str), "Not a string")
+    assertTrue(isinstance(user, User), "Not a user object")
     if directory in EVALHIST:
         return directory
     directory = directory.replace("\\", "/")
@@ -1074,18 +1137,18 @@ def load_program(
     user,
     sudoMode=False,
     shell="terminal",
-    debugMode=False,
     __name__=None,
     isolatedMode=False,
     libMode=False,
 ):
+    assertTrue(isinstance(user, User), "Not a user object")
+    assertTrue(isinstance(sudoMode, bool), "Not a boolean")
+    assertTrue(isinstance(isolatedMode, bool), "Not a boolean")
+    assertTrue(isinstance(libMode, bool), "Not a boolean")
+    assertTrue(isinstance(shell, str), "Not a string")
+
     if program_name_with_args == "":
         return
-    if debugMode:
-        print(
-            "### Load Arguments:",
-            [program_name_with_args, user, sudoMode, shell, __name__],
-        )
 
     program_name = program_name_with_args.split(" ")[0]
     if not isProgramReal(program_name, user, sudoMode, libMode):
@@ -1101,8 +1164,6 @@ def load_program(
         libMode,
     )
     if module:
-        if debugMode:
-            print("### Arguments:", module.args)
         module_spec.loader.exec_module(module)
         if not libMode:
             if not "main" in dir(module):
@@ -1117,6 +1178,7 @@ def clearTemp(user):
     Clears the contents of the tmp/ directory in the
     Pythinux install directory.
     """
+    assertTrue(isinstance(user, User), "Not a user object")
     try:
         shutil.rmtree(evalDir("/tmp", user))
     except Exception:
@@ -1132,6 +1194,7 @@ def saveAL(username):
     Makes username the autologin username
     Autologin allows for only the password to be entered.
     """
+    assertTrue(isinstance(username, str), "Usernames must be strings")
     with open("config/autologin.cfg", "w") as f:
         f.write(username)
 
@@ -1165,6 +1228,7 @@ def run_script(f, user):
         f: a file-type object to be read. Must be in 'r' mode.
         user: a User object, the actual user to execute the script.
     """
+    warnings.warn("run_script() will be removed in Pythinux 3.2 - use shell.run_script() instead", DeprecationWarning)
     for item in f.read().split("\n"):
         main(user, item, shell="script")
 
@@ -1175,6 +1239,10 @@ def list_loadable_programs(user, sudoMode=False, libMode=False):
     Note: if sudoMode is True, the app and system
     directories are always authorised.
     """
+    assertTrue(isinstance(user, User), "Not a user object")
+    assertTrue(isinstance(sudoMode, bool), "Not a boolean")
+    assertTrue(isinstance(libMode, bool), "Not a boolean")
+
     current_directory = evalDir("/", user)
     system_directory = evalDir("/system", user)
     lsystem_directory = evalDir("/system_low", user)
@@ -1216,6 +1284,7 @@ def init(user):
     """
     Init function.
     """
+    assertTrue(isinstance(user, User), "Not a user object")
     main(user, "cls")
     shell = load_program("shell", user, libMode=True)
     shell.init(user)
@@ -1227,6 +1296,7 @@ def saveUserList(userList):
     Saves a userlist to the file system.
     userlist: a userlist (returned by loadUserList()).
     """
+    assertTrue(isinstance(userList, UserList), "Not a UserList object")
     if isinstance(userList, UserList):
         config = userList.serialise()
         with open(
@@ -1319,6 +1389,9 @@ def removeUser(userlist, user):
     Returns:
         userlist: a userlist that can be passed to saveUserList().
     """
+    assertTrue(isinstance(userList, UserList), "Not a UserList object")
+    assertTrue(isinstance(user, User), "Not a User object")
+
     try:
         shutil.rmtree(f"home/{user.username}")
     except Exception:
@@ -1336,6 +1409,9 @@ def createUser(userlist, user):
     Returns:
         userlist: a userlist that can be passed to saveUserList().
     """
+    assertTrue(isinstance(userList, UserList), "Not a UserList object")
+    assertTrue(isinstance(user, User), "Not a User object")
+
     if not isinstance(userlist, UserList) or not isinstance(user, User):
         raise TypeError
     for item in userlist.list():
@@ -1361,6 +1437,9 @@ def mergeDict(a, b):
     Returns:
         a with the contents of b appended to it.
     """
+    assertTrue(isinstance(a, dict), "Not a dictionary")
+    assertTrue(isinstance(b, dict), "Not a dictionary")
+
     result = a.copy()
 
     for key, value in b.items():
@@ -1414,7 +1493,6 @@ def pprint_dict(dic):
     Takes a dictionary and returns it as a string with indentation
     """
     import json
-
     return json.dumps(dic, indent=4)
 
 
