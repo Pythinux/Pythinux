@@ -36,6 +36,9 @@ def downloadFile(url, fileName):
     """
     Download a remote HTTP resource and save it to a file.
     """
+    assertTrue(isinstance(url, str), "URL must be a string")
+    assertTrue(isinstance(fileName, str), "Filename must be a string")
+
     urllib.request.urlretrieve(url, file.evalDir(fileName, currentUser))
 
 def sectionToDict(config, section):
@@ -49,6 +52,9 @@ def sectionToDict(config, section):
     Returns:
     - dict containing the key-value pairs of the section
     """
+    assertTrue(isinstance(config, configparser.ConfigParser), "Not a valid ConfigParser")
+    assertTrue(isinstance(section, str), "Section name must be a string")
+
     dict_section = {}
     options = config.options(section)
     for option in options:
@@ -70,6 +76,9 @@ def getRemotePackageData(offline=True, silent=False):
     """
     This function returns package data as a dict in the format <package name>: <ConfigParser object>
     """
+    assertTrue(isinstance(offline, bool), "Boolean flag not a boolean")
+    assertTrue(isinstance(silent, bool), "Boolean flag not a boolean")
+
     repos = sectionToDict(config, "repos")
     packageData = configparser.ConfigParser()
     if offline:
@@ -120,6 +129,11 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
         depMode: passed to installd.installd()
         forceMode: passed to installd.installd()
     """
+    assertTrue(isinstance(package, str), "Package name must be a string")
+    assertTrue(isinstance(yesMode, bool), "Invalid boolean flag")
+    assertTrue(isinstance(depMode, bool), "Invalid boolean flag")
+    assertTrue(isinstance(forceMode, bool), "Invalid boolean flag")
+
     clearTemp(currentUser)
     isData = bool(getRemotePackageData().sections())
     data = getRemotePackageData(isData)
@@ -133,6 +147,11 @@ def installPackage(package, yesMode=False, depMode=False, forceMode=False):
         print("ERROR: Package not found.")
 
 def installPackageFromRepo(repo, package, yesMode=False, forceMode=False):
+    assertTrue(isinstance(repo, str), "Repo name must be a string")
+    assertTrue(isinstance(package, str), "Package name must be a string")
+    assertTrue(isinstance(yesMode, bool), "Invalid boolean flag")
+    assertTrue(isinstance(forceMode, bool), "Invalid boolean flag")
+
     downloadFile(config.get("repos", repo), file.evalDir("/tmp/pkmdata.ini", currentUser))
     conf = configparser.ConfigParser()
     conf.read(file.evalDir("/tmp/pkmdata.ini", currentUser))
@@ -148,6 +167,8 @@ def getDeps(pkg):
     """
     Returns a list of dependencies for a local package.
     """
+    assertTrue(isinstance(pkg, str), "Package name must be a string")
+
     config = configparser.ConfigParser()
     config.read(file.evalDir("/share/pkm/programs/{}".format(pkg), currentUser))
     if not config.has_section("Program"):
@@ -162,6 +183,8 @@ def removePackage(package, force=False):
     """
     Uninstall a package.
     """
+    assertTrue(isinstance(package, str), "Package name must be a string")
+    assertTrue(isinstance(force, bool), "Invalid boolean flag")
     if not package in getPackageList():
         print("ERROR: Invalid package.")
         return 1
@@ -203,6 +226,7 @@ def searchForPackages(term):
     Returns a list of REMOTE packages where the package name contains term.
     Returns a list of packages if term == 'ALL'.
     """
+    assertTrue(isinstance(term, str), "Search term must be a string")
     if term == "ALL":
         return getRemotePackageData(False,True).sections()
     else:
@@ -213,6 +237,8 @@ def dispInfo(ini, showInstalledState=False):
     Displays package info.
     ini is a configparser.ConfigParser object.
     """
+    assertTrue(isinstance(ini, configparser.ConfigParser), "Invalid config")
+    assertTrue(isinstance(showInstalledState, bool), "Invalid boolean flag")
     deps = ini.get("Programs", "dependencies", fallback="None")
     conflicts = ini.get("Program", "conflicts", fallback="")
     conflicts = conflicts if conflicts else "None"
@@ -233,6 +259,9 @@ def dispErrInfo(result, package, depMode=False):
     """
     Turns an error code into something more useful.
     """
+    assertTrue(isinstance(result, int), "Invalid integer")
+    assertTrue(isinstance(package, str), "Package name must be a string")
+    assertTrue(isinstance(depMode, bool), "Invalid boolean flag")
     if result == 1:
         return "ERROR: User action canceled."
     elif result == 0 and depMode:

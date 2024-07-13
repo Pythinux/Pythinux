@@ -15,6 +15,7 @@ class InstallError(Exception):
     pass
 
 def getScripts(ini):
+    assertTrue(isinstance(ini. configparser.ConfigParser), "Invalid config")
     scripts = []
     scripts.append(ini.get("Scripts", "Install", fallback=None))
     scripts.append(ini.get("Scripts", "Update", fallback=None))
@@ -22,6 +23,10 @@ def getScripts(ini):
     return [x for x in scripts if x]
 
 def installdBase(filename, yesMode=False, forceMode=False, depMode=False):
+    assertTrue(isinstance(filename, str), "Filename must be a string")
+    assertTrue(isinstance(yesMode, bool), "Invalid boolean flag")
+    assertTrue(isinstance(forceMode, bool), "Invalid boolean flag")
+    assertTrue(isinstance(depMode, bool), "Invalid boolean flag")
     with zipfile.ZipFile(filename) as z:
         z.extract("program.ini", file.evalDir("/tmp", currentUser))
 
@@ -149,8 +154,8 @@ def installdBase(filename, yesMode=False, forceMode=False, depMode=False):
             
     return 0
 
-def installd(filename, yesMode=False, forceMode=False, depMode=False):
-    return installdBase(filename, yesMode, forceMode, depMode)
+def installd(*args, **kwargs):
+    return installdBase(*args, **kwargs)
 
 def main(args):
     if args:
