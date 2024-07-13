@@ -55,12 +55,12 @@ with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
 
 
-def assertTrue(condition, message, error=AssertionError):
+def assertTrue(condition, message=None, error=AssertionError):
     """
     Checks if `condition` is True. If it isn't, it raises an AssertionError.
     """
     if not condition:
-        raise error(message)
+        raise error(message) if message else error
 
 class PythinuxError(Exception):
     """
