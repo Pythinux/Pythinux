@@ -4,9 +4,16 @@ var = load_program("var", currentUser, libMode=True)
 pwd = load_program("pwd", currentUser, libMode=True)
 
 def fixDir(user):
+    assertTrue(isinstance(user, User), "Not a user object")
+
     os.chdir(file.evalDir(pwd.pwd(), user))
 
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
+    assertTrue(isinstance(user, User), "Not a user object")
+    assertTrue(isinstance(cmd, str), "Command must be a string")
+    assertTrue(isinstance(lastCommand, str), "Command must be a string")
+    assertTrue(isinstance(shell, str), "Shell name must be a string")
+
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
     if "!!" in cmd:
         cmd = cmd.replace("!!", lastCommand)
@@ -33,11 +40,16 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
 
 
 def init(user: User):
+    assertTrue(isinstance(user, User), "Not a user object")
+
     fileName = "~/shellrc.xx"
     runScript(user, fileName)
     file.changeDirectory("~", user)
 
 def terminal(user: User, lastCommand=""):
+    assertTrue(isinstance(user, User), "Not a user object")
+    assertTrue(isinstance(lastCommand, str), "Command must be a string")
+
     try:
         cmd = input("[{}@{} {}] $".format(user.group.name, user.username, pwd.pwd()))
     except KeyboardInterrupt:
@@ -57,11 +69,15 @@ def terminal(user: User, lastCommand=""):
         terminal(user, str(cmd))
 
 def runScript(user: pythinux.User, filename):
+    assertTrue(isinstance(user, User), "Not a user object")
+    assertTrue(isinstance(filename, str), "File name must be a string")
+
     if not verifyUser(user):
         raise PythinuxError("User instance provided is not of the expected User class")
     with file.open(filename, user) as f:
         for cmd in [x for x in f.read().split("\n") if not x.startswith(";")]:
             run(user, cmd, "script")
+
 def main(args):
     if args:
         for arg in args:
