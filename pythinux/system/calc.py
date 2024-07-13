@@ -1,10 +1,12 @@
+libargs = load_program("libargs", currentUser, libMode=True)
+
+parser = libargs.ArgumentParser("calc", description="Performs arithmetic calculations")
+parser.add_argument("calculation", nargs="+", help="Caluclation to perform")
+
+def calc(calculation):
+    assertTrue(isinstance(calculation, str))
+    return doCalc(calculation)
+
 def main(args):
-    if args:
-        args = " ".join(args)
-        print(doCalc(args))
-    else:
-        div()
-        print("calc <text>")
-        div()
-        print("Performs an arithmetic calculation")
-        div()
+    args = parser.parse_args(args)
+    print(calc(" ".join(args.calculation)))
