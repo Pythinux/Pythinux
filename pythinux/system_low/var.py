@@ -5,7 +5,12 @@ class CopyError(ValueError):
     def __init__(self, message="var.copy(): Cannot copy invalid variable"):
         super().__init__(message)
 
+def isValidVar(val):
+    return type(val) in [str, int, bool]
+
 def get(var, fallback=""):
+    assertTrue(isinstance(var, str))
+    assertTrue(isValidVar(fallback))
     """
     Returns the value of value `var`. If it does not exist, returns `fallback`.
     """
@@ -16,6 +21,8 @@ def get(var, fallback=""):
         return fallback
 
 def getint(var, fallback=0):
+    assertTrue(isinstance(var, str))
+    assertTrue(isinstance(fallback, int))
     """
     Returns an integer from a variable. Falls back to `fallback` if the variable is invalid or not an integer.
     """
@@ -34,6 +41,8 @@ def getbool(var, fallback=True):
     Returns True if the value of `var` is either "true", "True", "yes", "Yes", or "1".
     Returns False for any other value, and fallback if `var` does not exist.
     """
+    assertTrue(isinstance(var, str))
+    assertTrue(isinstance(fallback, bool))
     vars = giveVars()
 
     try:
@@ -48,6 +57,10 @@ def set(var, val, fallback=""):
     """
     Sets variable `var` to `val`.
     """
+    assertTrue(isinstance(var, str))
+    assertTrue(isValidVar(val))
+    assertTrue(isValidVar(fallback))
+
     v = giveVars()
     v[var] = val
 
@@ -70,6 +83,7 @@ def rm(name):
     """
     Deletes a variable. Returns True if the value was removed.
     """
+    assertTrue(isinstance(name, str))
     removed = False
     var = giveVars()
     try:
@@ -83,6 +97,8 @@ def copy(from_var, to_var):
     """
     Copies the value of `from_var` to `to_var`. Raises a CopyError if `from_var` is an invalid variable name.
     """
+    assertTrue(isinstance(from_val, str))
+    assertTrue(isinstance(to_var, str))
     from_val = get(from_var, fallback=None)
     if not from_val:
         raise CopyError

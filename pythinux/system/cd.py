@@ -1,4 +1,5 @@
 def cd(directory):
+    assertTrue(isinstance(directory, str))
     file.changeDirectory(directory, currentUser)
 
 def main(args):

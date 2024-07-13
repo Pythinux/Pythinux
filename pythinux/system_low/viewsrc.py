@@ -4,6 +4,7 @@ def view(program):
     """
     Returns the source code of a named program as a string.
     """
+    assertTrue(isinstance(program, str))
     program = which.which([program])[0]
     with file.open(program, currentUser) as f:
         return f.read()

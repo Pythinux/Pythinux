@@ -1,4 +1,6 @@
 def add(command, user=None):
+    assertTrue(isinstance(command, str))
+    assertTrue(type(user) in [type(None), User])
     """
     Adds `command` to `~/shellrc.xx`.
     """

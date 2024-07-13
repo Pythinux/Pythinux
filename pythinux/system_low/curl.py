@@ -5,6 +5,8 @@ class CurlException(Exception):
     pass
 
 def curl(url, character_set="utf-8"):
+    assertTrue(isinstance(url, str))
+    assertTrue(isinstance(character_set, str))
     try:
         request = urllib.request.urlopen(url)
         if request.status == 200:

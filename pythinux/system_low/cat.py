@@ -1,4 +1,6 @@
 def cat(filename, user=None):
+    assertTrue(isinstance(filename, str))
+    assertTrue(type(user) in [type(None), User])
     with file.open(filename, user if user else currentUser) as f:
         print(f.read())
 def main(args):

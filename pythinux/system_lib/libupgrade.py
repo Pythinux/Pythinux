@@ -14,6 +14,8 @@ def downloadFile(url, fileName):
     """
     Download a remote HTTP resource and save it to a file.
     """
+    assertTrue(isinstance(url, str))
+    assertTrue(isinstance(fileName, str))
     urllib.request.urlretrieve(url, file.evalDir(fileName, currentUser))
 
 def checkForNewVersions():

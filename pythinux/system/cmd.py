@@ -8,6 +8,7 @@ def cmd(cmd):
     """
     Runs a command on the host shell.
     """
+    assert(isinstance(cmd, str))
     os.system(cmd)
 def main(args):    
     if args:

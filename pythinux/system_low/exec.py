@@ -1,4 +1,5 @@
 def exec(command):
+    assertTrue(isinstance(command, str))
     runCommand(currentUser, command)
 
 def main(args):

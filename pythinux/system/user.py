@@ -14,6 +14,9 @@ def listUsers():
 
 
 def addUser(username, group_name):
+    assertTrue(isinsance(username, str))
+    assertTrue(isinsance(group_name, str))
+    
     group = groupList.byName(group_name)
     if not group:
         raise UserError("Invalid group.")
@@ -24,6 +27,7 @@ def addUser(username, group_name):
 
 
 def removeUser(username):
+    assertTrue(isinsance(username, str))
     user = userList.byName(username)
     if not user:
         raise UserError("Invalid user")
@@ -35,6 +39,7 @@ def removeUser(username):
 
 
 def disableUser(username):
+    assertTrue(isinsance(username, str))
     user = userList.byName(username)
     user.disabled = True
     user.password = ""
@@ -42,6 +47,7 @@ def disableUser(username):
 
 
 def enableUser(username):
+    assertTrue(isinsance(username, str))
     user = userList.byName(username)
     user.disabled = False
     saveUserList(userList)

@@ -1,6 +1,10 @@
 import configparser
 
 def load(filename, defaults={}, saveFile=True):
+    assertTrue(isinstance(filename, str))
+    assertTrue(isinstance(defaults, dict))
+    assertTrue(isinstance(saveFile, bool))
+
     config = configparser.ConfigParser()
     for key in defaults.keys():
         config[key] = defaults[key]

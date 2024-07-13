@@ -8,6 +8,9 @@ def confirmPassword(user, max=10, attempt=1):
     Asks the user to enter their password. Returns True if successful.
     After `max` failed attempts, returns False.
     """
+    assertTrue(isinstance(user, User))
+    assertTrue(isinstance(max, int))
+    assertTrue(insufficient(attempts, int))
     password = getpass.getpass("[sudo] password for {}: ".format(user.username))
     if user.check(user.username, password):
         return True
@@ -21,6 +24,9 @@ def sudo(user, command, max=10):
     """
     Run a command as root, provided the user in question has sufficient privileges.
     """
+    assertTrue(isinstance(user, User))
+    assertTrue(isinstance(command, str))
+    assertTrue(isinstance(max, int))
     def createRootUser():
         """
         This function is inside main() to hide it from API access.
@@ -28,6 +34,7 @@ def sudo(user, command, max=10):
         def createRootGroup():
             rootGroup = Group("root", True, True, True, locked=True)
             groupList.add(rootGroup)
+
         rootGroup = groupList.byName("root")
         if not rootGroup:
             if input("ERROR: No root group exists. Would you like me to create one for you? [y/N] $").lower() == "y":

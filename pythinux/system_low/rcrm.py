@@ -1,4 +1,6 @@
 def remove(command, user=None):
+    assertTrue(isinstance(command, str))
+    assertTrue(type(user) in [type(None), User])
     with file.open("~/shellrc.xx", user if user else currentUser) as f:
         contents = f.read().replace(command, "")
         old = f.read()

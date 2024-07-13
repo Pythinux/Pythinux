@@ -7,6 +7,7 @@ def check(version):
     """
     Checks if a string is in the format x.y.z-a, AKA semantic versioning.
     """
+    assertTrue(isinstance(version, str))
     pattern = r'^\d+\.\d+\.\d+-\d+$'
     return bool(re.match(pattern, version))
 def compare(a, b):
@@ -14,6 +15,9 @@ def compare(a, b):
     Compares semantic versions.
     Returns 1 if a is a higher version than b, -1 if b is a higher version than a, and 0 if both are the same.
     """
+    assertTrue(isinstance(a, str))
+    assertTrue(isinstance(b, str))
+
     def normalize(version):
         version = version.replace("-", ".")
         return [int(x) for x in version.split(".")]

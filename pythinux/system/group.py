@@ -8,6 +8,7 @@ def listGroups():
     div()
 
 def showGroupInfo(group_name):
+    assertTrue(isinstance(group_name, str))
     group = groupList.byName(group_name)
     if not group:
         raise GroupError("Invalid group")
@@ -26,10 +27,11 @@ def showGroupInfo(group_name):
     div()
 
 def setPermission(group_name, permission, value):
+    assertTrue(isinstance(group_name, str))
+    assertTrue(isinstance(permission, str))
+    assertTrue(isinstance(value, bool))
     if permission not in ["canApp", "canAppHigh", "canSys", "canSudo"]:
         raise GroupError("Invalid permission name")
-    if not isinstance(value, bool):
-        raise GroupError("Value is not boolean")
     group = groupList.byName(group_name)
     if not group:
         raise GroupError("Invalid group")
