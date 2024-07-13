@@ -11,6 +11,15 @@ SWITCHES
         Remove an alias. 
     alias clear
         Clears all aliases.
+LIBRARY
+    alias.listAliases()
+        Lists all aliases in a human-readable format. Returns nothing.
+    alias.addAlias(alias, command)
+        Adds an alias.
+    alias.removeAlias(alias)
+        Removes an alias.
+    alias.clearAliases()
+        Clears all aliases.
 EXAMPLES
     alias add clear cls
         Creates an alias called "clear" that runs "cls".

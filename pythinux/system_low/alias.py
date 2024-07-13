@@ -27,10 +27,13 @@ def listAliases():
     div()
 
 def setAlias(alias, command):
+    assertTrue(isinstance(alias, str), "Invalid string")
+    assertTrue(isinstance(command, str), "Invalid string")
     aliases[alias] = command
     saveAliases(aliases)
 
 def removeAlias(alias):
+    assertTrue(isinstance(alias, str), "Invalid string")
     aliases.pop(alias)
     saveAliases(aliases)
 
