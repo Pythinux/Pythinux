@@ -1011,6 +1011,7 @@ def loadProgramBase(
                 "verifyUser": copy(verifyUser),
                 "CurrentUser": copy(CurrentUser),
                 "isRoot": FalseValue(),
+                "assertTrue": copy(assertTrue),
             }
             
             if directory in [
