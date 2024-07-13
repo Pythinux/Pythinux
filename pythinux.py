@@ -216,7 +216,7 @@ def doCalc(text):
     Undergoes HEAVY sanitisation before execution.
     """
     assertTrue(isinstance(text, str), "Cannot perform calculations on a non-integer")
-    allowed_nodes = (ast.BinOp, ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Num)
+    allowed_nodes = (ast.BinOp, ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Constant)
     allowed_operators = (ast.Add, ast.Sub, ast.Mult, ast.Div)
     allowed_names = {"math"}
 
