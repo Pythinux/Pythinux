@@ -1,52 +1,54 @@
+libargs = load_program("libargs", currentUser, libMode=True)
+
+parser = libargs.ArgumentParser("alias", description="Handles aliases")
+subs = parser.add_subparsers(dest="cmd", help="Sub-command help")
+
+parser_list = subs.add_parser("list", help="Lists aliases")
+
+parser_set = subs.add_parser("set", help="Sets an alias")
+parser_set.add_argument("alias", help="Alias name")
+parser_set.add_argument("command", help="Command to execute")
+
+
+parser_set = subs.add_parser("add", help="Sets an alias")
+parser_set.add_argument("alias", help="Alias name")
+parser_set.add_argument("command", help="Command to execute")
+
+parser_remove = subs.add_parser("remove", help="Removes an alias")
+parser_remove.add_argument("alias", help="Alias to remove")
+
+parser_clear = subs.add_parser("clear", help="clears all aliases")
+parser_clear.add_argument("-y", action="store_true", help="Confirm choice")
+
+def listAliases():
+    div()
+    for item in aliases:
+        print("{} --> {}".format(item, aliases[item]))
+    div()
+
+def setAlias(alias, command):
+    aliases[alias] = command
+    saveAliases(aliases)
+
+def removeAlias(alias):
+    aliases.pop(alias)
+    saveAliases(aliases)
+
+def clearAliases():
+    saveAliases({})
+
 def main(args):
-    arguments = args
-    if arguments in [["list"], ["ls"]]:
-        div()
-        for item in aliases:
-            print(f"{item} --> {aliases[item]}")
-        if aliases == {}:
-            print("No aliases loaded.")
-        div()
-    elif arguments == ["set"]:
-        div()
-        print("alias set <alias> <command>")
-        div()
-        print("Example:")
-        print("alias set ? help")
-        print("[Redirects \"?\" to \"help\"]")
-        div()
-    elif "set" in arguments and len(arguments) == 3:
-        aliases[arguments[1]] = arguments[2]
-        saveAliases(aliases)
-    elif args == ["clear"]:
-        saveAliases({})
-        div()
-        print("Cleared aliases.")
-        div()
-    elif arguments == ["remove"]:
-        div()
-        print("alias remove <alias>")
-        div()
-        print("Removes <alias> from aliases.")
-        div()
-    elif "remove" in arguments and len(arguments) == 2:
-        try:
-            aliases.pop(arguments[1])
-            saveAliases(aliases)
-        except:
-            print(f"No alias found: {arguments[1]}")
-    elif args == ["add"]:
-        main(["set"])
-    elif "add" in args and len(args) == 3:
-        args.remove("add")
-        main(["set"] + args)
+    args = parser.parse_args(args)
+    if args.cmd == "list":
+        listAliases()
+    elif args.cmd in ["add", "set"]:
+        setAlias(args.alias, args.command)
+    elif args.cmd == "remove":
+        removeAlias(args.alias)
+    elif args.cmd == "clear":
+        if args.y:
+            clearAliases()
+        else:
+            print("To confirm this, run 'alias clear -y'.")
     else:
-        div()
-        print("alias [args]")
-        div()
-        print("Arguments:")
-        print("    list: lists all aliases")
-        print("    set: set the value of an alias")
-        print("    remove: removes an alias")
-        print("    clear: removes all aliases")
-        div()
+        parser.print_help()
