@@ -36,7 +36,7 @@ def fixDir(user):
 
     os.chdir(file.evalDir(pwd.pwd(), user))
 
-def giveCommandOutput(user, cmd, **kwargs):
+def getCommandOutput(user, cmd, **kwargs):
     """
     Run a command silently and return its output as a string.
     """
