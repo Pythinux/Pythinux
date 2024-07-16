@@ -910,10 +910,7 @@ class CurrentUser(User):
 
 def isUserValid(user):
     assertTrue(isinstance(user, User), "Not a user")
-    for u in userList:
-        if user == u:
-            return True
-    return False
+    return user in userList
 
 
 class ReadOnlyWrapper:
@@ -931,6 +928,7 @@ class ReadOnlyWrapper:
         raise AttributeError("Cannot modify unmodifiable object")
     def __dir__(self):
         return self._obj.__dir__()
+
 
 def deprecatedOpen(*args, **kwargs):
     warnings.warn("open() is deprecated and will be removed in Pythinux 3.3, use file.open() instead", DeprecationWarning)
