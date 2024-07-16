@@ -45,6 +45,7 @@ from getpass import getpass
 import warnings
 import configparser
 import time
+import contextlib
 
 try:
     import pty
@@ -53,7 +54,7 @@ except:
     unixMode = False
 
 osName = "Pythinux"
-version = [3, 1, 0]
+version = [3, 2 ,0]
 var = {}
 aliases = {}
 EVALHIST = []
@@ -199,10 +200,8 @@ def silent(function):
         function: a callable object.
     """
     assertTrue(callable(function), "silent(): Function is not callable")
-    stdout = sys.stdout
-    sys.stdout = None
-    x = function()
-    sys.stdout = stdout
+    with contextlib.redirect_stdout(io.StringIO())  as f:
+        x = function()
     return x
 
 

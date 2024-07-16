@@ -24,6 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
 import traceback
+import contextlib
+import io
+
 
 var = load_program("var", currentUser, libMode=True)
 pwd = load_program("pwd", currentUser, libMode=True)
@@ -32,6 +35,14 @@ def fixDir(user):
     assertTrue(isinstance(user, User), "Not a user object")
 
     os.chdir(file.evalDir(pwd.pwd(), user))
+
+def giveCommandOutput(user, cmd, **kwargs):
+    """
+    Run a command silently and return its output as a string.
+    """
+    with contextlib.redirect_stdout(io.StringIO()) as f:
+        run(user, cmd, **kwargs)
+    return f.getvalue().rstrip("\n")
 
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     assertTrue(isinstance(user, User), "Not a user object")
