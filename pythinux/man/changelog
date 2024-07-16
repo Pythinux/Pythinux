@@ -1,92 +1,65 @@
 NAME
-	Changelog for Pythinux 3.0
-NEW/REMOVED PROGRAMS
-	- New libraries:
-		- libsemver
-			Handles semantic versions. Used by pkm and installd.
-		- liblog
-			Basic logging framework.
-		- libconfig
-			Create config files easily with configparser.
-		- libtime
-			Display the time in a standardised format.
-	- New programs:
-		- shell
-			Replacement for terminal.
-		- bterm
-			Replacement for basic-terminal.
-		- exec
-			Passes commands directly into runCommand(), bypassing the shell
-			entirely.
-		- rcview
-			View your user's rc file.
-		- rcadd
-			Add a command to your user's rc file.
-		- rcrm
-			Removes a line from your user's rc file.
-		- ping
-			Implementation of the UNIX ping utility in Pythinux.
-		- curl
-			Prints the contents of Internet files to the terminal.
-	- Removed programs:
-		- initd
-			Is no longer needed: `shell` now handles initialisation.
-		- tutorial
-			Was bad and outdated.
-THE MAIN() FUNCTION
-	Every program now requires a main() function, similar to how C/C++
-	programs operate. This function is called by load_program(), unless you
-	pass libMode=True to it (see BETTER LIBRARY SUPPORT). This does lead to
-	exactly one API-breaking change: `main()` has been moved to
-	`runCommand()`, which is arguably less confusing as it suggests it has
-	less importance than it used to.
-
-	The main function does have `args` passed into it, so an empty main()
-	looks like this:
-
-	def main(args):
-		pass
-BETTER LIBRARY SUPPORT
-	The load_program() function has a `libMode` argument, which is False by
-	default. When set to True, however, it does two things:
-
-	1. The aforementioned main function is not called.
-	2. The scope for loadable programs is extended to allow for libraries to
-	be loaded.
-
-	Extra directories (/system_lib for system libraries, /lib and /lib_high
-	for installed ones) have been added for use as libraries only. This cleans
-	up the help menu, which does not show these libraries.
-
-	There are several default libraries (See lib manual)
+	Changelog for Pythinux 3.1
+SUMMARY
+	Release 3.1 is a release that focuses on backend tweaks that make the
+	developer experience smoother. On top of this, debugging features galore
+	make finding and fixing issues less painful, especially at the kernel
+	level.
+NEW AND UPDATED PROGRAMS
+	- isroot is a new program that displays whether or not you are root.
+		Essentially a frontend for isRoot().
+	- The which program now has a library. 
+	- The license program has been removed due to incompatibility with
+		file.open() and also generally being reliant on the repo having been
+		cloned in its entirety.
+	- The ls command is now unprivileged.
+NEW AND UPDATED LIBRARIES
+	LIBARGS
+		This library is an extension of argparse that is built for Pythinux.
+		It should be used instead of argparse, and several commands have been
+		ported already.
+NEW AND UPDATED KPARAMS	
+	KPARAM_ARTIFICIAL_DECRYPT_TIME	
+		Disabled by default. If enabled, verifyHash() waits an arbitrary
+		amount of time in order to increase security. The wait time is set by
+		KPARAM_INT_ARTIFICIAL_DECRYPT_TIME, and defaults to 2.5.
+	KPARAM_DEBUGGING_VERIFYHASH
+		Disabled by default. If enabled, 
+	KPARAM_DISABLE_CLS
+		Disabled by default. If enabled, the cls() function is disabled
+		systemwide.
+	KPARAM_DEBUGGING_LOAD_PROGRAM
+		Disabled by default. If enabled, displays comprehensive debugging info
+		every time loadProgramBase() is called.
+	KPARAM_REAL_DIRECTORY
+		Enabled by default. If enabled, Real Directory Support(tm) is enabled.
+FILE.OPEN() AND THE FUTURE OF OPEN()
+	The open() function has been deprecated for removal in 3.3, to be replaced
+	by file.open().
+PACKAGING IMPROVEMENTS
+	The Program.replaces defines a *single* program that a package can
+	overwrite.
+SECURITY
+	PSA-0006
+		This was a code injection. attack targeting the baseMode argument in 
+		load_program(). The mitigation is to remove baseMode entirely.
+	ASSERTIONS
+		The all-new assertTrue() function (which is indeed exposed) allows a
+		program to assert that a condition is met and raise an exception if it
+		is not. This is used in almost all kernel functions now to ensure
+		type safety. 
+		NOTE: The assert keyword can be disabled with a flag passed to
+			python's executable, which is why we chose to reimplement it.
 REAL DIRECTORY SUPPORT
-	Pythinux programs no longer operate in just the root directory! Thanks to
-	functions like file.evalDir(), programs can change to any directory they
-	want. 
-RC FILES
-	Located in /home/<username>/shellrc.xx is a shell script that is run every
-	time the shell loads a program.
-SECURITY IMPROVEMENTS
-	The all-new Pythinux Security Advisory caught some old, severe exploits in
-	Pythinux, all of which were caught, patched, and documented on the
-	Pythinux Wiki (https://wiki.pythinux.gordinator.org).
-KERNEL PARAMETERS (KPARAMS)
-	A kernel parameter, or KPARAM, is a variable set in the pythinux.py file,
-	AKA the kernel. They are designed to be modified by users, and cannot be
-	viewed or edited by any program, not even system ones. This is because
-	some parameters define security measures, therefore it should be
-	impossible to edit this way.
-
-	A list of kernel parameters can be viewed here: https://wiki.pythinux.gordinator.org/doku.php?id=docs:kparam
-UPDATED PACKAGING FORMAT
-	An all-new packaging format has replced the admittedly dated one used in
-	older versions of Pythinux. It uses an INI file as a config, and is highly
-	flexible and extensible. It also allows for arbitrary files to be copied.
-PYTHINUX UPDATE FRAMEWORK
-	The Pythinux Update Framework (PUF) is <insert info once done>.
-BETTER MAN PAGES
-	- Man pages now have sections denoting things like syntax and library
-	documentation.
-	- Every program has a man page.
+	More work on Real Directory Support is being done. However, it is still
+	not a working system, however, we target a 3.3 release for when it should.
+	Currently, KPARAM_REAL_DIRECTORY is implemented, as well as certain API
+	functions that *should* help with making it a possibility.
+MISCELLANEOUS CHANGES
+	- Added a copyright header to every file. It includes ASCII art of the
+		project's name, which isn't rendered correctly all the time (including,
+		ironically enough, CodeBerg's file viewer).
+	- Removed the sha256() kernel function. It was never exposed to programs
+		and never actually used.
 SEE ALSO:
-	lib: list of built-in libraries
+	libargs: Argument parser library
