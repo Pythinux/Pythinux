@@ -22,12 +22,13 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-def terminal():
+def terminal(user=None):
     while True:
         cmd = input("bterm $")
         if cmd in ["quit", "exit"]:
             return
-        print(runCommand(currentUser, cmd))
+        print(runCommand(user if user else currentUser, cmd))
+
 def main(args):
     div()
     print("Basic Terminal Emulator")
