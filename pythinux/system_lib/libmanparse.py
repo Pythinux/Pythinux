@@ -25,119 +25,81 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 man = load_program("man", currentUser, libMode=True)
 
+class Manpage:
+    """
+    Manpage class. Contains sections, which contain elements.
+    There are three Section classes - Section, SubSection, and SubSubSection.
+    """
+    def __init__(self, name):
+        self.name = name
+        self.sections = []
+    def flatten(self):
+        """
+        Returns each Section and Element in the Manpage as a flat list.
+        """
+        sections = []
+        for section in self.sections:
+            sections.append(section)
+            sections += section.elements
+        return sections
+
 class Element:
     """
-    Base class for an element.
+    An element is essentially a line of what isn't text.
     """
     def __init__(self, value):
         self.value = value
 
 class Section:
     """
-    A manpage section. Each section contains sections and elements.
+    A manpage section. Each section contains elements.
     """
-    def __init__(self, name, elements=[]):
-        self.name = name
-        self.elements = elements
-
-class Manpage:
     def __init__(self, name):
         self.name = name
-        self.sections = []
+        self.elements = []
+        self.lines = ""
+    def add(self, line):
+        self.lines += line + "\n"
+    def zip(self):
+        self.elements.append(Element(self.lines))
+        self.lines = ""
 
-# def parseDocument(document):
-#     parsedStructure = []
-#     currentHeading = None
-#     currentSubheading = None
-#     currentIndentLevel = 0
-#     
-#     for line in document:
-#         if line.strip() == "":
-#             continue
-#         
-#         # Calculate the current indentation level
-#         indentLevel = len(line) - len(line.lstrip())
-#         
-#         # Remove leading and trailing whitespace
-#         content = line.strip()
-#         
-#         if indentLevel == 0:
-#             # This line is a top-level heading
-#             currentHeading = content
-#             currentSubheading = None
-#             currentIndentLevel = 0
-#             parsedStructure.append((currentHeading, []))
-#         
-#         elif indentLevel == currentIndentLevel + 4:
-#             # This line is a subheading
-#             currentSubheading = content
-#             parsedStructure[-1][1].append((currentSubheading, []))
-#             currentIndentLevel += 4
-#         
-#         elif indentLevel > currentIndentLevel:
-#             # This line is a sub-subheading, etc. (indentation must be consistent)
-#             currentSubheading = content
-#             parsedStructure[-1][1][-1][1].append((currentSubheading, []))
-#             currentIndentLevel = indentLevel
-#         
-#         else:
-#             # Treat as text under the current subheading
-#             if currentSubheading is not None:
-#                 parsedStructure[-1][1][-1][1].append(content)
-#     
-#     return parsedStructure
-#
-#
+class SubSection(Section):
+    pass
+
+class SubSubSection(Section):
+    pass
+
 def getManpageText(manpage):
     """
-    Returns the contents of a manpage.
+    Gets the text of a manpage.
     """
     with file.open("/man/{}".format(manpage), currentUser) as f:
-        return f.read().rstrip("\n")
-
-    return parsedData
-
-# def countIndentation(line):
-#     count = 0
-#     for char in line:
-#         if char == ' ':
-#             count += 1
-#         else:
-#             break
-#     return count
-#
-# def transformToDictionary(parsedStructure):
-#     transformedDict = {}
-#     
-#     for heading, subheadings in parsedStructure:
-#         transformedDict[heading] = {}
-#         for subheading, texts in subheadings:
-#             transformedDict[heading][subheading] = texts
-#     
-#     return transformedDict
-#
-# def handleDictionary(dictionary):
-#     pprint(dictionary)
-#     return dictionary
-
-def parseSections(lines, indentLevel=0):
-    sections = []
-    while lines:
-        line = lines.pop(0)
-        if line.strip():  # Non-empty line
-            sectionName = line.strip()
-            section = {'name': sectionName, 'subsections': []}
-            # Check for nested sections
-            nextIndentLevel = indentLevel + 1
-            while lines and lines[0].startswith(' ' * (nextIndentLevel * 4)):
-                subsections = parseSections(lines, nextIndentLevel)
-                section['subsections'].append(subsections)
-            sections.append(section)
-    return sections
+        return f.read().rstrip("\n").replace("    ", "\t")
 
 def parseManpage(manpage):
     """
-    Parses a manpage and returns a Manpage with its contents.
+    Converts a manpage file into a Manpage class which can be used in parsing.
     """
-    text = getManpageText(manpage)
-    return parseSections(text.split("\n"))
+    mp = Manpage(manpage)
+    text = getManpageText(manpage).split("\n")
+    current = None
+    for line in text:
+        if line.startswith("\t\t") and line.isupper():
+            if current:
+                current.zip()
+                mp.sections.append(current.lstrip*())
+            current = SubSubSection(line.lstrip("\t"))
+        elif line.startswith("\t") and line.isupper():
+            if current:
+                current.zip()
+                mp.sections.append(current)
+            current = SubSection(line)
+        elif line.isupper():
+            if current:
+                current.zip()
+                mp.sections.append(current)
+            current = Section(line)
+        else:
+            current.add(line.replace("\t"))
+    return mp

@@ -1,0 +1,26 @@
+NAME
+    libmanparse - Parse manpages in a computer-friendly format
+DESCRIPTION
+    Manpages are used in Pythinux a lot, but they're in a format that kind of hard to work with. This library helps with that. It separates manpages into a structure with Manpages containing Sections and Elements. 
+LIBRARY
+    libmanparse.parseManpage(manpage)
+        Parses a manpage and returns a Manpage class.
+    libmanparse.Manpage
+        Manpage class. Contains sections and elements.
+        libmanparse.Manpage.add(section)
+            Adds a Section to a Manpage.
+        libmanparse.Manpage.flatten()
+            The typical structure is manpage containing sections containing elements. This method returns sections and elements in a flat list, which can make parsing it easier in some contexts.
+    libmanparse.Section
+        Section class. Contains a number of Element instances.
+        libmanparse.Section.
+    libmanparse.SubSection(Section)
+        Subclass of Section for dealing with sections in sections.
+    libmanparse.SubSubSection(Section)
+        Subclass of Section for dealing with sections in sections in sections.
+    libmanparse.Element
+        Element class. Essentially a line of text.
+        libmanparse.Element.value
+           The text of the Element.
+SEE ALSO
+    lib - List of built-in libraries

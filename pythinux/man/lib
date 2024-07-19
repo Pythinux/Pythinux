@@ -10,6 +10,8 @@ LIST
         Helper library for configparser.
     liblog
         Create basic text logs programatically
+    libmanparse
+        Parses manpages into a format more easily worked with.
     libsemver
         Deals with semantic version strings.
     libtime
