@@ -88,18 +88,18 @@ def parseManpage(manpage):
         if line.startswith("\t\t") and line.isupper():
             if current:
                 current.zip()
-                mp.sections.append(current.lstrip*())
-            current = SubSubSection(line.lstrip("\t"))
+                mp.sections.append(current)
+            current = SubSubSection(line.lstrip().replace("\t\t", "", 1))
         elif line.startswith("\t") and line.isupper():
             if current:
                 current.zip()
                 mp.sections.append(current)
-            current = SubSection(line)
+            current = SubSection(line.lstrip().replace("\t", "", 1))
         elif line.isupper():
             if current:
                 current.zip()
                 mp.sections.append(current)
             current = Section(line)
         else:
-            current.add(line.replace("\t"))
+            current.add(line.replace("\t\t", "", 1).replace("\t", "", 1))
     return mp
