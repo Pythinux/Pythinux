@@ -1,0 +1,12 @@
+NAME
+    debugmgr - Manage debuggers
+DESCRIPTION
+    A debugger is a kind of program with access to extra APIs useful for debugging. Most programs will never take advantage of this, and it is primarily used for debugging purposes.
+    This program is used to control what programs have debugging privileges.
+SWITCHES
+    debugmgr list
+        Lists all debuggers.
+    debugmgr add [debugger]
+        Adds a debugger.
+    debugmgr remove [debugger]
+        Removes a debugger.

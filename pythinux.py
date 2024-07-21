@@ -903,6 +903,19 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
             "Cannot open file in restricted directory: {}".format(filename)
         )
 
+def listDebuggers(user):
+    file = evalDir("/config/debuggers", user)
+    if os.path.isfile(file):
+        with open(file) as f:
+            return f.read().rstrip("\n").split("\n") + ["debugmgr"]
+    else:
+        return ["debugmgr"]
+
+def generateDebugAPI():
+    debug = createModule("debug")
+    debug.list_debuggers = copy(listDebuggers)
+    return debug
+
 
 def generateAPI(module, user, sudoMode):
     """
@@ -912,8 +925,6 @@ def generateAPI(module, user, sudoMode):
     assertTrue(isinstance(module, type(__builtins__)), "Not a module")
     assertTrue(isinstance(user, User), "Not a user")
     assertTrue(isinstance(sudoMode, bool), "Not a boolean")
-
-
 
 
     def isUnix():
@@ -937,6 +948,8 @@ def generateAPI(module, user, sudoMode):
     ## Attach to module
     module.shell = shell
     module.file = file
+
+
 
 class CurrentGroup(Group):
     def __init__(self, group):
@@ -1146,6 +1159,9 @@ def loadProgramBase(
             # Set arguments as a custom attribute
             module.arguments = args
             module.args = args
+
+            if program_name in listDebuggers(user):
+                module.debug = generateDebugAPI()
 
             # Add Pythinux module
             module = addPythinuxModule(module, shared_objects, user)
