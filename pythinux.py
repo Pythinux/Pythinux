@@ -1141,6 +1141,7 @@ def loadProgramBase(
                 "CurrentUser": copy(CurrentUser),
                 "isRoot": FalseValue(),
                 "assertTrue": copy(assertTrue),
+                "isDebugger": FalseValue(),
             }
             
             if directory in [
@@ -1199,6 +1200,7 @@ def loadProgramBase(
 
             if program_name in listDebuggers(user):
                 module.debug = generateDebugAPI()
+                module.isDebugger = TrueValue()
 
             # Add Pythinux module
             module = addPythinuxModule(module, shared_objects, user)
