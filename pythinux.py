@@ -947,6 +947,7 @@ def cleanupDebuggers(user):
 
 def generateDebugAPI():
     debug = createModule("debug")
+    debug.load_program = copy(debugLoadProgram)
     debug.list_debuggers = copy(listDebuggers)
     debug.grant_debugging = copy(addDebugger)
     debug.revoke_debugging = copy(removeDebugger)
@@ -1318,6 +1319,15 @@ def limitedLoadProgram(program, user, **kwargs):
         return 
     else:
         return load_program(program, user, **kwargs)
+
+def debugLoadProgram(*args, **kwargs):
+    useWrapper = bool(KPARAM_USE_MODULE_WRAPPER)
+    KPARAM_USE_MODULE_WRAPPER = False
+    prog = load_program(*args, **kwargs)
+    KPARAM_USE_MODULE_WRAPPER = bool(useWrapper)
+    return prog
+
+
 
 def clearTemp(user):
     """
