@@ -40,12 +40,15 @@ import threading
 import ast
 import copy as cp
 import asyncio
-from io import StringIO
+import io
 from getpass import getpass
 import warnings
 import configparser
 import time
 import contextlib
+import string
+import random
+import secrets
 
 try:
     import pty
@@ -117,6 +120,28 @@ class PythinuxError(Exception):
     def __str__(self):
         return self.text
 
+class DevRandomStringIO(io.StringIO):
+    """
+    Implementation of /dev/random as a StringIO.
+    """
+    def __init__(self, length=1024):
+        self.length = length
+        random_data = self._generate_random_string(self.length)
+        super().__init__(random_data)
+
+    def _generate_random_string(self, length):
+        chars = string.ascii_letters + string.digits + string.punctuation
+        return ''.join(random.choice(chars) for _ in range(length))
+
+    def read(self, size=-1):
+        if size == -1:
+            size = self.length
+        return super().read(size)
+
+class DevURandomStringIO(DevRandomStringIO):
+    def _generate_random_string(self, length):
+        chars = string.ascii_letters + string.digits + string.punctuation
+        return ''.join(secrets.choice(chars) for _ in range(length))
 
 def loadGroupList():
     try:
@@ -828,6 +853,26 @@ def addPythinuxModule(module, shared_objects, user):
     module.pythinux = pythinux
     return module
 
+
+def openFile(filename, user, mode="r", **kwargs):
+    """
+    Custom open() operation.
+    """
+    assertTrue(isinstance(filename, str), "Not a string")
+    assertTrue(isinstance(user, User), "Not a user")
+    assertTrue(isinstance(mode, str), "Not a string")
+    for file in BLOCKED_FILES:
+        if file in filename:
+            raise PythinuxError("Cannot open restricted file")
+    if filename == "/dev/null":
+        return io.StringIO()
+    elif filename == "/dev/random":
+        return DevRandomStringIO()
+    elif filename == "/dev/urandom":
+        return DevURandomStringIO()
+    else:
+        return open(evalDir(filename, user), mode, **kwargs)
+
 def limitedOpenFile(filename, user, mode="r", **kwargs):
     if KPARAM_DEBUGGING_LIMITED_OPEN:
         print(filename)
@@ -852,7 +897,7 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
                 return False
 
     if isDirValid(filename, user):
-        return open(evalDir(filename, user), mode, **kwargs)
+        return openFile(*args, **kwargs)
     else:
         raise PythinuxError(
             "Cannot open file in restricted directory: {}".format(filename)
@@ -867,17 +912,7 @@ def generateAPI(module, user, sudoMode):
     assertTrue(isinstance(module, type(__builtins__)), "Not a module")
     assertTrue(isinstance(user, User), "Not a user")
     assertTrue(isinstance(sudoMode, bool), "Not a boolean")
-    def openFile(filename, user, mode="r", **kwargs):
-        """
-        Custom open() operation.
-        """
-        assertTrue(isinstance(filename, str), "Not a string")
-        assertTrue(isinstance(user, User), "Not a user")
-        assertTrue(isinstance(mode, str), "Not a string")
-        for file in BLOCKED_FILES:
-            if file in filename:
-                raise PythinuxError("Cannot open restricted file")
-        return open(evalDir(filename, user), mode, **kwargs)
+
 
 
 
