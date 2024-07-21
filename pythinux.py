@@ -80,6 +80,21 @@ KPARAM_USE_LIMITED_OPEN = True # Uses limitedOpenFile() for file.open()
 KPARAM_DEPRECATE_OPEN = True # If True, open() raises a DeprecationWarning
 KPARAM_REAL_DIRECTORY = True # If enabled, Real Directory Support is enabled
 
+# Files that cannot be opened
+
+# By all users
+BLOCKED_FILES = [
+    "/config/debuggers"
+]
+
+# By unprivileged users
+USER_BLOCKED_FILES = BLOCKED_FILES + [
+    "/config/users.ini",
+    "/config/groups.ini",
+    "/config/pkmdata.ini",
+
+]
+
 with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
 
@@ -832,11 +847,7 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
         ]:
             if filename.startswith(directory):
                 return True
-        for file in [
-            "/config/users.ini",
-            "/config/groups.ini",
-            "/config/pkmdata.ini",
-        ]:
+        for file in USER_BLOCKED_FILES:
             if file in filename:
                 return False
 
@@ -863,6 +874,9 @@ def generateAPI(module, user, sudoMode):
         assertTrue(isinstance(filename, str), "Not a string")
         assertTrue(isinstance(user, User), "Not a user")
         assertTrue(isinstance(mode, str), "Not a string")
+        for file in BLOCKED_FILES:
+            if file in filename:
+                raise PythinuxError("Cannot open restricted file")
         return open(evalDir(filename, user), mode, **kwargs)
 
 
