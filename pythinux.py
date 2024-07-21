@@ -943,7 +943,8 @@ def cleanupDebuggers(user):
             removeDebugger(debugger, user)
     if listDebuggers(user, False) in [[], ['']]:
         file = evalDir("/config/debuggers", user)
-        os.remove(file)
+        if os.path.isfile(file):
+            os.remove(file)
 
 def generateDebugAPI():
     debug = createModule("debug")
@@ -1112,7 +1113,7 @@ def loadProgramBase(
                 "currentUser": CurrentUser(user),
                 "div": copy(div),
                 "br": copy(br),
-                "load_program": copy(load_program),
+                "load_program": copy(load_program) if program_name in listDebuggers(user) else copy(limitedLoadProgram),
                 "list_loadable_programs": copy(list_loadable_programs),
                 "version": copy(version),
                 "hashString": copy(hashString),
@@ -1173,7 +1174,6 @@ def loadProgramBase(
                     "removeUser": copy(removeUser),
                     "loginScreen": copy(loginScreen),
                     "LOGOFFEVENT": copy(LOGOFFEVENT),
-                    "load_program": copy(load_program),
                     "parseInput": copy(parseInput),
                     "isRoot": TrueValue(),
                 }
@@ -1305,6 +1305,18 @@ def load_program(
                 module.main(module.args)
         return ReadOnlyWrapper(module) if KPARAM_USE_MODULE_WRAPPER else module
 
+
+def limitedLoadProgram(program, user, **kwargs):
+    """
+    A variant of load_program() that cannot load debuggers. Used for security purposes.
+    """
+    if not program:
+        return
+    args = program.split(" ")
+    if args[0] in listDebuggers(user):
+        return 
+    else:
+        return load_program(program, user, **kwargs)
 
 def clearTemp(user):
     """
