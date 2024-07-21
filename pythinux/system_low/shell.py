@@ -46,6 +46,21 @@ def fixDir(user):
 
     os.chdir(file.evalDir(pwd.pwd(), user))
 
+def splitList(inputList, separator):
+    """
+    Splits a list into sublists with a given separator.
+    """
+    result = []
+    sublist = []
+    for item in inputList:
+        if item == separator:
+            result.append(sublist)
+            sublist = []
+        else:
+            sublist.append(item)
+    result.append(sublist)
+    return result
+
 def getCommandOutput(user, cmd, **kwargs):
     """
     Run a command silently and return its output as a string.
@@ -76,11 +91,38 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     assertTrue(isinstance(lastCommand, str), "Command must be a string")
     assertTrue(isinstance(shell, str), "Shell name must be a string")
 
+    def handleRedirection(cmd_args):
+        filename = cmd_args[-1]
+        run = " ".join(cmd_args[:-2])
+        with file.open(filename, currentUser, "w") as f:
+            f.write(getCommandOutput(currentUser, run))
+
+    def handlePiping(cmd_args):
+        cmds = splitList(cmd_args, "|")
+        cmds = [" ".join(x) for x in cmds]
+        assertTrue(len(cmds) == 2, "Cannot pipe more than once", PythinuxError)
+        pipeCommandOutput(currentUser, cmds[0], cmds[1])
+
     lastCommandArgs = " ".join(lastCommand.split(" ")[1:])
     if "!!" in cmd:
         cmd = cmd.replace("!!", lastCommand)
     if "!" in cmd:
         cmd = cmd.replace("!", lastCommandArgs)
+
+    cmd_args = cmd.split(" ")
+    if ">" in cmd_args and cmd_args[-2] == ">":
+        try:
+            handleRedirection(cmd_args)
+        except Exception as e:
+            print(traceback.format_exc())
+        return
+    if "|" in cmd_args:
+        try:
+            handlePiping(cmd_args)
+        except Exception as e:
+            print(traceback.format_exc())
+        return
+
 
     if cmd == "":
         pass
