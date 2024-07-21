@@ -44,6 +44,18 @@ def getCommandOutput(user, cmd, **kwargs):
         run(user, cmd, **kwargs)
     return f.getvalue().rstrip("\n")
 
+def pipeCommandOutput(user, cmd, second_cmd, **kwargs):
+    """
+    Pipes the output of one command into another.
+    """
+    output = getCommandOutput(user, cmd, **kwargs)
+    program = load_program(second_cmd, user, libMode=True, **kwargs)
+    if not program:
+        raise PythinuxError("Invalid program")
+    if not "pipe" in dir(program):
+        raise PythinuxError("Unsupported program")
+    program.pipe(output)
+
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     assertTrue(isinstance(user, User), "Not a user object")
     assertTrue(isinstance(cmd, str), "Command must be a string")
