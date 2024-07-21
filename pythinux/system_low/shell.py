@@ -31,6 +31,16 @@ import io
 var = load_program("var", currentUser, libMode=True)
 pwd = load_program("pwd", currentUser, libMode=True)
 
+def pipe(value):
+    """
+    Accepts a piped shell script.
+    """
+    assertTrue(isinstance(value, str))
+
+    with file.open("/tmp/shell.xx", currentUser, "w") as f:
+        f.write(value)
+    runScript(currentUser, "/tmp/shell.xx")
+
 def fixDir(user):
     assertTrue(isinstance(user, User), "Not a user object")
 
@@ -48,6 +58,10 @@ def pipeCommandOutput(user, cmd, second_cmd, **kwargs):
     """
     Pipes the output of one command into another.
     """
+    assertTrue(isinstance(user, User))
+    assertTrue(isinstance(cmd, str))
+    assertTrue(isinstance(second_cmd, str))
+
     output = getCommandOutput(user, cmd, **kwargs)
     program = load_program(second_cmd, user, libMode=True, **kwargs)
     if not program:
