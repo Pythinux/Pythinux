@@ -101,7 +101,6 @@ USER_BLOCKED_FILES = BLOCKED_FILES + [
 # System programs with ability to debug
 SYSTEM_DEBUGGERS = [
     "debugmgr",
-    "shell",
 ]
 
 with open("default.xx") as f:
