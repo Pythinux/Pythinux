@@ -98,6 +98,9 @@ USER_BLOCKED_FILES = BLOCKED_FILES + [
 
 ]
 
+# System programs with ability to debug
+SYSTEM_DEBUGGERS = ["debugmgr"]
+
 with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
 
@@ -907,9 +910,9 @@ def listDebuggers(user):
     file = evalDir("/config/debuggers", user)
     if os.path.isfile(file):
         with open(file) as f:
-            return f.read().rstrip("\n").split("\n") + ["debugmgr"]
+            return f.read().rstrip("\n").split("\n") + SYSTEM_DEBUGGERS
     else:
-        return ["debugmgr"]
+        return SYSTEM_DEBUGGERS
 
 def generateDebugAPI():
     debug = createModule("debug")
