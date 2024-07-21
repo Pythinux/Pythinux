@@ -30,6 +30,12 @@ subs = parser.add_subparsers(dest="cmd", help="Sub-command help")
 
 parser_list = subs.add_parser("list", help="Lists debuggers")
 
+parser_add = subs.add_parser("add", help="Adds a debugger")
+parser_add.add_argument("debugger", help="Debugger to add")
+
+parser_remove = subs.add_parser("remove", help="Remove a debugger")
+parser_remove.add_argument("debugger", help="Debugger to remove")
+
 args = parser.parse_args(args)
 
 
@@ -37,7 +43,13 @@ def main(args):
     if args.cmd == "list":
         div()
         for debugger in debug.list_debuggers(currentUser):
-            print(debugger)
+            print("{}{}".format(debugger, "*" if debugger in debug.system else ""))
         div()
+    elif args.cmd == "add":
+        debug.grant_debugging(args.debugger, currentUser)
+        debug.cleanup(currentUser)
+    elif args.cmd == "remove":
+        debug.revoke_debugging(args.debugger, currentUser)
+        debug.cleanup(currentUser)
     else:
         parser.print_help()

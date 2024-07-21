@@ -146,6 +146,8 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
 def init(user: User):
     assertTrue(isinstance(user, User), "Not a user object")
 
+    debug.cleanup(user)
+
     fileName = "~/shellrc.xx"
     runScript(user, fileName)
     file.changeDirectory("~", user)

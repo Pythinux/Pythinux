@@ -99,7 +99,10 @@ USER_BLOCKED_FILES = BLOCKED_FILES + [
 ]
 
 # System programs with ability to debug
-SYSTEM_DEBUGGERS = ["debugmgr"]
+SYSTEM_DEBUGGERS = [
+    "debugmgr",
+    "shell",
+]
 
 with open("default.xx") as f:
     DEFAULT_SHELL_SCRIPT = f.read()
@@ -906,17 +909,49 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
             "Cannot open file in restricted directory: {}".format(filename)
         )
 
-def listDebuggers(user):
+def listDebuggers(user, include=True):
     file = evalDir("/config/debuggers", user)
     if os.path.isfile(file):
         with open(file) as f:
-            return f.read().rstrip("\n").split("\n") + SYSTEM_DEBUGGERS
+            return f.read().rstrip("\n").split("\n") + SYSTEM_DEBUGGERS if include else []
     else:
-        return SYSTEM_DEBUGGERS
+        return SYSTEM_DEBUGGERS if include else []
+
+def addDebugger(debugger, user):
+    if not debugger in list_loadable_programs(user):
+        raise PythinuxError("Invalid program")
+    if debugger in listDebuggers(user):
+        ## It's already in there, no need to add it again
+        return
+    file = evalDir("/config/debuggers", user)
+    with open(file, "a") as f:
+        f.write("{}\n".format(debugger))
+
+def removeDebugger(debugger, user):
+    if not debugger in listDebuggers(user):
+        return
+    if debugger in SYSTEM_DEBUGGERS:
+        raise PythinuxError("Cannot remove system debugger")
+    file = evalDir("/config/debuggers", user)
+    debuggers = [x for x in listDebuggers(user, False) if x != debugger]
+    with open(file, "w") as f:
+        f.write("\n".join(debuggers).rstrip("\n"))
+
+def cleanupDebuggers(user):
+    for debugger in listDebuggers(user):
+        if debugger not in list_loadable_programs(user):
+            removeDebugger(debugger, user)
+    if listDebuggers(user, False) in [[], ['']]:
+        file = evalDir("/config/debuggers", user)
+        os.remove(file)
 
 def generateDebugAPI():
     debug = createModule("debug")
     debug.list_debuggers = copy(listDebuggers)
+    debug.grant_debugging = copy(addDebugger)
+    debug.revoke_debugging = copy(removeDebugger)
+    debug.cleanup = copy(cleanupDebuggers)
+    debug.system = copy(SYSTEM_DEBUGGERS)
     return debug
 
 
