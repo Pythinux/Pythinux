@@ -84,9 +84,9 @@ def pipeCommandOutput(user, cmd, second_cmd, **kwargs):
     output = getCommandOutput(user, cmd, **kwargs)
     program = load_program(second_cmd, user, libMode=True, **kwargs)
     if not program:
-        raise ShellError("Invalid program")
+        raise ShellError("This program is invalid.")
     if not "pipe" in dir(program):
-        raise ShellError("Unsupported program")
+        raise ShellError("This program cannot accept piped data.")
     program.pipe(output)
 
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
