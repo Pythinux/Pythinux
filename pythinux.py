@@ -1014,21 +1014,41 @@ def isUserValid(user):
     return user in userList
 
 
-class ReadOnlyWrapper:
+class ReadOnlyMeta(type):
+    """
+    Metaclass for ReadOnlyWrapper.
+    """
+    def __setattr__(self, name, value):
+        raise AttributeError("Cannot modify unmodifiable object")
+
+    def __delattr__(self, name):
+        raise AttributeError("Cannot modify unmodifiable object")
+
+class ReadOnlyWrapper(metaclass=ReadOnlyMeta):
     """
     A class that wraps around an object and makes it read-only by hijacking the __setattr__ method.
     Should be 100% API-compatible (however it doesn't work for standard types like strings and bools).
     """
     def __init__(self, obj):
-        self.__dict__["_obj"] = obj
+        object.__setattr__(self, '_ReadOnlyWrapper__wrapped_obj', obj)
 
     def __getattr__(self, name):
-        return getattr(self._obj, name)
+        return getattr(self.__wrapped_obj, name)
 
     def __setattr__(self, name, value):
-        raise AttributeError("Cannot modify unmodifiable object")
+        raise AttributeError("Cannot modify unmodifiable value")
+
+    def __delattr__(self, name):
+        raise AttributeError("Cannot modify unmodifiable value")
+
     def __dir__(self):
-        return self._obj.__dir__()
+        return [name for name in dir(self.__wrapped_obj) if not name.startswith('_')]
+
+    def __repr__(self):
+        return f"ReadOnlyWrapper({repr(self.__wrapped_obj)})"
+
+    def __str__(self):
+        return str(self.__wrapped_obj)
 
 
 def deprecatedOpen(*args, **kwargs):
@@ -1143,6 +1163,7 @@ def loadProgramBase(
                 "isRoot": FalseValue(),
                 "assertTrue": copy(assertTrue),
                 "isDebugger": FalseValue(),
+                "ReadOnlyWrapper": copy(ReadOnlyWrapper),
             }
             
             if directory in [
