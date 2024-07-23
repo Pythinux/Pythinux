@@ -31,6 +31,10 @@ import io
 var = load_program("var", currentUser, libMode=True)
 pwd = load_program("pwd", currentUser, libMode=True)
 
+class ShellError(Exception):
+    def __str__(self, *args, **kwargs):
+        return "ERROR: {}".format(self.args[0])
+
 def pipe(value):
     """
     Accepts a piped shell script.
@@ -80,9 +84,9 @@ def pipeCommandOutput(user, cmd, second_cmd, **kwargs):
     output = getCommandOutput(user, cmd, **kwargs)
     program = load_program(second_cmd, user, libMode=True, **kwargs)
     if not program:
-        raise PythinuxError("Invalid program")
+        raise ShellError("Invalid program")
     if not "pipe" in dir(program):
-        raise PythinuxError("Unsupported program")
+        raise ShellError("Unsupported program")
     program.pipe(output)
 
 def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
@@ -113,12 +117,16 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     if ">" in cmd_args and cmd_args[-2] == ">":
         try:
             handleRedirection(cmd_args)
+        except ShellError as e:
+            print(e)
         except Exception as e:
             print(traceback.format_exc())
         return
     if "|" in cmd_args:
         try:
             handlePiping(cmd_args)
+        except ShellError as e:
+            print(e)
         except Exception as e:
             print(traceback.format_exc())
         return
@@ -137,6 +145,8 @@ def run(user:pythinux.User, cmd, lastCommand="", shell="shell"):
     else:
         try:
             runCommand(user, cmd, shell=shell)
+        except ShellError as e:
+            print(e)
         except SystemExit:
             pass
         except Exception as e:
