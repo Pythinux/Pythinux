@@ -22,13 +22,14 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
-import time
+
+from time import strftime
 
 def date():
-    return time.strftime("%d-%M-%Y")
+    return strftime("%d-%M-%Y")
 
 def time():
-    return time.strftime("%H:%M:%S %z")
+    return strftime("%H:%M:%S %z")
 
 def datetime():
     return "{} {}".format(date(), time())

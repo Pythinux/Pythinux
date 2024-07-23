@@ -23,23 +23,29 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 import os
+
+libtime = load_program("libtime", currentUser, libMode=True)
+
 class Log:
-    def __init__(self, filename, display=True):
+    def __init__(self, filename, display=True, show_date=False):
         assertTrue(isinstance(filename, str))
         assertTrue(isinstance(display, bool))
+        assertTrue(isinstance(show_date, bool))
 
         self.filename = filename
         self.logs = []
         self.display = display
+        self.show_date = show_date
         self.load()
+
     def log(self, text, log_type="info"):
         assertTrue(isinstance(text, str))
         assertTrue(isinstance(log_type, str))
 
-        log_text = "[{}] {}".format(log_type, text)
+        log_text = "[{}{}] {}".format(log_type, "@{}".format(libtime.datetime()) if self.show_date else "", text)
         self.logs.append(log_text)
         if self.display:
-            print(self.log_text)
+            print(log_text)
         self.save()
     def load(self):
         if os.path.isfile(file.evalDir(self.filename, currentUser)):
