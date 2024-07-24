@@ -1,65 +1,40 @@
 NAME
-	Changelog for Pythinux 3.1
+	Changelog for Pythinux 3.2
 SUMMARY
-	Release 3.1 is a release that focuses on backend tweaks that make the
-	developer experience smoother. On top of this, debugging features galore
-	make finding and fixing issues less painful, especially at the kernel
-	level.
-NEW AND UPDATED PROGRAMS
-	- isroot is a new program that displays whether or not you are root.
-		Essentially a frontend for isRoot().
-	- The which program now has a library. 
-	- The license program has been removed due to incompatibility with
-		file.open() and also generally being reliant on the repo having been
-		cloned in its entirety.
-	- The ls command is now unprivileged.
-NEW AND UPDATED LIBRARIES
-	LIBARGS
-		This library is an extension of argparse that is built for Pythinux.
-		It should be used instead of argparse, and several commands have been
-		ported already.
-NEW AND UPDATED KPARAMS	
-	KPARAM_ARTIFICIAL_DECRYPT_TIME	
-		Disabled by default. If enabled, verifyHash() waits an arbitrary
-		amount of time in order to increase security. The wait time is set by
-		KPARAM_INT_ARTIFICIAL_DECRYPT_TIME, and defaults to 2.5.
-	KPARAM_DEBUGGING_VERIFYHASH
-		Disabled by default. If enabled, 
-	KPARAM_DISABLE_CLS
-		Disabled by default. If enabled, the cls() function is disabled
-		systemwide.
-	KPARAM_DEBUGGING_LOAD_PROGRAM
-		Disabled by default. If enabled, displays comprehensive debugging info
-		every time loadProgramBase() is called.
-	KPARAM_REAL_DIRECTORY
-		Enabled by default. If enabled, Real Directory Support(tm) is enabled.
-FILE.OPEN() AND THE FUTURE OF OPEN()
-	The open() function has been deprecated for removal in 3.3, to be replaced
-	by file.open().
-PACKAGING IMPROVEMENTS
-	The Program.replaces defines a *single* program that a package can
-	overwrite.
-SECURITY
-	PSA-0006
-		This was a code injection. attack targeting the baseMode argument in 
-		load_program(). The mitigation is to remove baseMode entirely.
-	ASSERTIONS
-		The all-new assertTrue() function (which is indeed exposed) allows a
-		program to assert that a condition is met and raise an exception if it
-		is not. This is used in almost all kernel functions now to ensure
-		type safety. 
-		NOTE: The assert keyword can be disabled with a flag passed to
-			python's executable, which is why we chose to reimplement it.
-REAL DIRECTORY SUPPORT
-	More work on Real Directory Support is being done. However, it is still
-	not a working system, however, we target a 3.3 release for when it should.
-	Currently, KPARAM_REAL_DIRECTORY is implemented, as well as certain API
-	functions that *should* help with making it a possibility.
-MISCELLANEOUS CHANGES
-	- Added a copyright header to every file. It includes ASCII art of the
-		project's name, which isn't rendered correctly all the time (including,
-		ironically enough, CodeBerg's file viewer).
-	- Removed the sha256() kernel function. It was never exposed to programs
-		and never actually used.
-SEE ALSO:
-	libargs: Argument parser library
+	Release 3.2 builds upon the changes made in 3.1, continuing with the small
+	but not insignificant innovations. From true output redirection to support
+	for device files, this is a release developers and users alike should pay
+	attention to.
+LIBMANPARSE
+	This is a new library that can parse manpages. While this sounds
+	insignificant, this allows for converting manpages into other formats,
+	such as Markdown. This will make documentation much easier.
+DEBUG API
+	An API for debugging has been implemented. Of course, this comes with
+	several security considerations. For instance, only debuggers can grant or
+	revoke debugging permissions to a program. To solve the inevitable
+	chicken-and-egg problem, a new program called debugmgr is used to manage
+	debuggers. It can add and remove debuggers, and that's all it does.
+	Official debugging tools will be released, but they won't be bundled with
+	the OS for good reasons. 
+
+	On top of this, adding a debugger causes the user to be prompted with a
+	message detailing what this means and why you shouldn't add debuggers if
+	you don't intend to do so.
+
+	Finally, only debuggers are allowed to load another debugger, to avoid
+	debug API theft.
+OUTPUT REDIRECTION 
+	Finally, output redirection. You can now redirect the output of commands
+	into files using >, or even commands into other commands with |, however,
+	the latter needs to be supported by the program receiving the data.
+	Another limitation of piping is that it doesn't allow chaining the output.
+	This will be fixed in a future release.
+DEVICE FILES 
+	The /dev/null, /dev/random, and /dev/urandom files are now usable! While
+	they don't appear in directory listings (because they aren't real), they
+	are fully usable. You can try them right now - /dev/random uses random to
+	generate random bytes whereas /dev/urandom uses secrets.
+CONCLUSION
+	Pythinux 3.2 adds some pretty major changes, and it (sadly) appears to be
+	the last of the heavy-hitting updates we have seen since 3.0. 
