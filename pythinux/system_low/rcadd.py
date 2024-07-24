@@ -23,6 +23,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
+def pipe(data):
+    """
+    Adds piped data to shellrc file.
+    """
+    assertTrue(isinstance(data, str))
+    for line in data.split("\n"):
+        add(line)
+
 def add(command, user=None):
     assertTrue(isinstance(command, str))
     assertTrue(type(user) in [type(None), User])
@@ -31,6 +39,7 @@ def add(command, user=None):
     """
     with file.open("~/shellrc.xx", user if user else currentUser, "a") as f:
         f.write("\n{}".format(command))
+
 def main(args):
     if args:
         add(" ".join(args))

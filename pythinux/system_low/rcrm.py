@@ -23,15 +23,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 
+def pipe(data):
+    """
+    Removes piped commands from rcfile.
+    """
+    assertTrue(isinstance(data, str))
+    for line in data.split("\n"):
+        remove(line)
+
+
 def remove(command, user=None):
     assertTrue(isinstance(command, str))
     assertTrue(type(user) in [type(None), User])
     with file.open("~/shellrc.xx", user if user else currentUser) as f:
         contents = f.read().replace(command, "")
         old = f.read()
-    with file.open("~/shellrc.xx", user, "w") as f:
+    with file.open("~/shellrc.xx", user if user else currentUser, "w") as f:
         f.write(contents)
     return old
+
 
 def main(args):
     if args:

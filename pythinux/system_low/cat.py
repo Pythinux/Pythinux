@@ -22,6 +22,14 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
+
+def pipe(data):
+    """
+    Prints out piped data.
+    """
+    assertTrue(isinstance(data, str))
+    print(data)
+
 def cat(filename, user=None):
     assertTrue(isinstance(filename, str))
     assertTrue(type(user) in [type(None), User])

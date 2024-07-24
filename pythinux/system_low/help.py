@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 """
 def help():
     return sorted(list_loadable_programs(currentUser, True))
+
 def main(args):
     lst = help()
     div()
