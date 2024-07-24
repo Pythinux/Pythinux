@@ -54,6 +54,9 @@ def splitList(inputList, separator):
     """
     Splits a list into sublists with a given separator.
     """
+    assertTrue(isinstance(inputList, list))
+    assertTrue(isinstance(separator, str))
+
     result = []
     sublist = []
     for item in inputList:
@@ -69,6 +72,9 @@ def getCommandOutput(user, cmd, **kwargs):
     """
     Run a command silently and return its output as a string.
     """
+    assertTrue(isinstance(user, User))
+    assertTrue(isinstance(cmd, str))
+
     with contextlib.redirect_stdout(io.StringIO()) as f:
         run(user, cmd, **kwargs)
     return f.getvalue().rstrip("\n")
@@ -171,7 +177,7 @@ def terminal(user: User, lastCommand=""):
         terminal(user, lastCommand)
     try:
         fixDir(user)
-        output = run(user, cmd, lastCommand)
+        output = run(user, cmd, cmd if lastCommand in ["!", "!!"] else lastCommand)
         fixDir(user)
         if output == "EXIT_STATE":
             return
