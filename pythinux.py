@@ -908,6 +908,14 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
             "Cannot open file in restricted directory: {}".format(filename)
         )
 
+def listFiles(directory, user, **kwargs):
+    if directory == "/":
+        return sorted(os.listdir(file.evalDir("/", user), **kwargs) + ["dev"])
+    elif directory == "/dev":
+        return ["null", "random", "urandom"]
+    else:
+        return sorted(os.listdir(file.evalDir(directory, user), **kwargs))
+
 def listDebuggers(user, include=True):
     file = evalDir("/config/debuggers", user)
     if os.path.isfile(file):
@@ -916,11 +924,30 @@ def listDebuggers(user, include=True):
     else:
         return SYSTEM_DEBUGGERS if include else []
 
+
+def confirmAction(message, default=True):
+    """
+    Confirmation dialogue. Requires a displayed message, and can choose the default.
+    """
+    print(message)
+    response = "*"
+    while response not in ["y", "n", ""]:
+        response = input("[{}/{}] $".format("Y" if default else "y", "n" if default else "N")).lower()
+    if response == "y":
+        return True
+    elif response == "n":
+        return False
+    else:
+        return default
+
 def addDebugger(debugger, user):
     if not debugger in list_loadable_programs(user):
         raise PythinuxError("Invalid program")
     if debugger in listDebuggers(user):
         ## It's already in there, no need to add it again
+        return
+    if not confirmAction("Are you sure you want to add '{}' to the list of debuggers? This will allow it to access API calls that can be used for debugging, which can also be used maliciously. Are you absolutely sure?".format(debugger), False):
+        print("Action declined by user.", file=sys.stderr)
         return
     file = evalDir("/config/debuggers", user)
     with open(file, "a") as f:
@@ -931,6 +958,9 @@ def removeDebugger(debugger, user):
         return
     if debugger in SYSTEM_DEBUGGERS:
         raise PythinuxError("Cannot remove system debugger")
+    if not confirmAction("Are you sure you want to remove '{}' from the list of debuggers? This may break certain programs."):
+        print("Action declined by user.", file=sys.stderr)
+        return
     file = evalDir("/config/debuggers", user)
     debuggers = [x for x in listDebuggers(user, False) if x != debugger]
     with open(file, "w") as f:
@@ -978,6 +1008,7 @@ def generateAPI(module, user, sudoMode):
     file.evalDir = copy(evalDir)
     file.root = lambda: changeDirectory("/", user)
     file.changeDirectory = copy(changeDirectory)
+    file.listdir = copy(listFiles)
 
     if KPARAM_USE_LIMITED_OPEN:
         file.open = copy(limitedOpenFile) if not user.group.canSys else copy(openFile)
