@@ -909,12 +909,14 @@ def limitedOpenFile(filename, user, mode="r", **kwargs):
         )
 
 def listFiles(directory, user, **kwargs):
+    assertTrue(isinstance(directory, str))
+    assertTrue(isinstance(user, User))
     if directory == "/":
-        return sorted(os.listdir(file.evalDir("/", user), **kwargs) + ["dev"])
+        return sorted(os.listdir(evalDir("/", user), **kwargs) + ["dev"])
     elif directory == "/dev":
         return ["null", "random", "urandom"]
     else:
-        return sorted(os.listdir(file.evalDir(directory, user), **kwargs))
+        return sorted(os.listdir(evalDir(directory, user), **kwargs))
 
 def listDebuggers(user, include=True):
     file = evalDir("/config/debuggers", user)
