@@ -1,14 +1,17 @@
 NAME
 	Changelog for Pythinux 3.2
+
 SUMMARY
 	Release 3.2 builds upon the changes made in 3.1, continuing with the small
 	but not insignificant innovations. From true output redirection to support
 	for device files, this is a release developers and users alike should pay
 	attention to.
+
 LIBMANPARSE
 	This is a new library that can parse manpages. While this sounds
 	insignificant, this allows for converting manpages into other formats,
 	such as Markdown. This will make documentation much easier.
+
 DEBUG API
 	An API for debugging has been implemented. Of course, this comes with
 	several security considerations. For instance, only debuggers can grant or
@@ -24,17 +27,29 @@ DEBUG API
 
 	Finally, only debuggers are allowed to load another debugger, to avoid
 	debug API theft.
+
 OUTPUT REDIRECTION 
 	Finally, output redirection. You can now redirect the output of commands
 	into files using >, or even commands into other commands with |, however,
 	the latter needs to be supported by the program receiving the data.
 	Another limitation of piping is that it doesn't allow chaining the output.
 	This will be fixed in a future release.
+
 DEVICE FILES 
-	The /dev/null, /dev/random, and /dev/urandom files are now usable! While
-	they don't appear in directory listings (because they aren't real), they
-	are fully usable. You can try them right now - /dev/random uses random to
-	generate random bytes whereas /dev/urandom uses secrets.
+	The /dev/null, /dev/random, and /dev/urandom files are now usable! You can
+	try them right now - /dev/random uses random to generate random bytes
+	whereas /dev/urandom uses secrets.
+
+SECURITY
+	PSA-0008 is a recently patched critical security flaw that allowed one to
+	bypass the ReadOnlyWrapper and gain access to raw function data, allowing
+	for something similar to PSA-0004 to be achieved.
+
+MISCELLANEOUS
+	* The new file.listdir() function is a replacement for os.listdir() that
+	includes device files.
+
 CONCLUSION
 	Pythinux 3.2 adds some pretty major changes, and it (sadly) appears to be
 	the last of the heavy-hitting updates we have seen since 3.0. 
+
