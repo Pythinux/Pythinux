@@ -1619,7 +1619,7 @@ def createUser(userlist, user):
     Returns:
         userlist: a userlist that can be passed to saveUserList().
     """
-    assertTrue(isinstance(userList, UserList), "Not a UserList object")
+    assertTrue(isinstance(userlist, UserList), "Not a UserList object")
     assertTrue(isinstance(user, User), "Not a User object")
 
     if not isinstance(userlist, UserList) or not isinstance(user, User):
